@@ -1,0 +1,61 @@
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./runtime-data:/app/data
+      - ./backend/reports:/app/reports
+      - huggingface-cache:/root/.cache/huggingface
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  vllm:
+    image: vllm/vllm-openai:latest
+    profiles: ["gpu"]
+    restart: unless-stopped
+    ipc: host
+    runtime: nvidia
+    environment:
+      HUGGING_FACE_HUB_TOKEN: ${HUGGING_FACE_HUB_TOKEN:-}
+    volumes:
+      - huggingface-cache:/root/.cache/huggingface
+    ports:
+      - "8001:8000"
+    command:
+      - --model
+      - ${VLLM_MODEL:-Qwen/Qwen3-14B-AWQ}
+      - --served-model-name
+      - ${VLLM_SERVED_NAME:-Qwen/Qwen3-14B-AWQ}
+      - --max-model-len
+      - ${VLLM_MAX_MODEL_LEN:-4096}
+      - --gpu-memory-utilization
+      - ${VLLM_GPU_MEMORY_UTILIZATION:-0.90}
+      - --max-num-seqs
+      - ${VLLM_MAX_NUM_SEQS:-8}
+      - --api-key
+      - ${PRIVSHIELD_LLM_API_KEY:-local-token}
+
+volumes:
+  huggingface-cache:
