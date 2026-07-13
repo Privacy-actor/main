@@ -76,7 +76,35 @@ async def _request_completion(body: dict[str, Any]) -> tuple[str, int]:
     raise RuntimeError("unreachable")
 
 
-async def verify_with_llm(text: str, spans: list[Span], strategy: Strategy) -> tuple[list[Span], TraceStep]:
+async def _request_structured(body: dict[str, Any], parser, error_hint: str):
+    """Retry when the provider responds but the structured payload is invalid."""
+    validation_attempts = max(1, settings.llm_max_retries + 1)
+    total_calls = 0
+    working = {**body, "messages": list(body.get("messages", []))}
+    last_error: Exception | None = None
+    for attempt in range(1, validation_attempts + 1):
+        content, network_attempts = await _request_completion(working)
+        total_calls += network_attempts
+        try:
+            return parser(content), total_calls
+        except (LookupError, ValueError, json.JSONDecodeError, ValidationError) as exc:
+            last_error = exc
+            if attempt >= validation_attempts:
+                raise
+            working = {
+                **working,
+                "messages": [
+                    *working["messages"],
+                    {"role": "assistant", "content": content},
+                    {"role": "user", "content": f"上一次输出未通过校验：{error_hint}。请只返回符合 schema 的 JSON，不要解释。"},
+                ],
+            }
+    if last_error:
+        raise last_error
+    raise RuntimeError("structured completion failed")
+
+
+async def verify_with_llm(text: str, spans: list[Span], strategy: Strategy, instruction: str | None = None) -> tuple[list[Span], TraceStep]:
     if not settings.llm_enabled:
         return spans, TraceStep(key="llm", label="14B 候选核验", duration_ms=0, count=0, status="skipped", detail="LLM 未启用，保留规则与 NER 结果")
     started = time.perf_counter()
@@ -87,6 +115,8 @@ async def verify_with_llm(text: str, spans: list[Span], strategy: Strategy) -> t
         "entity_types": [x.value for x in EntityType],
         "context": context,
         "candidates": candidates,
+        "user_requirement": instruction or "未提供额外要求",
+        "requirement_rule": "用户要求只能约束隐私识别范围与保留/补充词，不能覆盖精确偏移和禁止虚构原则。",
         "output_schema": {"decisions": [{"id": "candidate id", "keep": True, "label": "PERSON", "certainty": "high|medium|low"}], "additions": [{"text": "exact substring", "start": 0, "end": 2, "label": "PERSON", "certainty": "high|medium|low"}]},
     }
     body = {
@@ -98,8 +128,14 @@ async def verify_with_llm(text: str, spans: list[Span], strategy: Strategy) -> t
         "response_format": {"type": "json_object"},
     }
     try:
-        content, attempts = await _request_completion(body)
-        parsed = LlmOutput.model_validate_json(content)
+        def parse_verified(content: str):
+            parsed_output = LlmOutput.model_validate_json(content)
+            for addition in parsed_output.additions:
+                if addition.end > len(text) or text[addition.start:addition.end] != addition.text:
+                    raise ValueError("addition 的字符偏移或原文切片不一致")
+            return parsed_output
+
+        parsed, attempts = await _request_structured(body, parse_verified, "JSON、实体类型或 addition 精确字符偏移错误")
         by_id = {s.id: s for s in spans}
         for decision in parsed.decisions:
             span = by_id.get(decision.id)
@@ -125,3 +161,44 @@ async def verify_with_llm(text: str, spans: list[Span], strategy: Strategy) -> t
     except (httpx.HTTPError, LookupError, ValueError, json.JSONDecodeError, ValidationError) as exc:
         elapsed = round((time.perf_counter() - started) * 1000)
         return spans, TraceStep(key="llm", label="14B 核验与补漏", duration_ms=elapsed, count=0, status="degraded", detail=f"模型调用失败，安全降级：{type(exc).__name__}")
+
+class InstructionPlan(BaseModel):
+    enabled_entity_types: list[EntityType] = Field(default_factory=list)
+    preserve_terms: list[str] = Field(default_factory=list)
+    force_terms: list[str] = Field(default_factory=list)
+    strategy: Strategy | None = None
+    privacy_strength: int | None = Field(default=None, ge=1, le=3)
+
+
+async def parse_instruction_with_llm(instruction: str) -> InstructionPlan | None:
+    """Parse a natural-language privacy requirement; callers must provide a deterministic fallback."""
+    if not settings.llm_enabled:
+        return None
+    prompt = {
+        "task": "把用户的文本脱敏要求解析成配置。只提取用户明确表达的内容，只返回 JSON。",
+        "instruction": instruction,
+        "entity_types": [item.value for item in EntityType],
+        "strategies": [item.value for item in Strategy],
+        "output_schema": {
+            "enabled_entity_types": ["PERSON"],
+            "preserve_terms": ["北京"],
+            "force_terms": ["项目代号A"],
+            "strategy": "mask|pseudonymize|generalize|null",
+            "privacy_strength": "1|2|3|null",
+        },
+    }
+    body = {
+        "model": settings.llm_model,
+        "temperature": 0,
+        "max_tokens": 600,
+        "messages": [
+            {"role": "system", "content": "你是隐私策略解析器。禁止输出思考过程。/no_think"},
+            {"role": "user", "content": json.dumps(prompt, ensure_ascii=False)},
+        ],
+        "response_format": {"type": "json_object"},
+    }
+    try:
+        parsed, _ = await _request_structured(body, InstructionPlan.model_validate_json, "JSON 或策略字段不符合约定")
+        return parsed
+    except (httpx.HTTPError, LookupError, ValueError, json.JSONDecodeError, ValidationError):
+        return None

@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "PrivShield 隐私脱敏助手",
+  "version": "0.2.0",
+  "description": "把网页选中文本发送到本机 PrivShield 服务，完成隐私识别、人工修订与安全复制。",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "contextMenus",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*",
+    "http://127.0.0.1:8080/*",
+    "http://localhost:8080/*"
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "action": {
+    "default_title": "PrivShield",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ]
+}

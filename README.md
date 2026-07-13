@@ -1,73 +1,96 @@
+面向大模型分析场景的中英混合文本隐私擦除与智能脱敏系统。系统采用“规则 → NER → 可选 Qwen3-14B 核验/补漏 → Span 合并 → 人工复核 → 最终稿编辑与导出”的可审计流水线，既可在无模型环境下演示完整闭环，也可部署到本地或云服务器接入真实模型。
 
-面向大模型分析的中英混合文本隐私擦除与智能脱敏系统。系统不是让大模型直接改写全文，而是由规则、NER、选择性 14B 核验/补漏、Span 合并、人工复核和确定性脱敏构成可审计流水线。
+## 当前完成度
 
-## 已实现功能
+立项书中承诺的**软件功能闭环已经补齐**：
 
-- 隐私工作台：文本粘贴、TXT/CSV/JSON 导入、八类实体高亮、来源与置信度、三层处理轨迹、人工接受/拒绝/改类/新增、三种策略预览、TXT 和审计 JSON 导出；
-- 正式后端：手机、邮箱、身份证校验、银行卡 Luhn 校验；Transformers NER 延迟加载；Qwen3-14B OpenAI-compatible 调用；低置信候选复核和高风险句补漏；substring/offset 二次校验；
-- 人工复核：低置信度和冲突候选队列、快捷键操作、SQLite 审计；
-- 批处理：UTF-8 TXT、CSV、JSON，结果预览和 CSV 下载；
-- 评估实验室：P/R/F1、分类召回率、边界准确率、JSON 合法率、延迟、吞吐、显存、消融和错误案例；把真实 benchmark 结果写入 `backend/reports/experiment_results/latest.json` 后会自动替换演示数据；
-- 历史与策略：任务历史、风险等级、各类型默认策略、模型路由配置和操作日志；
-- 三档运行：正式 GPU、规则 + NER 降级、纯离线演示。
+- 图形化工作台、透明识别轨迹和自动脱敏预览；
+- 最终文字编辑器，可自由修改任意位置并自动保存；
+- 单文件、多文件和整个文件夹批处理；
+- 代表样本预览、持久化后台任务、实时进度、失败清单和 ZIP 导出；
+- 批处理结果逐项进入工作台复核；
+- 菜单配置与自然语言个性化要求；
+- 项目级配置、自定义关键词/正则规则和实体类型开关；
+- 浏览器插件 + 本地服务原型；
+- Docker 本地私有化部署和云服务器部署。
 
-## 服务器一键部署（推荐）
+当前剩余工作只应集中在真实数据与模型实验：建设并冻结 gold 测试集、部署 Qwen3-14B 做对照测试、根据错误决定是否 QLoRA，以及使用真实指标做前端视觉与答辩收尾。详见 `立项功能对照检查.md`。
 
-要求：Ubuntu 22.04/24.04、NVIDIA 驱动、Docker、Docker Compose、NVIDIA Container Toolkit。24 GB 显存使用默认 AWQ；48 GB 显存可把模型改成 `Qwen/Qwen3-14B`。
+## 功能清单
 
-```bash
-cd privacy-redactor
-cp .env.example .env
-# 如需修改端口、模型或 Hugging Face Token：nano .env
-docker compose --profile gpu up -d --build
-docker compose ps
-docker compose logs -f vllm
-```
+### 1. 识别与脱敏流水线
 
-第一次运行会在服务器下载 NER 和 Qwen 权重。vLLM 日志出现服务就绪后，浏览器打开：
+- 规则识别：手机号、邮箱、身份证校验、银行卡 Luhn 校验、护照号、地址等；
+- NER：支持 Transformers 模型延迟加载，模型不可用时自动回退到中文、英文及中英混合轻量识别器；
+- LLM：通过 OpenAI-compatible 接口调用 Qwen3-14B，对低置信候选进行核验并对高风险文本补漏；
+- 安全校验：LLM 输出 JSON、substring 和 offset 二次验证，失败自动重试或降级；
+- 十类实体：`PERSON`、`ORG`、`LOCATION`、`ADDRESS`、`PHONE`、`EMAIL`、`ID_CARD`、`BANK_CARD`、`PASSPORT`、`CUSTOM`；
+- 三种策略：一致性掩码、语义伪名替换、知识层级泛化；
+- 知识泛化支持本地精确映射、机构/地点规则推断、三级概念链、查询接口和可选远程知识服务，远程不可用时自动回退；
+- 低/中/高三级保护强度、严格/标准风险模式，以及按实体单独调整类型、策略和自定义替换词。
 
-默认让 NER 在 CPU 运行，把整张 GPU 留给 Qwen3-14B，避免 24 GB 显卡上两个模型争抢显存。48 GB 显存且希望加速 NER 时，可将 `PRIVSHIELD_NER_DEVICE` 改为 `0`，并为 backend 容器增加 GPU 访问。
+### 2. 项目、规则与自然语言要求
+
+- 创建、修改、删除和选择项目；
+- 保存项目级风险等级、默认策略、保护强度、实体类型范围、LLM/策略开关与部署模式；
+- 自定义关键词和正则规则 CRUD，可指定实体类型、大小写敏感和启停状态；
+- 自然语言要求解析，例如“保留北京地名，隐去上海地名，使用最高强度泛化”；
+- 原始自然语言要求会继续传给 LLM 核验层，而不是只在前端展示。
+
+### 3. 人工复核与最终文字编辑器
+
+- 接受、拒绝、改实体类型、补充遗漏实体、调整边界；
+- 恢复误判内容，切换全局或单实体脱敏策略，并可给任一实体指定自定义替换词；
+- 原文修改后立即提示旧 Span 失效并要求重新检测；
+- 最终稿可自由编辑任意位置，支持撤销、重做、查找替换、恢复自动结果、差异查看和复制；
+- 1.6 秒自动保存，也可手动保存；
+- 乐观版本号避免多标签页静默覆盖；
+- TXT 与审计 JSON 导出均使用人工修订后的最终稿；
+- 审计记录版本、长度、变化字符数和 SHA-256 摘要，不在编辑日志中重复保存整段敏感文本。
+
+### 4. 文件与文件夹批处理
+
+- 支持 TXT、Markdown、CSV、JSON、DOCX 和 PDF 文本提取；
+- 支持单文件、多文件和浏览器文件夹选择；
+- 处理前展示文件列表、基本信息和首个代表样本的脱敏预览；
+- SQLite 持久化后台 Job，页面轮询显示真实进度、成功数和失败数；
+- 每个成功文件保存为完整任务，可从批处理页进入工作台逐项复核；
+- 可下载 CSV、JSON、失败清单和包含逐文件最终稿、manifest 的 ZIP；
+- 文件夹相对路径在 ZIP 中保留，并进行安全路径清理。
+
+> DOCX/PDF 当前做文本提取与脱敏，不包含扫描件 OCR，也不承诺原版式重建。这不影响文本隐私处理闭环。
+
+### 5. 历史、策略、评估与数据治理
+
+- 历史任务查看、复核、导出和删除；
+- 按保留天数清理历史原文与对应审计记录；
+- 按实体类型保存默认脱敏策略；
+- 复核队列集中处理低置信度、模型冲突和边界异常；
+- 评估页支持 Precision、Recall、F1、边界准确率、JSON 合法率、延迟、吞吐、消融和错误案例；
+- `backend/reports/experiment_results/latest.json` 存在时自动显示真实实验结果，否则明确标记为演示数据。
+
+### 6. 浏览器插件
+
+`browser-extension/` 是可运行的 Manifest V3 原型：
+
+- 读取网页选中文本或当前页可见文字；
+- 右键菜单或工具栏启动本地脱敏；
+- 选择策略、保护强度和是否启用 14B；
+- 在弹窗内编辑、复制、导出 TXT；
+- 一键进入完整工作台继续实体复核、最终稿编辑和审计。
+
+安装方法见 `browser-extension/README.md`。
+
+## 目录结构
 
 ```text
-http://你的服务器公网IP:8080
-```
-
-防火墙只需放行前端端口：
-
-```bash
-sudo ufw allow 8080/tcp
-```
-
-检查接口：
-
-```bash
-curl http://127.0.0.1:8080/api/v1/health
-curl http://127.0.0.1:8001/v1/models -H 'Authorization: Bearer local-token'
-```
-
-## 48 GB 显卡运行 BF16
-
-编辑 `.env`：
-
-```env
-VLLM_MODEL=Qwen/Qwen3-14B
-VLLM_SERVED_NAME=Qwen/Qwen3-14B
-PRIVSHIELD_LLM_MODEL=Qwen/Qwen3-14B
-VLLM_GPU_MEMORY_UTILIZATION=0.90
-```
-
-然后重建 vLLM 和后端：
-
-```bash
-docker compose --profile gpu up -d --force-recreate vllm backend
-```
-
-## 模型服务已单独部署时
-
-无需启动 Compose 里的 vLLM。将 `.env` 的 `PRIVSHIELD_LLM_BASE_URL` 指向现有 OpenAI-compatible `/v1` 地址，然后：
-
-```bash
-docker compose up -d --build
+privacy-redactor/
+├─ backend/                 FastAPI、SQLite、识别/脱敏流水线、测试与 benchmark
+├─ frontend/                React + TypeScript + Vite 管理界面
+├─ browser-extension/       Chrome/Edge Manifest V3 插件
+├─ scripts/                 服务器部署辅助脚本
+├─ docker-compose.yml       前端、后端与可选 vLLM 服务
+└─ 立项功能对照检查.md       原立项承诺逐项验收表
 ```
 
 ## 本机开发（不下载模型）
@@ -90,26 +113,86 @@ npm install
 npm run dev
 ```
 
-打开 `http://localhost:5173`。默认 `.env` 不存在时，NER/LLM 均关闭，后端自动使用轻量识别器验证完整界面与流程。
+打开 `http://127.0.0.1:5173`。未配置 NER/LLM 时，后端自动使用规则、轻量识别器和本地知识层级，仍可验证完整产品流程。API 文档位于 `http://127.0.0.1:8000/api/docs`。
 
-## 测试与构建
+## 服务器一键部署
+
+部署配置与脚本已准备好，但本次没有在本机下载或运行 Qwen3-14B。正式实验时要求 Ubuntu 22.04/24.04、NVIDIA 驱动、Docker、Docker Compose、NVIDIA Container Toolkit。24 GB 显存建议使用 AWQ 版本；更大显存可使用 BF16。
 
 ```bash
-cd backend && python -m pytest -q
-cd ../frontend && npm run build
+cd privacy-redactor
+cp .env.example .env
+docker compose --profile gpu up -d --build
+docker compose ps
+docker compose logs -f vllm
 ```
 
-API 文档：`http://localhost:8000/api/docs`。
+默认由 Nginx 暴露前端：
 
-冻结测试集为 JSONL 后，可生成评估页读取的真实结果：
+```text
+http://你的服务器公网IP:8080
+```
+
+建议只开放前端端口：
+
+```bash
+sudo ufw allow 8080/tcp
+```
+
+健康检查：
+
+```bash
+curl http://127.0.0.1:8080/api/v1/health
+curl http://127.0.0.1:8001/v1/models -H 'Authorization: Bearer local-token'
+```
+
+### 48 GB 显卡运行 BF16
+
+在 `.env` 中设置：
+
+```env
+VLLM_MODEL=Qwen/Qwen3-14B
+VLLM_SERVED_NAME=Qwen/Qwen3-14B
+PRIVSHIELD_LLM_MODEL=Qwen/Qwen3-14B
+VLLM_GPU_MEMORY_UTILIZATION=0.90
+```
+
+然后重建：
+
+```bash
+docker compose --profile gpu up -d --force-recreate vllm backend
+```
+
+### 接入已有模型服务
+
+如 Qwen 已单独部署，只需将 `PRIVSHIELD_LLM_BASE_URL` 指向现有 OpenAI-compatible `/v1` 地址，然后启动前后端：
+
+```bash
+docker compose up -d --build
+```
+
+## 测试、构建与真实评估
+
+```bash
+cd backend
+python -m pytest -q
+
+cd ../frontend
+npm run build
+```
+
+冻结测试集为 JSONL 后运行：
 
 ```bash
 cd backend
 python scripts/run_benchmark.py data/gold/test.jsonl --api http://127.0.0.1:8000/api/v1
 ```
 
-## 重要说明
+建议至少比较：规则、NER、规则 + NER、级联 + Qwen3-14B，并报告 Precision、Recall、F1、边界准确率、漏检率、过度脱敏率、p50/p95 延迟、吞吐和典型错误。
 
-- 评估页首次显示的是明确标记的演示数据，不应当写入结项报告；完成冻结测试集实验后用真实 `latest.json` 替换。
-- 真实敏感文本应让应用、NER 和 vLLM 部署在同一受控服务器/内网，不要把原文发送到公共第三方 API。
-- 首次模型下载可能需要较长时间；下载完成后 Hugging Face 缓存保存在 Docker volume 中，重启不会重复下载。
+## 重要边界
+
+- “语义伪名替换”已实现为稳定、可审计的候选替换机制；在没有完整数学证明前，不应在论文或答辩中宣称已获得严格的 ε-差分隐私保证。
+- 知识泛化已使用本地实体层级、常见机构/行政区规则、精确映射和查询接口实现；可选远程适配器默认关闭且失败自动回退。启用远程查询会发送实体词，只能连接可信内网或受控服务。
+- 当前核心覆盖中文、英文和中英混合文本；“多语种效果优良”必须由后续冻结测试集实验支持，不能在尚无数据时提前宣称。
+- 真实敏感文本应让应用、NER 和 vLLM 部署在同一受控服务器或内网，避免把原文发送到公共第三方 API。

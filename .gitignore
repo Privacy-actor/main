@@ -10,3 +10,4 @@ backend/.pytest_cache/
 frontend/node_modules/
 frontend/dist/
 *.pyc
+*-runtime.*.log

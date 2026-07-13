@@ -14,6 +14,14 @@ class Settings(BaseSettings):
     ner_model: str = "Davlan/xlm-roberta-base-ner-hrl"
     ner_device: int = -1
     ner_threshold: float = 0.70
+    semantic_model_enabled: bool = False
+    semantic_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    semantic_model_device: int = -1
+    knowledge_graph_remote_enabled: bool = False
+    knowledge_graph_cnprobase_url: str = "http://shuyantech.com/api/cnprobase/concept"
+    knowledge_graph_cndbpedia_url: str = "http://shuyantech.com/api/cndbpedia/avpair"
+    knowledge_graph_timeout_seconds: float = 4.0
+    knowledge_graph_cache_seconds: int = 86_400
     llm_enabled: bool = False
     llm_base_url: str = "http://127.0.0.1:8001/v1"
     llm_api_key: str = "local-token"
@@ -22,7 +30,7 @@ class Settings(BaseSettings):
     llm_max_retries: int = 1
     llm_max_routed_sentences: int = 8
     llm_max_concurrency: int = 2
-    max_upload_bytes: int = 5_000_000
+    max_upload_bytes: int = 20_000_000
     max_batch_records: int = 500
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 

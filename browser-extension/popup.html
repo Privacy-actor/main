@@ -1,0 +1,11 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PrivShield</title><link rel="stylesheet" href="popup.css"></head><body>
+<header><div class="mark">P</div><div><strong>PrivShield</strong><span>本地隐私脱敏助手</span></div><button id="settings" title="设置">⚙</button></header>
+<main>
+  <div id="status" class="status">正在连接本地服务…</div>
+  <label><span>待处理文本</span><textarea id="source" placeholder="先在网页中选中文本，或点击“读取当前页”"></textarea></label>
+  <div class="row"><button id="selection" class="ghost">读取选中内容</button><button id="page" class="ghost">读取当前页</button></div>
+  <div class="config"><label><span>策略</span><select id="strategy"><option value="mask">一致性掩码</option><option value="pseudonymize">语义伪名</option><option value="generalize">层级泛化</option></select></label><label><span>强度</span><select id="strength"><option value="1">低</option><option value="2" selected>中</option><option value="3">高</option></select></label><label class="check"><input id="llm" type="checkbox"><span>14B 核验</span></label></div>
+  <button id="run" class="primary">识别并脱敏</button>
+  <section id="resultCard" hidden><div class="result-head"><strong>最终文本</strong><span id="summary"></span></div><textarea id="result"></textarea><div id="saveStatus" class="save-status">自动结果已保存，可继续人工修订</div><div class="row"><button id="saveFinal" class="ghost">保存修订</button><button id="copy" class="primary">复制结果</button><button id="download" class="ghost">导出 TXT</button><button id="full" class="ghost">完整复核</button></div></section>
+  <p id="error" class="error"></p>
+</main><script src="popup.js"></script></body></html>
