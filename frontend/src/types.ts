@@ -1,5 +1,6 @@
 export type EntityType = 'PERSON' | 'ORG' | 'LOCATION' | 'ADDRESS' | 'PHONE' | 'EMAIL' | 'ID_CARD' | 'BANK_CARD' | 'PASSPORT' | 'CUSTOM'
 export type Strategy = 'mask' | 'pseudonymize' | 'generalize'
+export type StrategyMode = 'uniform' | 'by_type'
 export type Language = 'auto' | 'zh' | 'en' | 'mixed' | 'multilingual'
 
 export interface CustomKeyword {
@@ -117,4 +118,11 @@ export interface BatchJob {
   failed: number
   progress: number
   payload: { results: BatchRecord[]; failures: BatchFailure[]; files?: string[]; config?: ProcessingConfig }
+}
+
+export interface HistoryTaskDetail extends DetectResult {
+  id: string
+  preview: string
+  entity_count: number
+  risk: 'low' | 'medium' | 'high'
 }

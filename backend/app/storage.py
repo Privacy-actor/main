@@ -179,6 +179,8 @@ class Storage:
                 target.status, target.conflict = "rejected", False
             elif request.operation == "change_type":
                 target.entity_type, target.status, target.conflict = EntityType(request.after), "accepted", False
+                if request.strategy is not None:
+                    target.strategy = request.strategy
             elif request.operation == "set_span_strategy":
                 target.strategy, target.status = Strategy(request.after), "accepted"
             elif request.operation == "set_replacement":
@@ -295,6 +297,18 @@ class Storage:
         with self.connect() as db:
             rows = db.execute("SELECT id,created_at,preview,entity_count,risk FROM tasks ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
         return [dict(row) for row in rows]
+
+    def task_detail(self, task_id: str) -> dict[str, Any] | None:
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT id,created_at,preview,entity_count,risk,payload FROM tasks WHERE id=?",
+                (task_id,),
+            ).fetchone()
+        if row is None:
+            return None
+        detail = dict(row)
+        payload = json.loads(detail.pop("payload"))
+        return {**payload, **detail}
 
     def audits(self, limit=50):
         with self.connect() as db:

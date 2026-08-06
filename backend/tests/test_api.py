@@ -417,3 +417,49 @@ def test_generalization_pipeline_exposes_knowledge_metadata_and_trace():
     assert organization["metadata"]["knowledge_levels"] == ["北京高校", "高等院校", "教育机构"]
     assert payload["redacted_text"] == "高等院校"
     assert any(step["key"] == "knowledge" and step["status"] == "done" for step in payload["trace"])
+
+
+def test_history_detail_returns_full_task_snapshot():
+    detected = client.post(
+        "/api/v1/detect", json={"text": "电话13800138000", "use_llm": False}
+    ).json()
+    response = client.get(f"/api/v1/history/{detected['task_id']}")
+    assert response.status_code == 200
+    detail = response.json()
+    assert detail["id"] == detected["task_id"]
+    assert detail["text"] == "电话13800138000"
+    assert detail["spans"]
+    assert detail["trace"]
+
+
+def test_redact_null_strategy_uses_each_span_strategy():
+    text = "电话13800138000"
+    span = {
+        "id": "phone-policy", "start": 2, "end": len(text), "text": "13800138000",
+        "entity_type": "PHONE", "sources": ["TEST"], "status": "accepted",
+        "strategy": "generalize",
+    }
+    response = client.post(
+        "/api/v1/redact", json={"text": text, "spans": [span], "strategy": None}
+    )
+    assert response.status_code == 200
+    assert response.json()["redacted_text"] == "电话某联系电话"
+
+
+def test_change_type_can_persist_policy_strategy():
+    detected = client.post(
+        "/api/v1/detect", json={"text": "电话13800138000", "use_llm": False}
+    ).json()
+    phone = next(span for span in detected["spans"] if span["entity_type"] == "PHONE")
+    response = client.post("/api/v1/reviews", json={
+        "task_id": detected["task_id"],
+        "span_id": phone["id"],
+        "operation": "change_type",
+        "before": "PHONE",
+        "after": "CUSTOM",
+        "strategy": "generalize",
+    })
+    assert response.status_code == 200
+    updated = next(span for span in response.json()["snapshot"]["spans"] if span["id"] == phone["id"])
+    assert updated["entity_type"] == "CUSTOM"
+    assert updated["strategy"] == "generalize"

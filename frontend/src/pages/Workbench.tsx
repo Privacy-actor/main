@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Check, Clipboard, Download, FileJson, FileUp, LoaderCircle, Network, Play, Plus, RotateCcw, ShieldAlert, Sparkles, WandSparkles, X } from 'lucide-react'
+import { Clipboard, Download, FileJson, FileUp, LoaderCircle, Network, Play, Plus, RotateCcw, ShieldAlert, Sparkles, WandSparkles } from 'lucide-react'
 import { api } from '../api'
 import { loadProcessingConfig, loadProjectId, saveProcessingConfig, saveProjectId } from '../configStore'
 import AnnotatedText from '../components/AnnotatedText'
 import FinalTextEditor from '../components/FinalTextEditor'
 import PipelineTrace from '../components/PipelineTrace'
+import ReviewDecision from '../components/ReviewDecision'
+import StrategyModeSelector from '../components/StrategyModeSelector'
 import { allEntityTypes, defaultProcessingConfig, type DetectResult, type EntityType, type KnowledgeLookup, type ProcessingConfig, type Project, type Span, type Strategy } from '../types'
 
 const samples = {
@@ -26,6 +28,7 @@ export default function Workbench() {
   const [config, setConfig] = useState<ProcessingConfig>(loadProcessingConfig())
   const [projectId, setProjectIdState] = useState(loadProjectId())
   const [projects, setProjects] = useState<Project[]>([])
+  const [policies, setPolicies] = useState<Record<string, Strategy>>({})
   const [result, setResult] = useState<DetectResult | null>(null)
   const [spans, setSpans] = useState<Span[]>([])
   const [selected, setSelected] = useState<Span | null>(null)
@@ -47,7 +50,10 @@ export default function Workbench() {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
 
-  useEffect(() => { api.projects().then(data => setProjects(data.items)).catch(() => undefined) }, [])
+  useEffect(() => {
+    api.projects().then(data => setProjects(data.items)).catch(() => undefined)
+    api.policies().then(data => setPolicies(data.policies || {})).catch(() => undefined)
+  }, [])
   useEffect(() => {
     let cancelled = false
     if (!selected) { setReplacementDraft(''); setKnowledge(null); setKnowledgeLoading(false); return }
@@ -162,7 +168,8 @@ export default function Workbench() {
 
   async function changeType(type: EntityType) {
     if (!selected || !result || type === selected.entity_type) return
-    await reviewAndSync({ task_id: result.task_id, span_id: selected.id, operation: 'change_type', before: selected.entity_type, after: type }, selected.id)
+    const strategy = config.use_policies ? policies[type] || config.strategy : selected.strategy
+    await reviewAndSync({ task_id: result.task_id, span_id: selected.id, operation: 'change_type', before: selected.entity_type, after: type, strategy }, selected.id)
   }
 
   async function changeSpanStrategy(strategy: Strategy) {
@@ -185,6 +192,20 @@ export default function Workbench() {
     if (changed) persistConfig({ ...config, strategy })
   }
 
+  async function changeStrategyMode(usePolicies: boolean) {
+    const nextConfig = { ...effectiveConfig(), use_policies: usePolicies }
+    if (result && !confirmDiscard('切换策略模式需要重新检测，并替换当前未保存的最终稿。是否继续？')) return
+    persistConfig(nextConfig)
+    if (!result) return
+    setLoading(true); setError(''); setNotice('')
+    try {
+      const snapshot = await api.detect(text, nextConfig, projectId || null)
+      applySnapshot(snapshot)
+      setNotice(usePolicies ? '已按历史页保存的实体类型策略重新处理。' : '已切换为统一策略并重新处理。')
+    } catch (caught) { setError(caught instanceof Error ? caught.message : '策略模式切换失败') }
+    finally { setLoading(false) }
+  }
+
   async function changeStrength(privacyStrength: number) {
     if (!result) { persistConfig({ ...config, privacy_strength: privacyStrength }); return }
     const changed = await reviewAndSync({ task_id: result.task_id, span_id: 'all', operation: 'set_strength', before: String(config.privacy_strength), after: String(privacyStrength) }, selected?.id)
@@ -199,7 +220,7 @@ export default function Workbench() {
     if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end <= start || end > text.length) { setError('字符区间无效。'); return }
     const type = window.prompt(`实体类型：${allEntityTypes.join(' / ')}`, 'CUSTOM') as EntityType | null
     if (!type || !allEntityTypes.includes(type)) return
-    const span: Span = { id: `human_${crypto.randomUUID().slice(0, 8)}`, start, end, text: text.slice(start, end), entity_type: type, score: 1, sources: ['HUMAN'], status: 'accepted', conflict: false, strategy: config.strategy, metadata: { operation: 'manual_add' } }
+    const span: Span = { id: `human_${crypto.randomUUID().slice(0, 8)}`, start, end, text: text.slice(start, end), entity_type: type, score: 1, sources: ['HUMAN'], status: 'accepted', conflict: false, strategy: config.use_policies ? policies[type] || config.strategy : config.strategy, metadata: { operation: 'manual_add' } }
     await reviewAndSync({ task_id: result.task_id, span_id: span.id, operation: 'add', before: null, after: type, span }, span.id)
   }
 
@@ -246,10 +267,10 @@ export default function Workbench() {
   }
 
   return <div className="page workbench-page">
-    <header className="page-header"><div><div className="eyebrow">PRIVACY OPERATIONS</div><h1>隐私处理工作台</h1><p>菜单配置与自然语言需求双入口，检测、复核、编辑、审计和导出形成完整闭环。</p></div><div className="header-actions"><button className="btn ghost" onClick={() => { if (confirmDiscard('确定重置当前工作台？')) clearAnalysis() }}><RotateCcw size={16}/>重置结果</button><button className="btn primary" onClick={run} disabled={loading || !text.trim()}>{loading ? <LoaderCircle className="spin" size={17}/> : <Play size={17}/>}开始检测</button></div></header>
+    <header className="page-header"><div><div className="eyebrow">PRIVACY OPERATIONS</div><h1>隐私处理工作台</h1><p>面向单个任务的快速检测与复核；跨任务疑难项请前往人工复核队列集中处理。</p></div><div className="header-actions"><button className="btn ghost" onClick={() => { if (confirmDiscard('确定重置当前工作台？')) clearAnalysis() }}><RotateCcw size={16}/>重置结果</button><button className="btn primary" onClick={run} disabled={loading || !text.trim()}>{loading ? <LoaderCircle className="spin" size={17}/> : <Play size={17}/>}开始检测</button></div></header>
     {error && <div className="error-banner"><ShieldAlert size={17}/>{error}</div>}{notice && <div className="notice-banner">{notice}</div>}
 
-    <section className="panel compact-config"><div className="compact-config-grid"><label><span>当前项目</span><select value={projectId} onChange={event => selectProject(event.target.value)}><option value="">临时配置</option>{projects.map(project => <option key={project.id} value={project.id}>{project.name}</option>)}</select></label><label><span>脱敏策略</span><select value={config.strategy} onChange={event => changeStrategy(event.target.value as Strategy)}>{Object.entries(strategyLabels).map(([key, value]) => <option key={key} value={key}>{value}</option>)}</select></label><label><span>保护强度</span><select value={config.privacy_strength} onChange={event => changeStrength(Number(event.target.value))}><option value="1">低 · 保留结构</option><option value="2">中 · 平衡</option><option value="3">高 · 强保护</option></select></label><label className="toggle-inline"><input type="checkbox" checked={config.use_llm} onChange={event => persistConfig({ ...config, use_llm: event.target.checked })}/><span>启用 14B 核验</span></label></div>
+    <section className="panel compact-config"><div className="compact-config-grid strategy-config-grid"><label><span>当前项目</span><select value={projectId} onChange={event => selectProject(event.target.value)}><option value="">临时配置</option>{projects.map(project => <option key={project.id} value={project.id}>{project.name}</option>)}</select></label><StrategyModeSelector value={config.use_policies ? 'by_type' : 'uniform'} onChange={mode => void changeStrategyMode(mode === 'by_type')}/>{!config.use_policies?<label><span>统一脱敏策略</span><select value={config.strategy} onChange={event => changeStrategy(event.target.value as Strategy)}>{Object.entries(strategyLabels).map(([key, value]) => <option key={key} value={key}>{value}</option>)}</select></label>:<div className="policy-mode-link"><strong>按实体类型策略已启用</strong><span>使用“历史与策略”中保存的各类型默认值。</span></div>}<label><span>保护强度</span><select value={config.privacy_strength} onChange={event => changeStrength(Number(event.target.value))}><option value="1">低 · 保留结构</option><option value="2">中 · 平衡</option><option value="3">高 · 强保护</option></select></label><label className="toggle-inline"><input type="checkbox" checked={config.use_llm} onChange={event => persistConfig({ ...config, use_llm: event.target.checked })}/><span>启用 14B 核验</span></label><div className="protection-status"><ShieldAlert size={14}/><span><small>当前保护级别</small><strong>严格</strong></span></div></div>
       <div className="entity-toggle-row">{allEntityTypes.map(type => <label className={config.enabled_entity_types.includes(type) ? 'active' : ''} key={type}><input type="checkbox" checked={config.enabled_entity_types.includes(type)} onChange={() => { const exists = config.enabled_entity_types.includes(type); const next = exists ? config.enabled_entity_types.filter(item => item !== type) : [...config.enabled_entity_types, type]; if (next.length) persistConfig({ ...config, enabled_entity_types: next }) }}/><span>{labels[type]}</span></label>)}</div>
       <div className="quick-rules"><label><span>临时敏感关键词</span><input value={quickKeywords} onChange={event => setQuickKeywords(event.target.value)} placeholder="逗号分隔，例如：天枢计划，内部编号"/></label><label><span>本次保留词</span><input value={preserveTerms} onChange={event => setPreserveTerms(event.target.value)} placeholder="例如：北京，公开机构名"/></label></div>
       <div className="instruction-row"><textarea value={config.instruction || ''} onChange={event => persistConfig({ ...config, instruction: event.target.value || null })} placeholder="自然语言需求，例如：保留北京地名，但隐藏上海相关地点；姓名使用伪名。"/><button className="btn ghost" onClick={parseInstruction} disabled={parsing || !config.instruction?.trim()}><WandSparkles size={16}/>{parsing ? '解析中' : '解析预览'}</button>{instructionPlan && <code title={JSON.stringify(instructionPlan, null, 2)}>已解析：{String(instructionPlan.parser || '规则解析器')}</code>}</div>
@@ -263,10 +284,10 @@ export default function Workbench() {
         <div className="confidence"><span>综合置信度</span><b>{Math.round((selected.score || 0) * 100)}%</b><div><i style={{ width: `${(selected.score || 0) * 100}%` }}/></div></div>
         <dl><div><dt>字符区间</dt><dd>{selected.start} — {selected.end}</dd></div><div><dt>识别来源</dt><dd>{selected.sources.map(source => <span className="source-tag" key={source}>{source}</span>)}</dd></div></dl>
         <label className="type-select"><span>调整实体类型</span><select value={selected.entity_type} onChange={event => changeType(event.target.value as EntityType)}>{allEntityTypes.map(type => <option value={type} key={type}>{labels[type]}</option>)}</select></label>
-        <label className="type-select"><span>该实体替换方式</span><select value={selected.strategy} onChange={event => changeSpanStrategy(event.target.value as Strategy)}>{Object.entries(strategyLabels).map(([key, value]) => <option value={key} key={key}>{value}</option>)}</select></label>
+        <label className="type-select"><span>该实体单独覆盖策略</span><select value={selected.strategy} onChange={event => changeSpanStrategy(event.target.value as Strategy)}>{Object.entries(strategyLabels).map(([key, value]) => <option value={key} key={key}>{value}</option>)}</select></label>
         <div className="custom-replacement"><span>自定义替换词</span><div><input value={replacementDraft} maxLength={500} onChange={event => setReplacementDraft(event.target.value)} placeholder="留空则按所选策略自动生成"/><button onClick={() => setCustomReplacement()}>应用</button></div>{typeof selected.metadata.custom_replacement === 'string' && <button className="replacement-reset" onClick={() => setCustomReplacement('')}>恢复策略生成</button>}</div>
         <div className="knowledge-card"><div><Network size={16}/><strong>知识图谱分级</strong><span>{knowledgeLoading ? '查询中' : knowledge?.provider || '本地'}</span></div>{knowledge ? <><ol>{knowledge.levels.slice(0, 3).map((level, index) => <li className={config.privacy_strength === index + 1 ? 'active' : ''} key={`${level}-${index}`}><span>{['低', '中', '高'][index]}</span><strong>{level}</strong>{config.privacy_strength === index + 1 && <small>当前采用</small>}</li>)}</ol><p>{knowledge.detail}</p></> : <p>{knowledgeLoading ? '正在读取实体层级…' : '当前实体使用类型通用层级。'}</p>}</div>
-        <button className="boundary-button" onClick={adjustBoundary}>调整字符边界</button><div className="review-buttons"><button className="btn reject" onClick={() => updateStatus('rejected')}><X size={16}/>拒绝并保留</button><button className="btn accept" onClick={() => updateStatus('accepted')}><Check size={16}/>接受并脱敏</button></div>
+        <button className="boundary-button" onClick={adjustBoundary}>调整字符边界</button><ReviewDecision compact onReject={() => updateStatus('rejected')} onAccept={() => updateStatus('accepted')}/>
       </div>}</aside>
     </div>
 

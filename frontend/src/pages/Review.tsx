@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AlertTriangle, Check, ChevronLeft, ChevronRight, Filter, Inbox, Keyboard, LoaderCircle, Search, X } from 'lucide-react'
+import { AlertTriangle, Check, ChevronLeft, ChevronRight, Inbox, Keyboard, Search } from 'lucide-react'
 import { api } from '../api'
+import ReviewDecision from '../components/ReviewDecision'
 
 type ReviewItem={id:string;task:string;text:string;entity:string;type:string;score:number;reason:string;source:string[];status:'pending'|'accepted'|'rejected'}
 const demo: ReviewItem[] = [
@@ -18,7 +19,7 @@ export default function Review(){
   const [error,setError]=useState('')
   const [actionError,setActionError]=useState('')
   const [isDemo,setIsDemo]=useState(false)
-  const pending=useMemo(()=>items.filter(x=>x.status==='pending'&&(!query||x.entity.includes(query)||x.text.includes(query)||x.task.includes(query))&&(filter==='全部待复核'||(filter==='模型冲突'&&x.reason.includes('分歧'))||(filter==='低置信度'&&x.score<.8)||(filter==='边界异常'&&x.reason.includes('边界')))),[items,query,filter])
+  const pending=useMemo(()=>items.filter(x=>x.status==='pending'&&(!query||x.entity.includes(query)||x.text.includes(query)||x.task.includes(query))&&(filter==='全部待复核'||(filter==='模型冲突'&&(x.reason.includes('冲突')||x.reason.includes('分歧')))||(filter==='低置信度'&&(x.reason.includes('低置信度')||x.score<=.78))||(filter==='边界异常'&&x.reason.includes('边界')))),[items,query,filter])
   const current=pending[Math.min(index,Math.max(0,pending.length-1))]
   async function act(status:'accepted'|'rejected'){
     if(!current||isDemo||actionBusy)return
@@ -35,13 +36,13 @@ export default function Review(){
   return <div className="page"><header className="page-header"><div><div className="eyebrow">HUMAN IN THE LOOP</div><h1>人工复核队列</h1><p>集中处理低置信度、模型冲突和边界异常，后端确认成功后才更新队列。</p></div><div className="review-counter"><strong>{pending.length}</strong><span>项等待处理</span></div></header>
     {error&&<div className="notice demo-notice"><AlertTriangle/><span><strong>只读演示数据 · 操作已禁用</strong> 后端队列暂不可用：{error}</span></div>}
     {actionError&&<div className="error-banner"><AlertTriangle size={17}/>{actionError}</div>}
-    <div className="review-toolbar"><label className="search-box"><Search size={16}/><span className="sr-only">搜索复核任务</span><input value={query} onChange={event=>setQuery(event.target.value)} placeholder="搜索任务、实体或文本"/></label><div className="filter-btn"><Filter size={15}/><span>{filter}</span></div><div className="queue-tabs" role="group" aria-label="复核原因筛选">{['全部待复核','模型冲突','低置信度','边界异常'].map(value=><button className={filter===value?'active':''} aria-pressed={filter===value} onClick={()=>setFilter(value)} key={value}>{value}</button>)}</div></div>
+    <div className="review-toolbar"><label className="search-box"><Search size={16}/><span className="sr-only">搜索复核任务</span><input value={query} onChange={event=>setQuery(event.target.value)} placeholder="搜索任务、实体或文本"/></label><div className="queue-tabs" role="group" aria-label="复核原因筛选">{['全部待复核','模型冲突','低置信度','边界异常'].map(value=><button className={filter===value?'active':''} aria-pressed={filter===value} onClick={()=>setFilter(value)} key={value}>{value}</button>)}</div></div>
     <div className="review-layout"><section className="panel queue-list"><div className="queue-head"><span>待复核项</span><small>按风险优先级排序</small></div>{pending.length ? pending.map((item,itemIndex)=><button key={item.id} className={`queue-item ${current?.id===item.id?'active':''}`} onClick={()=>setIndex(itemIndex)}><div className="queue-item-top"><span className="queue-type">{item.type}</span><b>{Math.round(item.score*100)}%</b></div><strong>{item.entity}</strong><p>{item.text}</p><small><AlertTriangle size={12}/>{item.reason}</small></button>) : <div className="queue-empty"><Inbox size={32}/><strong>队列已清空</strong><p>所有疑难候选均已复核。</p></div>}</section>
       <section className="panel review-focus" aria-busy={loading||actionBusy}>{current ? <><div className="focus-head"><div><span>复核任务 · {current.task}</span><h2>判断该实体是否应当脱敏</h2></div><div className="pager"><button aria-label="上一个复核项" disabled={index===0||actionBusy} onClick={()=>setIndex(Math.max(0,index-1))}><ChevronLeft/></button><span>{index+1} / {pending.length}</span><button aria-label="下一个复核项" disabled={index===pending.length-1||actionBusy} onClick={()=>setIndex(Math.min(pending.length-1,index+1))}><ChevronRight/></button></div></div>
         <div className="context-card"><small>原始语境</small><p>{current.text.split(current.entity)[0]}<mark>{current.entity}<span>{current.type}</span></mark>{current.text.split(current.entity).slice(1).join(current.entity)}</p></div>
         <div className="review-evidence"><div><span>候选类型</span><strong>{current.type}</strong></div><div><span>置信度</span><strong>{Math.round(current.score*100)}%</strong></div><div><span>识别来源</span><strong>{current.source.join(' + ')}</strong></div><div><span>进入队列原因</span><strong>{current.reason}</strong></div></div>
         <div className="decision-note"><AlertTriangle size={17}/><div><strong>{isDemo?'只读预览':'系统建议：人工确认'}</strong><p>{isDemo?'当前为演示条目，恢复后端连接后才能提交。':'接受后将按当前策略脱敏，拒绝后保留原文；失败时不会提前改变队列。'}</p></div></div>
-        <div className="decision-actions"><button className="btn reject big" disabled={isDemo||actionBusy} onClick={()=>void act('rejected')}>{actionBusy?<LoaderCircle className="spin"/>:<X/>}拒绝并保留 <kbd>R</kbd></button><button className="btn accept big" disabled={isDemo||actionBusy} onClick={()=>void act('accepted')}>{actionBusy?<LoaderCircle className="spin"/>:<Check/>}接受并脱敏 <kbd>A</kbd></button></div>
+        <ReviewDecision busy={isDemo||actionBusy} showShortcuts onReject={()=>act('rejected')} onAccept={()=>act('accepted')}/>
         <div className="shortcut-hint"><Keyboard size={14}/>支持键盘快捷复核；仅在后端写入审计日志成功后更新界面。</div>
       </> : <div className="queue-empty large"><Check size={42}/><strong>{loading?'正在读取队列':query||filter!=='全部待复核'?'没有匹配项':'复核完成'}</strong><p>{loading?'正在同步后端复核任务…':query||filter!=='全部待复核'?'请尝试调整搜索词或筛选条件。':'当前没有等待处理的候选实体。'}</p></div>}</section></div>
   </div>

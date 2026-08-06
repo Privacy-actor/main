@@ -135,7 +135,7 @@ class DetectResponse(BaseModel):
 class RedactRequest(BaseModel):
     text: str = Field(min_length=1, max_length=100_000)
     spans: list[Span] = Field(max_length=5_000)
-    strategy: Strategy = Strategy.MASK
+    strategy: Strategy | None = Strategy.MASK
     privacy_strength: int = Field(default=2, ge=1, le=3)
     risk_level: Literal["standard", "strict"] = "strict"
 
@@ -153,6 +153,7 @@ class ReviewRequest(BaseModel):
     before: str | None = Field(default=None, max_length=10_000)
     after: str | None = Field(default=None, max_length=10_000)
     span: Span | None = None
+    strategy: Strategy | None = None
 
 
 class FinalTextUpdate(BaseModel):
