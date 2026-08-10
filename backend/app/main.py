@@ -478,8 +478,8 @@ async def create_batch_job(
 
 
 @app.get("/api/v1/jobs")
-async def list_jobs():
-    jobs = await asyncio.to_thread(storage.list_jobs)
+async def list_jobs(project_id: str | None = None):
+    jobs = await asyncio.to_thread(storage.list_jobs, project_id=project_id)
     return {"items": await asyncio.gather(*(asyncio.to_thread(_public_job, job) for job in jobs))}
 
 

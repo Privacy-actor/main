@@ -25,10 +25,7 @@ export default function HistoryDetail(){
 
   return <div className="page history-detail-page">
     <Link className="back-link" to="/history"><ArrowLeft/>返回历史中心</Link>
-    <header className="page-header">
-      <div><div className="eyebrow">TASK DETAIL</div><h1>历史任务详情</h1><p>{task.id}</p></div>
-      <div className="detail-meta"><CalendarClock/><span><small>创建时间</small><strong>{new Date(task.created_at).toLocaleString()}</strong></span><span className={`risk-level ${task.risk}`}>{task.risk==='high'?'高风险':task.risk==='medium'?'中风险':'低风险'}</span></div>
-    </header>
+    <div className="detail-meta"><CalendarClock/><span><small>创建时间</small><strong>{new Date(task.created_at).toLocaleString()}</strong></span><span className={`risk-level ${task.risk}`}>{task.risk==='high'?'高风险':task.risk==='medium'?'中风险':'低风险'}</span></div>
 
     <div className="detail-kpis">
       <div><span>实体总数</span><strong>{task.summary.total}</strong></div>

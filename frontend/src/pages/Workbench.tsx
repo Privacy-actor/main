@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Clipboard, Download, FileJson, FileUp, LoaderCircle, Network, Play, Plus, RotateCcw, ShieldAlert, Sparkles, WandSparkles } from 'lucide-react'
+import { ArrowLeft, Download, FileJson, FileUp, LoaderCircle, Network, Play, Plus, RotateCcw, ShieldAlert, Sparkles, WandSparkles } from 'lucide-react'
 import { api } from '../api'
 import { loadProcessingConfig, loadProjectId, saveProcessingConfig, saveProjectId } from '../configStore'
 import AnnotatedText from '../components/AnnotatedText'
@@ -119,7 +119,11 @@ export default function Workbench() {
   function applySnapshot(snapshot: DetectResult, selectedId?: string) {
     const nextFinal = snapshot.final_text || snapshot.redacted_text
     setResult(snapshot); setSpans(snapshot.spans); setRedacted(snapshot.redacted_text); setFinalText(nextFinal); setSavedFinalText(nextFinal)
-    setFinalRevision(snapshot.final_revision || 0); setSelected(snapshot.spans.find(span => span.id === selectedId) || snapshot.spans[0] || null)
+    setFinalRevision(snapshot.final_revision || 0)
+    let nextSelected: Span | null = null
+    if (selectedId) nextSelected = snapshot.spans.find(span => span.id === selectedId) || null
+    if (!nextSelected) nextSelected = snapshot.spans.find(span => span.status === 'pending') || snapshot.spans[0] || null
+    setSelected(nextSelected)
     setEditorGeneration(value => value + 1)
   }
 
@@ -163,7 +167,8 @@ export default function Workbench() {
 
   async function updateStatus(status: Span['status']) {
     if (!selected || !result) return
-    await reviewAndSync({ task_id: result.task_id, span_id: selected.id, operation: status === 'rejected' ? 'reject' : 'accept', before: selected.status, after: status }, selected.id)
+    const justReviewedId = selected.id
+    await reviewAndSync({ task_id: result.task_id, span_id: justReviewedId, operation: status === 'rejected' ? 'reject' : 'accept', before: selected.status, after: status })
   }
 
   async function changeType(type: EntityType) {
@@ -267,30 +272,82 @@ export default function Workbench() {
   }
 
   return <div className="page workbench-page">
-    <header className="page-header"><div><div className="eyebrow">PRIVACY OPERATIONS</div><h1>隐私处理工作台</h1><p>面向单个任务的快速检测与复核；跨任务疑难项请前往人工复核队列集中处理。</p></div><div className="header-actions"><button className="btn ghost" onClick={() => { if (confirmDiscard('确定重置当前工作台？')) clearAnalysis() }}><RotateCcw size={16}/>重置结果</button><button className="btn primary" onClick={run} disabled={loading || !text.trim()}>{loading ? <LoaderCircle className="spin" size={17}/> : <Play size={17}/>}开始检测</button></div></header>
+    {searchParams.get('task') && <a className="back-link" href="/batch"><ArrowLeft size={15}/>返回批处理复核列表</a>}
     {error && <div className="error-banner"><ShieldAlert size={17}/>{error}</div>}{notice && <div className="notice-banner">{notice}</div>}
 
-    <section className="panel compact-config"><div className="compact-config-grid strategy-config-grid"><label><span>当前项目</span><select value={projectId} onChange={event => selectProject(event.target.value)}><option value="">临时配置</option>{projects.map(project => <option key={project.id} value={project.id}>{project.name}</option>)}</select></label><StrategyModeSelector value={config.use_policies ? 'by_type' : 'uniform'} onChange={mode => void changeStrategyMode(mode === 'by_type')}/>{!config.use_policies?<label><span>统一脱敏策略</span><select value={config.strategy} onChange={event => changeStrategy(event.target.value as Strategy)}>{Object.entries(strategyLabels).map(([key, value]) => <option key={key} value={key}>{value}</option>)}</select></label>:<div className="policy-mode-link"><strong>按实体类型策略已启用</strong><span>使用“历史与策略”中保存的各类型默认值。</span></div>}<label><span>保护强度</span><select value={config.privacy_strength} onChange={event => changeStrength(Number(event.target.value))}><option value="1">低 · 保留结构</option><option value="2">中 · 平衡</option><option value="3">高 · 强保护</option></select></label><label className="toggle-inline"><input type="checkbox" checked={config.use_llm} onChange={event => persistConfig({ ...config, use_llm: event.target.checked })}/><span>启用 14B 核验</span></label><div className="protection-status"><ShieldAlert size={14}/><span><small>当前保护级别</small><strong>严格</strong></span></div></div>
-      <div className="entity-toggle-row">{allEntityTypes.map(type => <label className={config.enabled_entity_types.includes(type) ? 'active' : ''} key={type}><input type="checkbox" checked={config.enabled_entity_types.includes(type)} onChange={() => { const exists = config.enabled_entity_types.includes(type); const next = exists ? config.enabled_entity_types.filter(item => item !== type) : [...config.enabled_entity_types, type]; if (next.length) persistConfig({ ...config, enabled_entity_types: next }) }}/><span>{labels[type]}</span></label>)}</div>
-      <div className="quick-rules"><label><span>临时敏感关键词</span><input value={quickKeywords} onChange={event => setQuickKeywords(event.target.value)} placeholder="逗号分隔，例如：天枢计划，内部编号"/></label><label><span>本次保留词</span><input value={preserveTerms} onChange={event => setPreserveTerms(event.target.value)} placeholder="例如：北京，公开机构名"/></label></div>
-      <div className="instruction-row"><textarea value={config.instruction || ''} onChange={event => persistConfig({ ...config, instruction: event.target.value || null })} placeholder="自然语言需求，例如：保留北京地名，但隐藏上海相关地点；姓名使用伪名。"/><button className="btn ghost" onClick={parseInstruction} disabled={parsing || !config.instruction?.trim()}><WandSparkles size={16}/>{parsing ? '解析中' : '解析预览'}</button>{instructionPlan && <code title={JSON.stringify(instructionPlan, null, 2)}>已解析：{String(instructionPlan.parser || '规则解析器')}</code>}</div>
-    </section>
+    <div className="workbench-layout">
+      {/* ===== 右侧配置卡片 ===== */}
+      <aside className="config-sidebar">
+        <div className="config-card">
+          <div className="config-card-title"><WandSparkles size={16}/>处理配置</div>
+          <div className="config-body">
+            <label><span>当前项目</span><select value={projectId} onChange={event => selectProject(event.target.value)}><option value="">临时配置</option>{projects.map(project => <option key={project.id} value={project.id}>{project.name}</option>)}</select></label>
+            <StrategyModeSelector value={config.use_policies ? 'by_type' : 'uniform'} onChange={mode => void changeStrategyMode(mode === 'by_type')}/>
+            {!config.use_policies ? <label><span>统一脱敏策略</span><select value={config.strategy} onChange={event => changeStrategy(event.target.value as Strategy)}>{Object.entries(strategyLabels).map(([key, value]) => <option key={key} value={key}>{value}</option>)}</select></label> : <div className="policy-mode-link"><strong>按实体类型策略已启用</strong><span>使用"历史与策略"中保存的各类型默认值。</span></div>}
+            <label><span>保护强度</span><select value={config.privacy_strength} onChange={event => changeStrength(Number(event.target.value))}><option value="1">低 · 保留结构</option><option value="2">中 · 平衡</option><option value="3">高 · 强保护</option></select></label>
+            <label className="toggle-inline"><input type="checkbox" checked={config.use_llm} onChange={event => persistConfig({ ...config, use_llm: event.target.checked })}/><span>启用 14B 核验</span></label>
+            <div className="protection-status"><ShieldAlert size={14}/><span><small>当前保护级别</small><strong>严格</strong></span></div>
+          </div>
+        </div>
+        <div className="config-card">
+          <div className="config-card-title"><Network size={16}/>实体类型</div>
+          <div className="config-body">
+            <div className="entity-check-list">{allEntityTypes.map(type => <label className={config.enabled_entity_types.includes(type) ? 'active' : ''} key={type}><input type="checkbox" checked={config.enabled_entity_types.includes(type)} onChange={() => { const exists = config.enabled_entity_types.includes(type); const next = exists ? config.enabled_entity_types.filter(item => item !== type) : [...config.enabled_entity_types, type]; if (next.length) persistConfig({ ...config, enabled_entity_types: next }) }}/><span>{labels[type]}</span></label>)}</div>
+          </div>
+        </div>
+        <div className="config-card">
+          <div className="config-card-title"><FileUp size={16}/>自定义规则</div>
+          <div className="config-body">
+            <label><span>临时敏感关键词</span><input value={quickKeywords} onChange={event => setQuickKeywords(event.target.value)} placeholder="逗号分隔，例如：天枢计划，内部编号"/></label>
+            <label><span>本次保留词</span><input value={preserveTerms} onChange={event => setPreserveTerms(event.target.value)} placeholder="例如：北京，公开机构名"/></label>
+          </div>
+        </div>
+        <div className="config-card">
+          <div className="config-card-title"><Sparkles size={16}/>自然语言需求</div>
+          <div className="config-body">
+            <textarea value={config.instruction || ''} onChange={event => persistConfig({ ...config, instruction: event.target.value || null })} placeholder="例如：保留北京地名，但隐藏上海相关地点；姓名使用伪名。"/>
+            <button className="btn ghost" onClick={parseInstruction} disabled={parsing || !config.instruction?.trim()}><WandSparkles size={16}/>{parsing ? '解析中' : '解析预览'}</button>
+            {instructionPlan && <code title={JSON.stringify(instructionPlan, null, 2)}>已解析：{String(instructionPlan.parser || '规则解析器')}</code>}
+          </div>
+        </div>
+      </aside>
 
-    <div className="workbench-grid">
-      <section className="panel input-panel"><div className="panel-title"><div><span className="step-number">01</span><strong>输入与文件导入</strong></div><span className="char-count">{text.length.toLocaleString()} / 100,000</span></div><div className="sample-row"><span>内置样例</span>{Object.keys(samples).map(name => <button key={name} onClick={() => replaceSource(samples[name as keyof typeof samples])}>{name}</button>)}</div><textarea value={text} maxLength={100000} onChange={event => replaceSource(event.target.value, result ? '原文已修改，旧 Span 已失效，请重新检测。' : '')} placeholder="粘贴需要检测的中文、英文或混合文本…"/><div className="input-footer"><small>支持 TXT / MD / CSV / JSON / DOCX / PDF 文本提取</small><div><input ref={fileInput} type="file" accept=".txt,.md,.csv,.json,.docx,.pdf" hidden onChange={event => importFile(event.target.files?.[0])}/><button className="btn ghost" onClick={() => fileInput.current?.click()}><FileUp size={16}/>导入文件</button></div></div></section>
-      <section className="panel analysis-panel"><div className="panel-title"><div><span className="step-number">02</span><strong>实体识别</strong></div>{result && <div className="analysis-tools"><button onClick={addEntity}><Plus size={12}/>新增实体</button><span className="risk-pill"><ShieldAlert size={14}/>风险 {result.summary.risk_score}</span></div>}</div>{!result ? <div className="empty-state"><div className="empty-orbit"><Sparkles size={25}/></div><strong>等待开始检测</strong><p>运行后将在原文中高亮隐私实体，点击任意实体可查看识别依据。</p></div> : <><div className="legend">{Object.entries(counts).map(([type, count]) => <span key={type}><i className={`legend-dot entity-${type}`}/>{labels[type as EntityType]} {count}</span>)}</div><AnnotatedText text={text} spans={spans} selected={selected?.id} onSelect={setSelected}/></> }</section>
-      <aside className="panel inspector-panel"><div className="panel-title"><div><span className="step-number">03</span><strong>实体复核</strong></div></div>{!selected ? <div className="inspector-empty">选择高亮实体查看详情</div> : <div className="entity-detail">
-        <div className="detail-hero"><span className={`type-icon entity-${selected.entity_type}`}>{labels[selected.entity_type][0]}</span><div><small>{labels[selected.entity_type]}</small><strong>{selected.text}</strong></div><span className={`review-status ${selected.status}`}>{selected.status === 'pending' ? '待复核' : selected.status === 'rejected' ? '已拒绝' : '已接受'}</span></div>
-        <div className="confidence"><span>综合置信度</span><b>{Math.round((selected.score || 0) * 100)}%</b><div><i style={{ width: `${(selected.score || 0) * 100}%` }}/></div></div>
-        <dl><div><dt>字符区间</dt><dd>{selected.start} — {selected.end}</dd></div><div><dt>识别来源</dt><dd>{selected.sources.map(source => <span className="source-tag" key={source}>{source}</span>)}</dd></div></dl>
-        <label className="type-select"><span>调整实体类型</span><select value={selected.entity_type} onChange={event => changeType(event.target.value as EntityType)}>{allEntityTypes.map(type => <option value={type} key={type}>{labels[type]}</option>)}</select></label>
-        <label className="type-select"><span>该实体单独覆盖策略</span><select value={selected.strategy} onChange={event => changeSpanStrategy(event.target.value as Strategy)}>{Object.entries(strategyLabels).map(([key, value]) => <option value={key} key={key}>{value}</option>)}</select></label>
-        <div className="custom-replacement"><span>自定义替换词</span><div><input value={replacementDraft} maxLength={500} onChange={event => setReplacementDraft(event.target.value)} placeholder="留空则按所选策略自动生成"/><button onClick={() => setCustomReplacement()}>应用</button></div>{typeof selected.metadata.custom_replacement === 'string' && <button className="replacement-reset" onClick={() => setCustomReplacement('')}>恢复策略生成</button>}</div>
-        <div className="knowledge-card"><div><Network size={16}/><strong>知识图谱分级</strong><span>{knowledgeLoading ? '查询中' : knowledge?.provider || '本地'}</span></div>{knowledge ? <><ol>{knowledge.levels.slice(0, 3).map((level, index) => <li className={config.privacy_strength === index + 1 ? 'active' : ''} key={`${level}-${index}`}><span>{['低', '中', '高'][index]}</span><strong>{level}</strong>{config.privacy_strength === index + 1 && <small>当前采用</small>}</li>)}</ol><p>{knowledge.detail}</p></> : <p>{knowledgeLoading ? '正在读取实体层级…' : '当前实体使用类型通用层级。'}</p>}</div>
-        <button className="boundary-button" onClick={adjustBoundary}>调整字符边界</button><ReviewDecision compact onReject={() => updateStatus('rejected')} onAccept={() => updateStatus('accepted')}/>
-      </div>}</aside>
+      {/* ===== 主内容区：从上往下依次排列 ===== */}
+      <div className="workbench-main">
+        {/* 输入与文件导入 */}
+        <section className="panel input-panel">
+          <div className="panel-title"><div><span className="step-number">01</span><strong>输入与文件导入</strong></div><span className="char-count">{text.length.toLocaleString()} / 100,000</span></div>
+          <div className="sample-row"><span>内置样例</span>{Object.keys(samples).map(name => <button key={name} onClick={() => replaceSource(samples[name as keyof typeof samples])}>{name}</button>)}</div>
+          <textarea value={text} maxLength={100000} onChange={event => replaceSource(event.target.value, result ? '原文已修改，旧 Span 已失效，请重新检测。' : '')} placeholder="粘贴需要检测的中文、英文或混合文本…"/>
+          <div className="input-footer"><small>支持 TXT / MD / CSV / JSON / DOCX / PDF 文本提取</small><div className="input-actions"><input ref={fileInput} type="file" accept=".txt,.md,.csv,.json,.docx,.pdf" hidden onChange={event => importFile(event.target.files?.[0])}/><button className="btn ghost" onClick={() => fileInput.current?.click()}><FileUp size={16}/>导入文件</button><button className="btn ghost" onClick={() => { if (confirmDiscard('确定重置当前工作台？')) clearAnalysis() }}><RotateCcw size={16}/>重置结果</button><button className="btn primary" onClick={run} disabled={loading || !text.trim()}>{loading ? <LoaderCircle className="spin" size={17}/> : <Play size={17}/>}开始检测</button></div></div>
+        </section>
+
+        {/* 实体识别 */}
+        <section className="panel analysis-panel">
+          <div className="panel-title"><div><span className="step-number">02</span><strong>实体识别</strong></div>{result && <div className="analysis-tools"><button onClick={addEntity}><Plus size={12}/>新增实体</button><span className="risk-pill"><ShieldAlert size={14}/>风险 {result.summary.risk_score}</span></div>}</div>
+          {!result ? <div className="empty-state"><div className="empty-orbit"><Sparkles size={25}/></div><strong>等待开始检测</strong><p>运行后将在原文中高亮隐私实体，点击任意实体可查看识别依据。</p></div> : <><div className="legend">{Object.entries(counts).map(([type, count]) => <span key={type}><i className={`legend-dot entity-${type}`}/>{labels[type as EntityType]} {count}</span>)}</div><AnnotatedText text={text} spans={spans} selected={selected?.id} onSelect={setSelected}/></>}
+        </section>
+
+        {/* 实体复核 */}
+        <section className="panel inspector-panel">
+          <div className="panel-title"><div><span className="step-number">03</span><strong>实体复核</strong></div></div>
+          {!selected ? <div className="inspector-empty">选择高亮实体查看详情</div> : <div className="entity-detail">
+            <div className="detail-hero"><span className={`type-icon entity-${selected.entity_type}`}>{labels[selected.entity_type][0]}</span><div><small>{labels[selected.entity_type]}</small><strong>{selected.text}</strong></div><span className={`review-status ${selected.status}`}>{selected.status === 'pending' ? '待复核' : selected.status === 'rejected' ? '已拒绝' : '已接受'}</span></div>
+            <div className="detail-meta-row"><div className="confidence"><span>综合置信度</span><b>{Math.round((selected.score || 0) * 100)}%</b><div><i style={{ width: `${(selected.score || 0) * 100}%` }}/></div></div><dl><div><dt>字符区间</dt><dd>{selected.start} — {selected.end}</dd></div><div><dt>识别来源</dt><dd>{selected.sources.map(source => <span className="source-tag" key={source}>{source}</span>)}</dd></div></dl></div>
+            <div className="detail-selects"><label className="type-select"><span>调整实体类型</span><select value={selected.entity_type} onChange={event => changeType(event.target.value as EntityType)}>{allEntityTypes.map(type => <option value={type} key={type}>{labels[type]}</option>)}</select></label><label className="type-select"><span>该实体单独覆盖策略</span><select value={selected.strategy} onChange={event => changeSpanStrategy(event.target.value as Strategy)}>{Object.entries(strategyLabels).map(([key, value]) => <option value={key} key={key}>{value}</option>)}</select></label></div>
+            <div className="custom-replacement"><span>自定义替换词</span><div><input value={replacementDraft} maxLength={500} onChange={event => setReplacementDraft(event.target.value)} placeholder="留空则按所选策略自动生成"/><button onClick={() => setCustomReplacement()}>应用</button></div>{typeof selected.metadata.custom_replacement === 'string' && <button className="replacement-reset" onClick={() => setCustomReplacement('')}>恢复策略生成</button>}</div>
+            <div className="knowledge-card"><div><Network size={16}/><strong>知识图谱分级</strong><span>{knowledgeLoading ? '查询中' : knowledge?.provider || '本地'}</span></div>{knowledge ? <><ol>{knowledge.levels.slice(0, 3).map((level, index) => <li className={config.privacy_strength === index + 1 ? 'active' : ''} key={`${level}-${index}`}><span>{['低', '中', '高'][index]}</span><strong>{level}</strong>{config.privacy_strength === index + 1 && <small>当前采用</small>}</li>)}</ol><p>{knowledge.detail}</p></> : <p>{knowledgeLoading ? '正在读取实体层级…' : '当前实体使用类型通用层级。'}</p>}</div>
+            <button className="boundary-button" onClick={adjustBoundary}>调整字符边界</button><ReviewDecision compact onReject={() => updateStatus('rejected')} onAccept={() => updateStatus('accepted')}/>
+          </div>}
+        </section>
+
+        {/* 处理轨迹 + 最终稿编辑器 + 导出 */}
+        {result && <>
+          <section className="panel trace-panel"><div className="section-heading"><div><span>PROCESS TRACE</span><h2>完整处理轨迹</h2></div><small>任务 {result.task_id}</small></div><PipelineTrace trace={result.trace}/></section>
+          <FinalTextEditor key={`${result.task_id}-${editorGeneration}`} value={finalText} automaticText={redacted} savedText={savedFinalText} revision={finalRevision} saving={savingFinal} saveState={saveState} onChange={value => { setFinalText(value); setSaveState({ kind: 'idle', message: '' }) }} onSave={saveFinalText}/>
+          <div className="export-bar"><div><FileJson size={18}/><span><strong>可审计最终结果已生成</strong><small>JSON 同时保留自动结果、人工最终稿、Span、模型信息、项目配置与版本号</small></span></div><div className="export-actions"><span className={hasUnsavedFinalText ? 'export-warning' : 'export-ready'}>{hasUnsavedFinalText ? '最终稿尚未保存' : `服务器版本 v${finalRevision}`}</span><button className="btn ghost" onClick={exportAuditJson}><Download size={16}/>导出审计 JSON</button></div></div>
+        </>}
+      </div>
     </div>
-
-    {result && <><section className="panel trace-panel"><div className="section-heading"><div><span>PROCESS TRACE</span><h2>完整处理轨迹</h2></div><small>任务 {result.task_id}</small></div><PipelineTrace trace={result.trace}/></section><section className="comparison"><div className="comparison-card original"><div className="comparison-head"><span>原始文本</span><button onClick={() => navigator.clipboard.writeText(text)}><Clipboard size={15}/>复制</button></div><p>{text}</p></div><div className="comparison-arrow">→</div><div className="comparison-card safe"><div className="comparison-head"><span><ShieldAlert size={15}/>自动脱敏结果</span><button onClick={() => navigator.clipboard.writeText(redacted)}><Clipboard size={15}/>复制</button></div><p>{redacted}</p></div></section><FinalTextEditor key={`${result.task_id}-${editorGeneration}`} value={finalText} automaticText={redacted} savedText={savedFinalText} revision={finalRevision} saving={savingFinal} saveState={saveState} onChange={value => { setFinalText(value); setSaveState({ kind: 'idle', message: '' }) }} onSave={saveFinalText}/><div className="export-bar"><div><FileJson size={18}/><span><strong>可审计最终结果已生成</strong><small>JSON 同时保留自动结果、人工最终稿、Span、模型信息、项目配置与版本号</small></span></div><div className="export-actions"><span className={hasUnsavedFinalText ? 'export-warning' : 'export-ready'}>{hasUnsavedFinalText ? '最终稿尚未保存' : `服务器版本 v${finalRevision}`}</span><button className="btn ghost" onClick={exportAuditJson}><Download size={16}/>导出审计 JSON</button></div></div></>}
   </div>
 }

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Braces, Check, Cloud, FolderCog, Network, Plus, Save, Search, Server, SlidersHorizontal, Sparkles, Trash2, WandSparkles } from 'lucide-react'
+import { ArrowLeft, Check, Cloud, ExternalLink, FolderCog, Plus, Save, Search, Server, Sparkles, Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { loadProcessingConfig, loadProjectId, saveProcessingConfig, saveProjectId } from '../configStore'
 import { allEntityTypes, defaultProcessingConfig, type CustomRule, type EntityType, type KnowledgeLookup, type ProcessingConfig, type Project } from '../types'
@@ -7,6 +8,7 @@ import { allEntityTypes, defaultProcessingConfig, type CustomRule, type EntityTy
 const labels: Record<EntityType, string> = { PERSON: '姓名', ORG: '机构', LOCATION: '地点', ADDRESS: '详细地址', PHONE: '电话', EMAIL: '邮箱', ID_CARD: '身份证', BANK_CARD: '银行卡', PASSPORT: '护照', CUSTOM: '自定义敏感项' }
 
 export default function Projects() {
+  const navigate = useNavigate()
   const [projects, setProjects] = useState<Project[]>([])
   const [projectId, setProjectId] = useState(loadProjectId())
   const [name, setName] = useState('默认隐私处理项目')
@@ -23,6 +25,7 @@ export default function Projects() {
   const [knowledgeBusy, setKnowledgeBusy] = useState(false)
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
+  const [editing, setEditing] = useState(false)
 
   async function refresh(preferred?: string) {
     const data = await api.projects()
@@ -37,11 +40,16 @@ export default function Projects() {
     }
   }
 
-  useEffect(() => { refresh().catch(error => setMessage(error.message)); api.knowledgeStatus().then(setKnowledgeStatus).catch(() => undefined) }, [])
+  async function loadProjects() {
+    const data = await api.projects()
+    setProjects(data.items)
+  }
+
+  useEffect(() => { loadProjects().catch(error => setMessage(error.message)); api.knowledgeStatus().then(setKnowledgeStatus).catch(() => undefined) }, [])
 
   async function selectProject(id: string) {
     const selected = projects.find(item => item.id === id)
-    setProjectId(id); saveProjectId(id)
+    setProjectId(id); saveProjectId(id); setEditing(true)
     if (!selected) { setRules([]); return }
     const nextConfig = { ...defaultProcessingConfig, ...selected.config }
     setName(selected.name); setDescription(selected.description); setConfig(nextConfig); saveProcessingConfig(nextConfig)
@@ -71,7 +79,7 @@ export default function Projects() {
 
   async function removeProject() {
     if (!projectId || !window.confirm('删除项目及其自定义规则？历史处理任务不会被删除。')) return
-    await api.deleteProject(projectId); saveProjectId(''); setProjectId(''); setConfig({ ...defaultProcessingConfig }); saveProcessingConfig({ ...defaultProcessingConfig }); await refresh(''); setMessage('项目已删除。')
+    await api.deleteProject(projectId); saveProjectId(''); setProjectId(''); setEditing(false); setConfig({ ...defaultProcessingConfig }); saveProcessingConfig({ ...defaultProcessingConfig }); await loadProjects(); setMessage('项目已删除。')
   }
 
   async function addRule() {
@@ -125,36 +133,50 @@ export default function Projects() {
   }, [config.strategy, config.privacy_strength, knowledgeResult])
 
   return <div className="page project-page">
-    <header className="page-header"><div><div className="eyebrow">PROJECTS & REQUIREMENTS</div><h1>项目与规则配置</h1><p>用菜单或自然语言定义隐私范围，并将配置复用于单条检测和文件夹批处理。</p></div><div className="header-actions"><button className="btn ghost" onClick={createProject} disabled={busy}><Plus size={16}/>另存为新项目</button><button className="btn primary" onClick={saveProject} disabled={busy}><Save size={16}/>{projectId ? '保存当前项目' : '创建项目'}</button></div></header>
     {message && <div className="notice-banner">{message}</div>}
-    <div className="project-layout">
-      <section className="panel project-editor"><div className="section-heading"><div><span>PROJECT PROFILE</span><h2>项目与运行方式</h2></div><FolderCog/></div>
-        <div className="project-selector"><label><span>当前项目</span><select value={projectId} onChange={event => selectProject(event.target.value)}><option value="">临时配置（未保存项目）</option>{projects.map(project => <option value={project.id} key={project.id}>{project.name}</option>)}</select></label>{projectId && <button className="icon-danger" onClick={removeProject} title="删除项目"><Trash2/></button>}</div>
-        <div className="form-grid"><label><span>项目名称</span><input value={name} onChange={event => setName(event.target.value)} maxLength={80}/></label><label><span>语言范围</span><select value={config.language} onChange={event => updateConfig({ language: event.target.value as ProcessingConfig['language'] })}><option value="auto">自动判断</option><option value="zh">中文</option><option value="en">英文</option><option value="mixed">中英混合</option><option value="multilingual">多语种</option></select></label></div>
-        <label><span>项目说明</span><textarea value={description} onChange={event => setDescription(event.target.value)} rows={2}/></label>
-        <div className="deployment-choice"><button className={config.deployment_mode === 'local' ? 'active' : ''} onClick={() => updateConfig({ deployment_mode: 'local' })}><Server/><span><b>本地 / 私有服务器</b><small>原文不离开受控环境</small></span></button><button className={config.deployment_mode === 'cloud' ? 'active' : ''} onClick={() => updateConfig({ deployment_mode: 'cloud' })}><Cloud/><span><b>云端兼容接口</b><small>由管理员配置模型服务</small></span></button></div>
-      </section>
 
-      <section className="panel project-editor"><div className="section-heading"><div><span>PRIVACY SCOPE</span><h2>实体范围与脱敏强度</h2></div><SlidersHorizontal/></div>
-        <div className="entity-check-grid">{allEntityTypes.map(type => <label key={type} className={config.enabled_entity_types.includes(type) ? 'checked' : ''}><input type="checkbox" checked={config.enabled_entity_types.includes(type)} onChange={() => { const exists=config.enabled_entity_types.includes(type); const next=exists?config.enabled_entity_types.filter(item=>item!==type):[...config.enabled_entity_types,type]; if(next.length)updateConfig({enabled_entity_types:next}) }}/><i className={`legend-dot entity-${type}`}/><span>{labels[type]}</span></label>)}</div>
-        <div className="strength-control"><div><span>保护强度</span><b>{strengthLabel}</b></div><input type="range" min="1" max="3" value={config.privacy_strength} onChange={event => updateConfig({ privacy_strength: Number(event.target.value) })}/><div className="range-labels"><span>低</span><span>中</span><span>高</span></div></div>
-        <div className="strategy-live-preview"><span>实时效果示例</span><p>{strategyPreview}</p><small>示例会随脱敏策略与保护强度即时变化；正式处理前仍建议用真实代表样本预检。</small></div>
-        <div className="form-grid"><label><span>默认脱敏策略</span><select value={config.strategy} onChange={event => updateConfig({ strategy: event.target.value as ProcessingConfig['strategy'] })}><option value="mask">一致性掩码</option><option value="pseudonymize">语义伪名替换</option><option value="generalize">知识层级泛化</option></select></label><label><span>风险模式</span><select value={config.risk_level} onChange={event => updateConfig({ risk_level: event.target.value as ProcessingConfig['risk_level'] })}><option value="standard">标准</option><option value="strict">严格</option></select></label></div>
+    {!editing ? <section className="panel project-list-panel">
+      <div className="section-heading"><div><span>PROJECTS</span><h2>所有项目</h2></div></div>
+      <div className="project-list">
+        {projects.map(project => <div className={project.id === projectId ? 'project-list-item active' : 'project-list-item'} key={project.id}>
+          <button className="project-list-main" onClick={() => navigate(`/batch?project=${project.id}`)}><FolderCog size={16}/><div><strong>{project.name}</strong><small>{project.description || '暂无说明'} · {new Date(project.updated_at).toLocaleString()}</small></div></button>
+          <button className="btn ghost" onClick={() => selectProject(project.id)}><ExternalLink size={13}/>编辑</button>
+          <button className="icon-danger" onClick={async () => { if (!window.confirm(`删除项目"${project.name}"及其自定义规则？`)) return; await api.deleteProject(project.id); if (projectId === project.id) { saveProjectId(''); setProjectId(''); setConfig({...defaultProcessingConfig}); saveProcessingConfig({...defaultProcessingConfig}); } await refresh(''); }} title="删除项目"><Trash2 size={14}/></button>
+        </div>)}
+        <button className="project-list-item new-project" onClick={async () => { const created = await api.createProject({ name: '新项目', description: '', config: defaultProcessingConfig }); setProjects(prev => [...prev, created]); await selectProject(created.id); }}>
+          <Plus size={16}/><span>新建项目</span>
+        </button>
+      </div>
+    </section> : <>
+      <a className="back-link" onClick={() => { setEditing(false); setProjectId(''); }} style={{ marginBottom: '16px', display: 'inline-flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}><ArrowLeft size={15}/>返回项目列表</a>
+
+    <div className="project-layout">
+      <section className="panel project-editor"><div className="section-heading"><div><span>PROJECT CONFIG</span><h2>项目脱敏设置</h2></div></div>
+        <div className="form-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr 1fr' }}><label><span>项目名称</span><input value={name} onChange={event => setName(event.target.value)} maxLength={80}/></label><label><span>语言范围</span><select value={config.language} onChange={event => updateConfig({ language: event.target.value as ProcessingConfig['language'] })}><option value="auto">自动判断</option><option value="zh">中文</option><option value="en">英文</option><option value="mixed">中英混合</option><option value="multilingual">多语种</option></select></label><label><span>默认脱敏策略</span><select value={config.strategy} onChange={event => updateConfig({ strategy: event.target.value as ProcessingConfig['strategy'] })}><option value="mask">一致性掩码</option><option value="pseudonymize">语义伪名替换</option><option value="generalize">知识层级泛化</option></select></label><label><span>风险模式</span><select value={config.risk_level} onChange={event => updateConfig({ risk_level: event.target.value as ProcessingConfig['risk_level'] })}><option value="standard">标准</option><option value="strict">严格</option></select></label></div>
+        <label style={{ display: 'block', marginTop: '11px' }}><span>项目说明</span><textarea value={description} onChange={event => setDescription(event.target.value)} rows={2}/></label>
+        <div className="deployment-choice"><button className={config.deployment_mode === 'local' ? 'active' : ''} onClick={() => updateConfig({ deployment_mode: 'local' })}><Server/><span><b>本地 / 私有服务器</b><small>原文不离开受控环境</small></span></button><button className={config.deployment_mode === 'cloud' ? 'active' : ''} onClick={() => updateConfig({ deployment_mode: 'cloud' })}><Cloud/><span><b>云端兼容接口</b><small>由管理员配置模型服务</small></span></button></div>
+        <div style={{ marginTop: '14px' }}><span style={{ display: 'block', fontSize: '10px', color: '#7d8899', marginBottom: '6px' }}>实体类型</span><div className="entity-check-grid">{allEntityTypes.map(type => <label key={type} className={config.enabled_entity_types.includes(type) ? 'checked' : ''}><input type="checkbox" checked={config.enabled_entity_types.includes(type)} onChange={() => { const exists=config.enabled_entity_types.includes(type); const next=exists?config.enabled_entity_types.filter(item=>item!==type):[...config.enabled_entity_types,type]; if(next.length)updateConfig({enabled_entity_types:next}) }}/><i className={`legend-dot entity-${type}`}/><span>{labels[type]}</span></label>)}</div></div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '13px', marginTop: '14px' }}>
+          <div className="strength-control" style={{ marginTop: 0 }}><div><span>保护强度</span><b>{strengthLabel}</b></div><input type="range" min="1" max="3" value={config.privacy_strength} onChange={event => updateConfig({ privacy_strength: Number(event.target.value) })}/><div className="range-labels"><span>低</span><span>中</span><span>高</span></div></div>
+          <div className="strategy-live-preview"><span>实时效果示例</span><p>{strategyPreview}</p><small>示例会随脱敏策略与保护强度即时变化；正式处理前仍建议用真实代表样本预检。</small></div>
+        </div>
         <div className="toggle-row"><label><input type="checkbox" checked={config.use_llm} onChange={event => updateConfig({ use_llm: event.target.checked })}/><span>启用 14B 语义核验与补漏</span></label><label><input type="checkbox" checked={config.use_policies} onChange={event => updateConfig({ use_policies: event.target.checked })}/><span>叠加全局实体策略</span></label></div><small className="scope-summary">已启用 {enabledCount} / {allEntityTypes.length} 类实体</small>
       </section>
     </div>
 
-    <section className="panel knowledge-explorer"><div className="section-heading"><div><span>KNOWLEDGE GRAPH</span><h2>知识图谱层级查询</h2></div><Network/></div>
+    <section className="panel knowledge-explorer"><div className="section-heading"><div><span>KNOWLEDGE GRAPH</span><h2>知识图谱层级查询</h2></div></div>
       <div className="knowledge-query"><input value={knowledgeTerm} onChange={event => setKnowledgeTerm(event.target.value)} placeholder="输入机构、地点或人物实体"/><select value={knowledgeType} onChange={event => setKnowledgeType(event.target.value as EntityType)}>{allEntityTypes.map(type => <option value={type} key={type}>{labels[type]}</option>)}</select><button className="btn primary" onClick={lookupKnowledge} disabled={knowledgeBusy || !knowledgeTerm.trim()}><Search size={16}/>{knowledgeBusy ? '查询中' : '查询层级'}</button></div>
       <div className="knowledge-status"><span className={knowledgeStatus?.enabled ? 'online' : 'fallback'}>{knowledgeStatus?.enabled ? '远程图谱已配置' : '本地回退模式'}</span><p>{String(knowledgeStatus?.detail || '远程服务不可用时自动使用内置层级与规则推断，不阻断脱敏。')}</p></div>
       {knowledgeResult ? <div className="knowledge-result"><div className="knowledge-result-head"><strong>{knowledgeResult.term}</strong><span>{knowledgeResult.provider} · {knowledgeResult.source}</span></div><ol>{knowledgeResult.levels.slice(0, 3).map((level, index) => <li className={config.privacy_strength === index + 1 ? 'active' : ''} key={`${level}-${index}`}><span>级别 {index + 1}</span><strong>{level}</strong>{config.privacy_strength === index + 1 && <small>当前强度采用</small>}</li>)}</ol><p>{knowledgeResult.detail}</p></div> : <div className="empty-inline">输入实体并查询，可验证低、中、高三档泛化层级；查询结果会同步用于上方实时效果示例。</div>}
     </section>
 
-    <section className="panel instruction-panel"><div className="section-heading"><div><span>NATURAL LANGUAGE REQUIREMENT</span><h2>自然语言策略输入</h2></div><WandSparkles/></div><div className="instruction-layout"><label><span>需求描述</span><textarea value={config.instruction || ''} onChange={event => updateConfig({ instruction: event.target.value || null })} placeholder="例如：保留所有北京地名，但隐藏上海相关地名；姓名使用伪名，其他信息严格脱敏。"/><div className="instruction-actions"><button className="btn ghost" onClick={previewInstruction} disabled={busy || !config.instruction?.trim()}><Sparkles size={16}/>解析预览</button><span>运行时会与上方菜单配置合并，显式需求优先。</span></div></label><div className="parse-preview"><strong>解析结果预览</strong>{parseResult ? <pre>{JSON.stringify(parseResult, null, 2)}</pre> : <p>输入需求后点击“解析预览”，可检查保留词、强制脱敏词、实体范围和策略。</p>}</div></div></section>
+    <section className="panel instruction-panel"><div className="section-heading"><div><span>NATURAL LANGUAGE REQUIREMENT</span><h2>自然语言策略输入</h2></div></div><div className="instruction-layout"><label><span>需求描述</span><textarea value={config.instruction || ''} onChange={event => updateConfig({ instruction: event.target.value || null })} placeholder="例如：保留所有北京地名，但隐藏上海相关地名；姓名使用伪名，其他信息严格脱敏。"/><div className="instruction-actions"><button className="btn ghost" onClick={previewInstruction} disabled={busy || !config.instruction?.trim()}><Sparkles size={16}/>解析预览</button><span>运行时会与上方菜单配置合并，显式需求优先。</span></div></label><div className="parse-preview"><strong>解析结果预览</strong>{parseResult ? <pre>{JSON.stringify(parseResult, null, 2)}</pre> : <p>输入需求后点击“解析预览”，可检查保留词、强制脱敏词、实体范围和策略。</p>}</div></div></section>
 
-    <section className="panel rules-panel"><div className="section-heading"><div><span>CUSTOM RULE CRUD</span><h2>自定义关键词与正则</h2></div><Braces/></div><div className="rule-builder"><input placeholder="规则名称" value={ruleDraft.name} onChange={event => setRuleDraft({...ruleDraft,name:event.target.value})}/><select value={ruleDraft.kind} onChange={event => setRuleDraft({...ruleDraft,kind:event.target.value as 'keyword'|'regex'})}><option value="keyword">关键词</option><option value="regex">正则表达式</option></select><input className="rule-pattern" placeholder={ruleDraft.kind === 'regex' ? '例如：ACCT-\\d{8}' : '例如：内部项目代号'} value={ruleDraft.pattern} onChange={event => setRuleDraft({...ruleDraft,pattern:event.target.value})}/><select value={ruleDraft.entity_type} onChange={event => setRuleDraft({...ruleDraft,entity_type:event.target.value as EntityType})}>{allEntityTypes.map(type=><option key={type} value={type}>{labels[type]}</option>)}</select><label className="case-check"><input type="checkbox" checked={ruleDraft.case_sensitive} onChange={event=>setRuleDraft({...ruleDraft,case_sensitive:event.target.checked})}/>区分大小写</label><button className="btn primary" onClick={addRule}><Plus/>添加</button></div>
+    <section className="panel rules-panel"><div className="section-heading"><div><span>CUSTOM RULE CRUD</span><h2>自定义关键词与正则</h2></div></div><div className="rule-builder"><input placeholder="规则名称" value={ruleDraft.name} onChange={event => setRuleDraft({...ruleDraft,name:event.target.value})}/><select value={ruleDraft.kind} onChange={event => setRuleDraft({...ruleDraft,kind:event.target.value as 'keyword'|'regex'})}><option value="keyword">关键词</option><option value="regex">正则表达式</option></select><input className="rule-pattern" placeholder={ruleDraft.kind === 'regex' ? '例如：ACCT-\\d{8}' : '例如：内部项目代号'} value={ruleDraft.pattern} onChange={event => setRuleDraft({...ruleDraft,pattern:event.target.value})}/><select value={ruleDraft.entity_type} onChange={event => setRuleDraft({...ruleDraft,entity_type:event.target.value as EntityType})}>{allEntityTypes.map(type=><option key={type} value={type}>{labels[type]}</option>)}</select><label className="case-check"><input type="checkbox" checked={ruleDraft.case_sensitive} onChange={event=>setRuleDraft({...ruleDraft,case_sensitive:event.target.checked})}/>区分大小写</label><button className="btn primary" onClick={addRule}><Plus/>添加</button></div>
       <div className="regex-tester"><label><span>规则测试文本</span><textarea value={ruleTestText} onChange={event => setRuleTestText(event.target.value)} rows={3}/></label><div className={rulePreview.valid ? 'regex-test-result valid' : 'regex-test-result invalid'}><strong>{rulePreview.valid ? '规则可用' : '语法错误'}</strong><span>{rulePreview.message}</span>{rulePreview.matches.length > 0 && <div className="regex-match-list">{rulePreview.matches.map((match, index) => <code key={`${match.start}-${match.end}-${index}`}>{match.text}{' \u00b7 '}{match.start}:{match.end}</code>)}</div>}<small>前端即时预览用于调试；保存时后端会再用 Python 正则进行权威校验。</small></div></div>
       {rules.length ? <div className="rule-list">{rules.map(rule => <div className={rule.enabled ? 'rule-item' : 'rule-item disabled'} key={rule.id}><button className="rule-switch" onClick={() => toggleRule(rule)}><span/><small>{rule.enabled?'启用':'停用'}</small></button><div><strong>{rule.name}</strong><code>{rule.pattern}</code></div><span>{rule.kind === 'regex' ? '正则' : '关键词'} · {labels[rule.entity_type]}</span><button className="icon-danger" onClick={() => removeRule(rule.id)}><Trash2/></button></div>)}</div> : <div className="empty-inline">尚未添加持久化规则。工作台内的临时配置仍可单次使用。</div>}
     </section>
+      <div className="header-actions project-actions" style={{ marginTop: '24px' }}><button className="btn primary" onClick={saveProject} disabled={busy}><Save size={16}/>保存当前项目</button></div>
+    </>}
   </div>
 }

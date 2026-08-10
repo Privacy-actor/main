@@ -48,7 +48,7 @@ export const api = {
     if (projectId) body.append('project_id', projectId)
     return request<BatchJob>('/jobs', { method: 'POST', body })
   },
-  jobs: () => request<{ items: BatchJob[] }>('/jobs'),
+  jobs: (projectId?: string | null) => request<{ items: BatchJob[] }>(`/jobs${projectId ? `?project_id=${encodeURIComponent(projectId)}` : ''}`),
   job: (id: string) => request<BatchJob>(`/jobs/${id}`),
   downloadJob: async (id: string) => {
     const response = await fetch(`${API}/jobs/${id}/download`)

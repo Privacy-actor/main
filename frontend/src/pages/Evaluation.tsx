@@ -16,7 +16,7 @@ export default function Evaluation(){
  const systems=data.systems||[];const best=systems.length?systems.reduce((a,b)=>b.f1>a.f1?b:a):null
  const isDemo=!data.run_id||data.notice?.includes('演示')
  return <div className={`page evaluation-page ${isDemo?'is-demo':''}`}>
-  <header className="page-header"><div><div className="eyebrow">RESEARCH EVALUATION</div><h1>评估实验室</h1><p>只展示由评估接口返回的实验结果；正式指标需运行冻结测试集后生成。</p></div><div className="dataset-badge"><Database/><span><small>数据集</small><strong>{data.dataset||'尚未绑定冻结测试集'}</strong></span></div></header>
+  <div className="dataset-badge"><Database/><span><small>数据集</small><strong>{data.dataset||'尚未绑定冻结测试集'}</strong></span></div>
   <div className={`evaluation-status-banner ${isDemo?'demo':''}`} role="status"><Info/><div><span>{isDemo?'DEMO DATA · 待接入真实实验':'VERIFIED RUN · 已接入实验结果'}</span><strong>{isDemo?'当前指标仅用于界面演示，不可用于结项结论。':'当前页面展示已接入的实验运行结果。'}</strong><p>{data.notice||'暂无实验说明'}{isDemo?' 完成冻结测试集后，本区域会自动替换为真实运行信息。':''}</p></div></div>
   {best?<>
    <div className="metric-cards verified"><div className="metric-card hero"><div><span>接口返回的最高 F1</span><strong>{(best.f1*100).toFixed(1)}<small>%</small></strong><p>{best.name}</p></div><ShieldCheck/></div><div className="metric-card"><span>召回率</span><strong>{(best.recall*100).toFixed(1)}%</strong><small>{best.name}</small></div><div className="metric-card"><span>精确率</span><strong>{(best.precision*100).toFixed(1)}%</strong><small>{best.name}</small></div><div className="metric-card"><span>单条延迟</span><strong>{best.latency!=null?`${best.latency} ms`:'—'}</strong><small>{best.latency!=null?'接口记录值':'本次未记录'}</small></div></div>

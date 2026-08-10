@@ -477,9 +477,12 @@ class Storage:
         item["progress"] = 100 if item["total"] == 0 else round(item["processed"] / item["total"] * 100)
         return item
 
-    def list_jobs(self, limit=30):
+    def list_jobs(self, limit=30, project_id=None):
         with self.connect() as db:
-            rows = db.execute("SELECT id FROM jobs ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
+            if project_id:
+                rows = db.execute("SELECT id FROM jobs WHERE project_id=? ORDER BY created_at DESC LIMIT ?", (project_id, limit)).fetchall()
+            else:
+                rows = db.execute("SELECT id FROM jobs ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
         return [self.get_job(row["id"]) for row in rows]
 
     def delete_job(self, job_id):

@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
-import { Activity, Beaker, Clock3, Files, FolderCog, ScanSearch, ShieldCheck, Sparkles } from 'lucide-react'
+import { Activity, Beaker, Clock3, Files, FolderCog, ScanSearch, ShieldCheck } from 'lucide-react'
 import { api } from './api'
 const Workbench=lazy(()=>import('./pages/Workbench'))
 const Projects=lazy(()=>import('./pages/Projects'))
@@ -29,8 +29,8 @@ export default function App() {
   return <div className="app-shell">
     <a className="skip-link" href="#main-content">跳转到主要内容</a>
     <aside className="sidebar">
-      <div className="brand"><div className="brand-mark"><ShieldCheck size={22}/></div><div><strong>PrivShield</strong><span>隐私盾 · Research</span></div></div>
-      <div className="project-chip"><Sparkles size={14}/><span>中英文本智能脱敏</span></div>
+      <div className="brand"><div className="brand-mark"><ShieldCheck size={22}/></div><div><strong>PrivShield</strong><span>隐私盾 · 中英文本智能脱敏</span></div></div>
+
       <nav aria-label="主导航">{nav.map(item => <NavLink key={item.to} to={item.to} className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}><item.icon size={18}/><span>{item.label}</span></NavLink>)}</nav>
       <div className="sidebar-bottom">
         <div className="model-card"><div className="model-head"><span className={`status-dot ${online ? 'online' : online === false ? 'offline' : ''}`}/><span>{online ? '系统在线' : online === false ? '连接失败' : '连接中'}</span></div><strong title={modelName}>{modelName}</strong></div>
