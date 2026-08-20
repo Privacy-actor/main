@@ -35,6 +35,10 @@ finetune/    我的工作区。数据生成、SFT、评测
 
 装包也一样:`.\.venv\Scripts\python.exe -m pip install xxx`。
 
+PowerShell 对 `python.exe -c "长单行"` 会报
+`ScriptBlock should only be specified as a value of the Command parameter`。
+不要尝试转义绕过，改为把脚本从标准输入喂给解释器，或存成 .py 文件运行。
+
 ## 网络铁律
 
 **Hugging Face 与 hf-mirror.com 在本机均不可达。** 模型一律走 ModelScope:

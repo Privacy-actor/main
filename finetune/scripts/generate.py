@@ -262,8 +262,11 @@ def replace_structured_placeholders(
 
 def classify_tier(lang: str, character_count: int, entity_count: int) -> str:
     """规格「长度分档」表 B：按实测长度与实体数归类或丢弃。"""
-    if character_count < 40 or character_count > 4000:
-        raise ValueError(f"字符数 {character_count} 超出允许区间 [40, 4000]")
+    character_maximum = 7500 if lang == "en" else 4000
+    if character_count < 40 or character_count > character_maximum:
+        raise ValueError(
+            f"字符数 {character_count} 超出 {lang} 允许区间 [40, {character_maximum}]"
+        )
     short_upper = 450 if lang == "en" else 200
     if character_count <= short_upper:
         tier = "短密" if entity_count >= 4 else "短"
