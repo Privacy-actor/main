@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import random
 import re
+import sys
 from typing import Any
 
 import httpx
@@ -18,6 +19,7 @@ import yaml
 
 from primitives import (
     ParseError,
+    expand_spans,
     make_bank_card,
     make_email,
     make_id_card,
@@ -275,6 +277,38 @@ def classify_tier(lang: str, character_count: int, entity_count: int) -> str:
     return tier
 
 
+def sweep_structured_pii(text: str, spans: list[dict[str, Any]]) -> None:
+    backend_path = str(FINETUNE_DIR.parent / "backend")
+    if backend_path not in sys.path:
+        sys.path.insert(0, backend_path)
+    from app.recognizers import PATTERNS
+
+    misses: set[tuple[int, int, str, str]] = set()
+    for spec in PATTERNS:
+        label = spec.entity_type.value
+        if label not in STRUCTURED_LABELS:
+            continue
+        for match in spec.regex.finditer(text):
+            surface = match.group(0)
+            if spec.validator and not spec.validator(surface):
+                continue
+            start, end = match.span(0)
+            covered = any(
+                span["start"] <= start and end <= span["end"] for span in spans
+            )
+            if not covered:
+                misses.add((start, end, label, surface))
+    if misses:
+        details = [
+            {"start": start, "end": end, "label": label, "text": surface}
+            for start, end, label, surface in sorted(misses)
+        ]
+        raise ParseError(
+            "SWEEP 命中未标注的结构化 PII: "
+            + json.dumps(details, ensure_ascii=False)
+        )
+
+
 def build_gold(
     args: argparse.Namespace,
     sampled: dict[str, Any],
@@ -334,9 +368,15 @@ def main() -> None:
     print("=== 替换后正文 ===")
     print(replaced)
 
-    text, spans = parse_inline_tagged(
+    text, tagged_spans = parse_inline_tagged(
         replaced, allowed=tuple(sampled["label_group"])
     )
+    spans = expand_spans(text, tagged_spans)
+    sweep_structured_pii(text, spans)
+    print("=== 标签扩展 ===")
+    print(f"{len(tagged_spans)} → {len(spans)}")
+    print("=== SWEEP ===")
+    print("PASS")
     classified_tier = classify_tier(args.lang, len(text), len(spans))
     sample_id = make_sample_id(args.seed, args.lang, classified_tier)
     print("=== 请求档 → 归类档 ===")

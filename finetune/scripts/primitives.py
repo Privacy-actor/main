@@ -113,6 +113,43 @@ def find_all(text: str, surface: str, latin_boundary=True) -> list[tuple[int,int
         i = text.find(surface, i+1)
     return hits
 
+def expand_spans(text: str, tagged: list[dict]) -> list[dict]:
+    """把每个已标 surface 扩展到全部出现位置，并丢弃被更长 span 包含的子串。"""
+    candidates: dict[tuple[int, int, str], dict] = {}
+    surfaces: set[tuple[str, str]] = set()
+    for span in tagged:
+        start, end, label = span["start"], span["end"], span["label"]
+        if not (0 <= start < end <= len(text)) or text[start:end] == "":
+            raise ParseError(f"非法 tagged span: {span}")
+        surface = text[start:end]
+        surfaces.add((surface, label))
+        candidates[(start, end, label)] = {"start": start, "end": end, "label": label}
+
+    for surface, label in surfaces:
+        for start, end in find_all(text, surface):
+            candidates[(start, end, label)] = {"start": start, "end": end, "label": label}
+
+    all_candidates = list(candidates.values())
+    kept = []
+    for candidate in all_candidates:
+        length = candidate["end"] - candidate["start"]
+        contained = any(
+            (other["end"] - other["start"] > length)
+            and other["start"] <= candidate["start"]
+            and candidate["end"] <= other["end"]
+            for other in all_candidates
+        )
+        if not contained:
+            kept.append(candidate)
+
+    kept.sort(key=lambda span: (span["start"], span["end"], span["label"]))
+    for index, span in enumerate(kept):
+        if text[span["start"]:span["end"]] == "":
+            raise ParseError(f"扩展后空 span: {span}")
+        if index and span["start"] < kept[index - 1]["end"]:
+            raise ParseError(f"扩展后 span 重叠: {kept[index - 1]} / {span}")
+    return kept
+
 
 # ---------------------------------------------------------------- 自检
 def _self_test() -> None:
@@ -221,6 +258,24 @@ def _self_test() -> None:
     c = make_phone(slot_rng(42, "syn_zh_mid_000124", "phone"))
     assert a == b and a != c
     ok(True, f"同 id 一致 {a} · 不同 id 不同 {c}")
+
+    print("[11] 标签扩展 · 重复 surface 找全且包含守卫生效")
+    text = "张伟联系张伟，电话13800138000；地址上海市浦东新区世纪大道88号，张伟再拨13800138000后到上海。"
+    tagged = []
+    for surface, label, start in [
+        ("张伟", "PERSON", text.index("张伟")),
+        ("13800138000", "PHONE", text.index("13800138000")),
+        ("上海市浦东新区世纪大道88号", "ADDRESS", text.index("上海市浦东新区世纪大道88号")),
+        ("上海", "LOCATION", text.rindex("上海")),
+    ]:
+        tagged.append({"start": start, "end": start + len(surface), "label": label})
+    expanded = expand_spans(text, tagged)
+    assert len(expanded) == 7, expanded
+    assert all(text[s["start"]:s["end"]] for s in expanded)
+    assert all(expanded[i]["end"] <= expanded[i + 1]["start"] for i in range(len(expanded) - 1))
+    address_start = text.index("上海市浦东新区世纪大道88号")
+    assert not any(s["label"] == "LOCATION" and s["start"] == address_start for s in expanded)
+    ok(True, "扩展 7 个 span · 原文一致 · 无重叠 · ADDRESS 内 LOCATION 已丢弃")
 
     print("\n全部通过。")
 
