@@ -34,14 +34,15 @@ DASHSCOPE_CHAT_COMPLETIONS = (
     "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
 )
 
-# 唯一数值来源：规格「长度分档」。
-TIER_SPECS = {
-    "短密": ("50-160 字", 4, 6),
-    "短": ("50-150 字", 1, 3),
-    "中": ("300-800 字", 2, 6),
-    "长": ("1500-3000 字", 0, 3),
+# 唯一数值来源：规格「长度分档」的表 A。
+TIER_TARGETS = {
+    "短密": {"code": "dense", "zh": "50-160", "en": "150-400", "entities": (4, 6)},
+    "短": {"code": "short", "zh": "50-150", "en": "150-400", "entities": (1, 3)},
+    "中": {"code": "mid", "zh": "300-800", "en": "700-1100", "entities": (2, 6)},
+    "长": {"code": "long", "zh": "1500-3000", "en": "1500-3000", "entities": (0, 3)},
 }
-TIER_CODES = {"短密": "dense", "短": "short", "中": "mid", "长": "long"}
+TIER_CODES = {name: target["code"] for name, target in TIER_TARGETS.items()}
+CLASSIFIED_ENTITY_MAX = {"短密": 8, "短": 3, "中": 8, "长": 5}
 STRUCTURED_LABELS = ("PHONE", "EMAIL", "ID_CARD", "BANK_CARD", "PASSPORT")
 PLACEHOLDER_RE = re.compile(r"\{\{([A-Z_]+)\}\}")
 STRUCTURED_TAG_RE = re.compile(
@@ -51,7 +52,7 @@ STRUCTURED_TAG_RE = re.compile(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="生成一条 PrivShield gold 记录")
-    parser.add_argument("--tier", required=True, choices=TIER_SPECS)
+    parser.add_argument("--tier", required=True, choices=TIER_TARGETS)
     parser.add_argument("--lang", required=True, choices=("zh", "en", "mixed"))
     parser.add_argument("--model", required=True)
     parser.add_argument("--seed", required=True, type=int)
@@ -73,6 +74,9 @@ def load_axes() -> dict[str, Any]:
     invalid_ratio = float(checksum["invalid_ratio"])
     if not 0.0 <= valid_ratio <= 1.0 or abs(valid_ratio + invalid_ratio - 1.0) > 1e-9:
         raise ValueError("checksum_validity 比例非法")
+    exclusions = axes.get("tone_tier_exclude")
+    if not isinstance(exclusions, dict):
+        raise ValueError("axes.yaml 缺少 tone_tier_exclude")
     return axes
 
 
@@ -95,16 +99,26 @@ def sample_axes(
     if lang == "en":
         labels = ["PASSPORT" if label == "ID_CARD" else label for label in labels]
 
+    tier_code = TIER_CODES[tier]
+    exclusions = axes["tone_tier_exclude"]
+    tones = [
+        tone for tone in axes["tone"] if tier_code not in exclusions.get(tone, [])
+    ]
+    if not tones:
+        raise ValueError(f"档位 {tier} 没有可用 tone")
+
     return {
         "domain": rng.choice(domains),
         "format": rng.choice(axes["format"]),
-        "tone": rng.choice(axes["tone"]),
+        "tone": rng.choice(tones),
         "label_group": labels,
     }
 
 
 def build_prompt(tier: str, lang: str, sampled: dict[str, Any]) -> str:
-    length, minimum, maximum = TIER_SPECS[tier]
+    target = TIER_TARGETS[tier]
+    length = target["en"] if lang == "en" else target["zh"]
+    minimum, maximum = target["entities"]
     locale = {
         "zh": "使用自然中文；姓名、地址和地名采用中文语境。",
         "en": "Write natural English using entities appropriate to an English-language locale.",
@@ -123,7 +137,7 @@ def build_prompt(tier: str, lang: str, sampled: dict[str, Any]) -> str:
 载体：{sampled['format']}
 语气：{sampled['tone']}
 语言约束：{locale}
-长度档：{tier}（{length}）
+长度档：{tier}（{length} 字符）
 实体数量：{minimum}–{maximum} 个
 本条可使用的标签：{labels}
 label_group 只是允许标签池，不要求每个标签都出现。
@@ -158,7 +172,7 @@ def fake_response(lang: str, sampled: dict[str, Any], tier: str) -> str:
             "ADDRESS": "杭州市西湖区文三路88号",
         },
     }[lang]
-    _, _, maximum = TIER_SPECS[tier]
+    _, maximum = TIER_TARGETS[tier]["entities"]
     active_labels = sampled["label_group"][:maximum]
     parts = []
     for label in active_labels:
@@ -231,7 +245,11 @@ def replace_structured_placeholders(
         if label == "BANK_CARD":
             return make_bank_card(rng, valid=checksum_valid)
         if label == "PASSPORT":
-            return make_passport(rng, "en" if lang == "en" else "zh")
+            if lang == "mixed":
+                locale = "zh" if rng.random() < 0.70 else "en"
+            else:
+                locale = "en" if lang == "en" else "zh"
+            return make_passport(rng, locale)
         raise ParseError(f"未知占位符: {label}")
 
     replaced = PLACEHOLDER_RE.sub(replacement, raw)
@@ -240,10 +258,28 @@ def replace_structured_placeholders(
     return replaced
 
 
+def classify_tier(lang: str, character_count: int, entity_count: int) -> str:
+    """规格「长度分档」表 B：按实测长度与实体数归类或丢弃。"""
+    if character_count < 40 or character_count > 4000:
+        raise ValueError(f"字符数 {character_count} 超出允许区间 [40, 4000]")
+    short_upper = 450 if lang == "en" else 200
+    if character_count <= short_upper:
+        tier = "短密" if entity_count >= 4 else "短"
+    elif character_count <= 1199:
+        tier = "中"
+    else:
+        tier = "长"
+    maximum = CLASSIFIED_ENTITY_MAX[tier]
+    if entity_count > maximum:
+        raise ValueError(f"归类档 {tier} 的实体数 {entity_count} 超出上限 {maximum}")
+    return tier
+
+
 def build_gold(
     args: argparse.Namespace,
     sampled: dict[str, Any],
     sample_id: str,
+    classified_tier: str,
     text: str,
     spans: list[dict[str, Any]],
 ) -> dict[str, Any]:
@@ -258,7 +294,7 @@ def build_gold(
             "domain": sampled["domain"],
             "format": sampled["format"],
             "tone": sampled["tone"],
-            "tier": args.tier,
+            "tier": classified_tier,
             "label_group": sampled["label_group"],
         },
         "gen": {
@@ -276,10 +312,10 @@ def main() -> None:
     args = parse_args()
     axes = load_axes()
     sampled = sample_axes(axes, args.tier, args.lang, args.seed)
-    sample_id = make_sample_id(args.seed, args.lang, args.tier)
+    rng_sample_id = make_sample_id(args.seed, args.lang, args.tier)
     valid_ratio = float(axes["checksum_validity"]["valid_ratio"])
     checksum_valid = (
-        slot_rng(args.seed, sample_id, "checksum_validity").random() < valid_ratio
+        slot_rng(args.seed, rng_sample_id, "checksum_validity").random() < valid_ratio
     )
     prompt = build_prompt(args.tier, args.lang, sampled)
 
@@ -293,7 +329,7 @@ def main() -> None:
     print(raw)
 
     replaced = replace_structured_placeholders(
-        raw, args.seed, sample_id, checksum_valid, args.lang
+        raw, args.seed, rng_sample_id, checksum_valid, args.lang
     )
     print("=== 替换后正文 ===")
     print(replaced)
@@ -301,6 +337,10 @@ def main() -> None:
     text, spans = parse_inline_tagged(
         replaced, allowed=tuple(sampled["label_group"])
     )
+    classified_tier = classify_tier(args.lang, len(text), len(spans))
+    sample_id = make_sample_id(args.seed, args.lang, classified_tier)
+    print("=== 请求档 → 归类档 ===")
+    print(f"{args.tier} → {classified_tier}")
     print("=== 纯文本 ===")
     print(text)
     print("=== spans ===")
@@ -315,7 +355,7 @@ def main() -> None:
     print("=== checksum valid ===")
     print(str(checksum_valid).lower())
 
-    gold = build_gold(args, sampled, sample_id, text, spans)
+    gold = build_gold(args, sampled, sample_id, classified_tier, text, spans)
     print("=== gold ===")
     print(json.dumps(gold, ensure_ascii=False, indent=2))
 
