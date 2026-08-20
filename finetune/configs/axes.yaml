@@ -1,63 +1,60 @@
 # 多样性轴配置
 #
-# ┌──────────────────────────────────────────────────────────────────┐
-# │ 这个文件由人编写，不由代理生成。                                    │
-# │ 它直接决定合成数据多样性的上限——代理写出来的会很平。                │
-# │                                                                  │
-# │ 下面是起步框架。你要做的三件事（约 40 分钟）：                       │
-# │   1. 删掉不像你们产品会遇到的场景                                   │
-# │   2. 补上你实际见过的场景（这一项最值钱，我没有你的领域经验）          │
-# │   3. 把 domain 里带 ← 的那几条按你的判断改写                        │
-# │                                                                  │
-# │ 硬要求：domain_zh 与 domain_en 各 ≥ 10 项，format ≥ 8，tone ≥ 4。   │
-# │ 组合空间需 ≥ 10×8×4×4 = 1280 种。                                 │
-# └──────────────────────────────────────────────────────────────────┘
+# 场景取自三条来源，不是凭空列的：
+#   1. 队友前端 Workbench.tsx 的三条内置样例（演示时老师会点的就是这三个）
+#        中英混合访谈 / 客户服务记录 / 英文邮件
+#   2. 立项书的定位：「面向大模型分析的文本数据隐私擦除」
+#        → 目标输入是「人要粘贴给大模型分析、但含个人信息」的文本
+#   3. 前端支持导入 TXT / MD / CSV / JSON / DOCX / PDF
+#        → 目标是文档，不只是聊天串
+#
+# ┌────────────────────────────────────────────────────────┐
+# │ 你要做的（约 5 分钟）：扫一遍下面两个 domain 列表，        │
+# │ 删掉你觉得不对劲的。补充是可选的。                        │
+# │ 硬要求：各 ≥ 10 项；format ≥ 8；tone ≥ 4。               │
+# └────────────────────────────────────────────────────────┘
 
-# ---------------------------------------------------------------- 场景
-# 一半以上应来自「用户真的会拿来脱敏的文本」，不是泛泛的日常场景。
 domain_zh:
-  - 设备维修工单
-  - 医院门诊登记与挂号记录
-  - 快递物流面单与客服跟进
-  - 租房带看与合同签署记录
-  - 银行/保险客户回访
-  - 校园教务与学生事务
-  - 政务办事大厅咨询记录
-  - 电商售后纠纷处理
-  - 人力资源招聘与入职材料
-  - 社区物业报事报修
-  - 法律咨询与调解笔录          # ← 不确定你们会不会遇到，按需删改
-  - 企业内部 IT 服务台工单
+  - 采访与访谈记录转写        # ← 对应演示样例「中英混合访谈」
+  - 客服工单与服务记录        # ← 对应演示样例「客户服务记录」
+  - 商务邮件往来
+  - 简历与求职材料
+  - 会议纪要
+  - 医疗就诊记录与病历摘要
+  - 合同与协议条款
+  - 调研问卷的开放题回答
+  - 学术研究的访谈资料
+  - 内部事故与异常报告
+  - 报销差旅单据说明
+  - 学生事务与教务往来
 
 domain_en:
-  # 英文场景要用英语国家真实存在的形态，不要把中文场景直译
-  - customer support ticket
-  - hospital patient intake form
-  - parcel delivery exception report
-  - apartment rental application
-  - bank account service call log
-  - university student services email
-  - HR onboarding paperwork
-  - e-commerce return dispute thread
-  - IT helpdesk incident record
-  - insurance claim correspondence
-  - property maintenance request     # ← 按需删改
-  - conference attendee registration
+  # 用英语国家真实存在的形态，不要把中文场景直译
+  - interview transcript          # ← 对应演示样例
+  - customer support ticket       # ← 对应演示样例
+  - business email thread         # ← 对应演示样例
+  - resume / CV
+  - meeting minutes
+  - medical intake summary
+  - contract clause excerpt
+  - survey open-ended response
+  - incident report
+  - HR onboarding correspondence
+  - academic research field notes
+  - expense claim justification
 
-# ---------------------------------------------------------------- 文体
 format:
+  - 访谈转写稿
   - 工单系统条目
-  - 即时通讯聊天记录
   - 电子邮件正文
-  - 表单/登记表填写内容
-  - 内部通知公告
+  - 即时通讯记录
+  - 表单填写内容
   - 会议纪要
-  - 电话录音转写稿
-  - 客服对话记录
-  - 论坛或社交平台发帖
+  - 正式报告段落
   - 内部备忘录
+  - 论坛或社区发帖
+  - CSV 导出的一行记录        # 前端支持 CSV 导入，这种形态要覆盖
 
-# ---------------------------------------------------------------- 语气
 tone:
   - 正式书面
   - 口语随意
@@ -66,24 +63,32 @@ tone:
   - 冗长啰嗦
 
 # ---------------------------------------------------------------- 标签组合
-# 每批注入 4 个标签（规格「标签体系」）。组合要场景上说得通，
-# 不要随机取 4 个——银行回访里出现 PASSPORT 很怪。
+# 每批注入 4 个（规格「标签体系」）。组合要场景上说得通。
+# 注：三条演示样例每条都有 5 类，所以最后两组按演示形态放宽到 5。
 label_groups:
-  - [PERSON, PHONE, ADDRESS, ORG]        # 工单、物流、报修
-  - [PERSON, PHONE, ID_CARD, ORG]        # 挂号、政务、入职
-  - [PERSON, EMAIL, ORG, LOCATION]       # 邮件、招聘、会务
-  - [PERSON, PHONE, BANK_CARD, ORG]      # 银行、保险、售后退款
-  - [PERSON, PASSPORT, LOCATION, ORG]    # 出入境、会务、跨境物流
-  - [PERSON, EMAIL, PHONE, ADDRESS]      # 电商、租房
-  - [ORG, LOCATION, ADDRESS, PHONE]      # 机构信息为主、弱个人
-  - [PERSON, ORG, LOCATION, EMAIL]       # 校园、社区
+  - [PERSON, PHONE, ADDRESS, ORG]
+  - [PERSON, PHONE, ID_CARD, ORG]
+  - [PERSON, EMAIL, ORG, LOCATION]
+  - [PERSON, PHONE, BANK_CARD, ORG]
+  - [PERSON, PASSPORT, LOCATION, ORG]
+  - [PERSON, EMAIL, PHONE, ADDRESS]
+  - [ORG, LOCATION, ADDRESS, PHONE]
+  - [PERSON, ORG, LOCATION, EMAIL]
+  - [PERSON, ORG, PHONE, EMAIL, ADDRESS]           # 演示形态专用，仅 tier=短密
+  - [PERSON, BANK_CARD, PASSPORT, ADDRESS, PHONE]  # 同上
 
-# 注意：英文样本不使用 ID_CARD（规格「标签体系」）。
+# 英文样本不使用 ID_CARD（规格「标签体系」）。
 # 生成英文时，含 ID_CARD 的组合自动替换为 PASSPORT。
 
+# ---------------------------------------------------------------- 校验位分布
+# 理由见规格「结构化 PII 生成」。
+checksum_validity:
+  valid_ratio: 0.85     # 校验位正确 → 规则层采纳 → 模型不该重复 add
+  invalid_ratio: 0.15   # 校验位故意错 → 规则层静默丢弃 → 模型必须 add
+  # 依据：队友演示样例里的 6222021001116247 就是 Luhn 不过的（余数 9），
+  # 规则层完全漏掉。真实文本里打错、编造、测试用的号码普遍存在。
+
 # ---------------------------------------------------------------- 陷阱
-# 硬负样本里埋的「像 PII 但不是」的串。每种至少给 3 个例子，
-# 生成时随机选，并在 gold 的 trap_spans 里记录位置。
 traps:
   店名含姓氏:
     - 王记牛肉面
@@ -107,3 +112,7 @@ traps:
   公开机构名:
     - 国家统计局
     - 世界卫生组织
+  英文常见词像姓名:
+    - "Mark"
+    - "Bill"
+    - "May"
