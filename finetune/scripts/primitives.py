@@ -72,6 +72,26 @@ def make_bank_card(rng: random.Random, valid: bool = True) -> str:
 def make_phone(rng: random.Random) -> str:
     return rng.choice(("138","139","150","151","176","188","199","135")) + "".join(str(rng.randint(0,9)) for _ in range(8))
 
+_MAIL_DOMAINS = ("example.com", "example.net", "example.org", "mailbridge.cn",
+                 "inbox-hub.com", "cloudpost.cn", "letterbox.net", "mail.qingyun.cn",
+                 "corp-relay.com", "n7mail.cn", "postbox.example", "hs-mail.edu.cn")
+_MAIL_LOCAL = ("{a}.{b}", "{a}{b}", "{i}{b}", "{a}_{b}", "{a}{n}", "{b}{n}", "{a}.{b}{n}")
+_PY = ("zhang", "li", "wang", "chen", "liu", "yang", "zhao", "wu", "sun", "zhou",
+       "alex", "sarah", "mark", "julia", "kevin", "nina", "peter", "emma")
+
+def make_email(rng: random.Random) -> str:
+    """域名与本地部分都做形态变化。全部为虚构域名，不保证未被注册（已知局限）。"""
+    a, b = rng.sample(_PY, 2)
+    local = rng.choice(_MAIL_LOCAL).format(a=a, b=b, i=a[0], n=rng.randint(1, 9999))
+    return f"{local}@{rng.choice(_MAIL_DOMAINS)}"
+
+def make_passport(rng: random.Random, locale: str = "zh") -> str:
+    r"""后端 PASSPORT 正则: [EGDSP]\d{8} | [A-Z]{1,2}\d{6,9}"""
+    if locale == "zh":
+        return rng.choice("EGDSP") + "".join(str(rng.randint(0, 9)) for _ in range(8))
+    letters = "".join(rng.choice("ABCDEFGHJKLMNPRSTVWXYZ") for _ in range(rng.choice((1, 2))))
+    return letters + "".join(str(rng.randint(0, 9)) for _ in range(rng.randint(6, 9)))
+
 def slot_rng(seed: int, sample_id: str, slot: str) -> random.Random:
     h = hashlib.sha256(f"{seed}:{sample_id}:{slot}".encode()).digest()
     return random.Random(int.from_bytes(h, "big"))
@@ -175,7 +195,27 @@ def _self_test() -> None:
     assert silent + mistyped == 200, (silent, mistyped)
     ok(True, f"静默丢弃 {silent}/200 · 被误判成 BANK_CARD {mistyped}/200(后端已知跨类型混淆)")
 
-    print("[9] slot_rng 可复现")
+    print("[9] EMAIL / PASSPORT · 形态多样且被规则层检出")
+    from app.recognizers import PATTERNS
+    r = random.Random(21)
+    mails = [make_email(r) for _ in range(300)]
+    doms = {m.split("@")[1] for m in mails}
+    locals_ = {m.split("@")[0] for m in mails}
+    assert len(doms) >= 10 and len(locals_) >= 250, (len(doms), len(locals_))
+    miss = 0
+    for m in mails[:60]:
+        got = {s.entity_type.value for s in detect_rule_spans(f"邮箱{m}。", Strategy.MASK)[0]}
+        if "EMAIL" not in got:
+            miss += 1
+    assert miss == 0, miss
+    ps = [make_passport(r, "zh") for _ in range(60)] + [make_passport(r, "en") for _ in range(60)]
+    pmiss = sum(1 for x in ps
+                if "PASSPORT" not in {s.entity_type.value
+                                      for s in detect_rule_spans(f"护照号{x}。", Strategy.MASK)[0]})
+    assert pmiss == 0, pmiss
+    ok(True, f"EMAIL 域名 {len(doms)} 种/本地部分 {len(locals_)} 种，检出 60/60 · PASSPORT 检出 120/120")
+
+    print("[10] slot_rng 可复现")
     a = make_phone(slot_rng(42, "syn_zh_mid_000123", "phone"))
     b = make_phone(slot_rng(42, "syn_zh_mid_000123", "phone"))
     c = make_phone(slot_rng(42, "syn_zh_mid_000124", "phone"))
