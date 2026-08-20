@@ -38,24 +38,36 @@ def parse_inline_tagged(raw: str, allowed=LABELS) -> tuple[str, list[dict]]:
 
 # ---- 结构化 PII：必须能通过后端 _cn_id / _luhn ----
 _AREA = ("110101","310104","440305","510107","320106","420106","330102","370102")
-def make_id_card(rng: random.Random) -> str:
+def make_id_card(rng: random.Random, valid: bool = True) -> str:
+    """valid=False 时校验位故意写错：正则形态仍匹配，但后端 _cn_id 会拒绝，
+    规则层因此静默丢弃 —— 这正是第三层要补的一类（见规格「结构化 PII 生成」）。"""
     body = rng.choice(_AREA) + f"{rng.randint(1960,2005)}{rng.randint(1,12):02d}{rng.randint(1,28):02d}" + f"{rng.randint(1,999):03d}"
     w = [7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2]
     c = "10X98765432"
-    return body + c[sum(int(body[i]) * w[i] for i in range(17)) % 11]
+    right = c[sum(int(body[i]) * w[i] for i in range(17)) % 11]
+    if valid:
+        return body + right
+    return body + rng.choice([d for d in "10X98765432" if d != right])
 
 _BIN = ("622202","621700","622848","622588","622262","621661")
-def make_bank_card(rng: random.Random) -> str:
+def _luhn_ok(num: str) -> bool:
+    total, alt = 0, False
+    for ch in reversed(num):
+        n = int(ch)
+        if alt:
+            n *= 2
+            n = n - 9 if n > 9 else n
+        total += n; alt = not alt
+    return total % 10 == 0
+
+def make_bank_card(rng: random.Random, valid: bool = True) -> str:
+    """valid=False 时 Luhn 故意不过。依据：队友前端演示样例里的
+    6222021001116247 就是这一类（Luhn 余数 9），规则层完全漏掉。"""
     body = rng.choice(_BIN) + "".join(str(rng.randint(0,9)) for _ in range(9))
-    for d in range(10):
-        cand = body + str(d)
-        s, alt = 0, False
-        for ch in reversed(cand):
-            n = int(ch)
-            if alt: n *= 2; n = n - 9 if n > 9 else n
-            s += n; alt = not alt
-        if s % 10 == 0: return cand
-    raise AssertionError
+    right = next(d for d in range(10) if _luhn_ok(body + str(d)))
+    if valid:
+        return body + str(right)
+    return body + str(rng.choice([d for d in range(10) if d != right]))
 
 def make_phone(rng: random.Random) -> str:
     return rng.choice(("138","139","150","151","176","188","199","135")) + "".join(str(rng.randint(0,9)) for _ in range(8))
@@ -144,7 +156,26 @@ def _self_test() -> None:
     assert all(en[a:b] == "Li" and not en[b].isalpha() for a, b in find_all(en, "Li"))
     ok(True, "中文找全 · 单字返回空 · 拉丁串不误伤 Lisbon")
 
-    print("[7] slot_rng 可复现")
+    print("[7] 校验位故意错误 · 必须被校验器拒绝")
+    r = random.Random(11)
+    for _ in range(150):
+        assert not _cn_id(make_id_card(r, False))
+        assert not _luhn(make_bank_card(r, False))
+    ok(True, "150 组非法身份证/银行卡全部被拒")
+
+    print("[8] 校验位错误 → 规则层静默丢弃(第三层要补的一类)")
+    r, silent, mistyped = random.Random(11), 0, 0
+    for _ in range(200):
+        num = make_id_card(r, False)
+        got = {s.entity_type.value for s in detect_rule_spans(f"身份证{num}。", Strategy.MASK)[0]}
+        if not got:
+            silent += 1
+        elif "BANK_CARD" in got:
+            mistyped += 1          # 18 位数字碰巧 Luhn 通过 → 撞上 BANK_CARD 正则
+    assert silent + mistyped == 200, (silent, mistyped)
+    ok(True, f"静默丢弃 {silent}/200 · 被误判成 BANK_CARD {mistyped}/200(后端已知跨类型混淆)")
+
+    print("[9] slot_rng 可复现")
     a = make_phone(slot_rng(42, "syn_zh_mid_000123", "phone"))
     b = make_phone(slot_rng(42, "syn_zh_mid_000123", "phone"))
     c = make_phone(slot_rng(42, "syn_zh_mid_000124", "phone"))
