@@ -1,6 +1,8 @@
 from pathlib import Path
 import sys
 
+import pytest
+
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
@@ -10,8 +12,14 @@ from generate import (
     DEFAULT_MODEL_WEIGHTS,
     TIER_REQUEST_LIMITS,
     TIER_WEIGHTS,
+    ParseError,
     build_prompt,
+    build_quotas,
+    classify_api_error,
     classify_tier,
+    is_quality_error,
+    parse_batch_response,
+    parse_tier_allocations,
     prompt_leakage_hits,
     substring_leak_warnings,
 )
@@ -88,3 +96,33 @@ def test_measured_tier_boundary_moves_to_550() -> None:
     assert classify_tier("en", 301, 0) == "中"
     assert classify_tier("en", 549, 0) == "中"
     assert classify_tier("en", 550, 0) == "长"
+
+
+def test_tier_allocations_build_only_requested_tiers() -> None:
+    tiers = parse_tier_allocations("短密:50,短:50")
+    quotas = build_quotas(100, tiers)
+    assert sum(quotas.values()) == 100
+    decoded = {
+        tuple(key.split("|", 2)): count for key, count in quotas.items()
+    }
+    assert {parts[1] for parts in decoded} == {"dense", "short"}
+    for tier_code in ("dense", "short"):
+        assert sum(count for (lang, tier, kind), count in decoded.items() if tier == tier_code and lang == "zh") == 25
+        assert sum(count for (lang, tier, kind), count in decoded.items() if tier == tier_code and lang == "en") == 15
+        assert sum(count for (lang, tier, kind), count in decoded.items() if tier == tier_code and lang == "mixed") == 10
+        assert sum(count for (lang, tier, kind), count in decoded.items() if tier == tier_code and kind == "positive") == 35
+        assert sum(count for (lang, tier, kind), count in decoded.items() if tier == tier_code and kind == "hard_negative") == 10
+        assert sum(count for (lang, tier, kind), count in decoded.items() if tier == tier_code and kind == "true_negative") == 5
+
+
+def test_batch_parser_ignores_wrapping_text_but_rejects_malformed_blocks() -> None:
+    raw = "说明文字\n<SAMPLE>第一条</SAMPLE>\n谢谢\n<SAMPLE>第二条</SAMPLE>\n结束"
+    assert parse_batch_response(raw, 2) == ["第一条", "第二条"]
+    with pytest.raises(ParseError, match="SAMPLE 块畸形"):
+        parse_batch_response("<SAMPLE>第一条</SAMPLE><SAMPLE>未闭合", 1)
+
+
+def test_empty_content_is_network_not_quality() -> None:
+    error = ValueError("API 未返回非空文本 content")
+    assert classify_api_error(error) == "network"
+    assert not is_quality_error(error)

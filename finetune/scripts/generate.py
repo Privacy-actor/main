@@ -100,8 +100,7 @@ MAX_API_CALLS = 2500
 MAX_WALL_SECONDS = 7200.0
 MAX_SAMPLE_ATTEMPTS = 3
 MAX_SCHEDULING_MISSES = 25
-SOFT_QUOTA_FACTOR = 1.25
-MAX_NETWORK_FAILURES_PER_MODEL = 5
+MAX_NETWORK_FAILURES_PER_MODEL = 20
 NETWORK_BACKOFF_SECONDS = (2, 4, 8, 16, 32)
 INTERIM_DIR = FINETUNE_DIR / "data" / "interim"
 CALLS_PATH = INTERIM_DIR / "calls.jsonl"
@@ -138,6 +137,28 @@ def parse_model_allocations(value: str) -> dict[str, int]:
     return allocations
 
 
+def parse_tier_allocations(value: str) -> dict[str, int]:
+    allocations: dict[str, int] = {}
+    for item in value.split(","):
+        try:
+            tier, count_text = item.rsplit(":", 1)
+            count = int(count_text)
+        except (ValueError, TypeError) as exc:
+            raise argparse.ArgumentTypeError(
+                "--tiers 格式必须为 档位:条数,档位:条数"
+            ) from exc
+        if tier not in TIER_TARGETS:
+            raise argparse.ArgumentTypeError(f"--tiers 含未知档位: {tier}")
+        if tier in allocations:
+            raise argparse.ArgumentTypeError(f"--tiers 含重复档位: {tier}")
+        if count <= 0:
+            raise argparse.ArgumentTypeError("--tiers 的条数必须为正整数")
+        allocations[tier] = count
+    if not allocations:
+        raise argparse.ArgumentTypeError("--tiers 不能为空")
+    return allocations
+
+
 def default_model_allocations(total: int) -> dict[str, int]:
     exact = {model: total * weight for model, weight in DEFAULT_MODEL_WEIGHTS.items()}
     allocated = {model: int(value) for model, value in exact.items()}
@@ -160,18 +181,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--status", action="store_true")
     parser.add_argument("--concurrency", type=int, default=8)
-    parser.add_argument(
+    batch_target_group = parser.add_mutually_exclusive_group()
+    batch_target_group.add_argument(
         "--pilot",
         type=int,
         metavar="N",
         help="批量生成条数；当前最多 5000，支持 checkpoint 续跑",
     )
-    parser.add_argument("--target", type=int, metavar="N", help="正式批次目标；默认 500")
+    batch_target_group.add_argument("--target", type=int, metavar="N", help="正式批次目标；默认 500")
+    batch_target_group.add_argument(
+        "--tiers",
+        type=parse_tier_allocations,
+        help="只调度指定档位，例如 短密:1000,短:1000",
+    )
     parser.add_argument("--batch-id")
     args = parser.parse_args()
-    if args.pilot is not None and args.target is not None:
-        parser.error("--pilot 与 --target 互斥")
-    if args.target is not None:
+    if args.tiers is not None:
+        args.pilot = sum(args.tiers.values())
+    elif args.target is not None:
         args.pilot = args.target
     elif (
         args.pilot is None
@@ -560,8 +587,8 @@ def call_dashscope(model: str, prompt: str, tier: str) -> str:
 def parse_batch_response(raw: str, expected_count: int) -> list[str]:
     matches = list(SAMPLE_BLOCK_RE.finditer(raw))
     residual = SAMPLE_BLOCK_RE.sub("", raw).strip()
-    if residual:
-        raise ParseError(f"SAMPLE 块外存在多余内容: {residual[:120]!r}")
+    if "<SAMPLE" in residual or "</SAMPLE>" in residual:
+        raise ParseError(f"SAMPLE 块畸形: {residual[:120]!r}")
     if len(matches) != expected_count:
         raise ParseError(
             f"SAMPLE 块数量 {len(matches)}，期望 {expected_count}"
@@ -881,26 +908,44 @@ def quota_key(lang: str, tier: str, kind: str) -> str:
     return f"{lang}|{TIER_CODES[tier]}|{kind}"
 
 
-def build_quotas(total: int) -> dict[str, int]:
-    def apportioned(weights: dict[str, float]) -> list[str]:
+def build_quotas(
+    total: int, tier_allocations: dict[str, int] | None = None
+) -> dict[str, int]:
+    def apportioned(weights: dict[str, float], subtotal: int) -> list[str]:
         rows: list[tuple[str, float, int]] = []
         assigned = 0
         for name, weight in weights.items():
-            exact = total * weight
+            exact = subtotal * weight
             base = int(exact)
             rows.append((name, exact - base, base))
             assigned += base
         counts = {name: base for name, _, base in rows}
         for name, _, _ in sorted(rows, key=lambda row: (-row[1], row[0]))[
-            : total - assigned
+            : subtotal - assigned
         ]:
             counts[name] += 1
         values = [name for name in weights for _ in range(counts[name])]
         return values
 
-    langs = apportioned(LANG_WEIGHTS)
-    tiers = apportioned(TIER_WEIGHTS)
-    kinds = apportioned(KIND_WEIGHTS)
+    if tier_allocations is not None:
+        quotas = {
+            quota_key(lang, tier, kind): 0
+            for lang in LANG_WEIGHTS
+            for tier in tier_allocations
+            for kind in KIND_WEIGHTS
+        }
+        for tier_index, (tier, count) in enumerate(tier_allocations.items()):
+            langs = apportioned(LANG_WEIGHTS, count)
+            kinds = apportioned(KIND_WEIGHTS, count)
+            random.Random(72001 + tier_index).shuffle(langs)
+            random.Random(72002 + tier_index).shuffle(kinds)
+            for lang, kind in zip(langs, kinds, strict=True):
+                quotas[quota_key(lang, tier, kind)] += 1
+        return quotas
+
+    langs = apportioned(LANG_WEIGHTS, total)
+    tiers = apportioned(TIER_WEIGHTS, total)
+    kinds = apportioned(KIND_WEIGHTS, total)
     random.Random(71001).shuffle(langs)
     random.Random(71002).shuffle(tiers)
     random.Random(71003).shuffle(kinds)
@@ -954,6 +999,9 @@ def build_model_quotas(
     if len(cells) != sum(allocations.values()):
         raise ValueError("模型条数与全局配额总数不一致")
     model_names = list(allocations)
+    active_langs = {decode_quota_key(key)[0] for key, count in quotas.items() if count}
+    active_tiers = {decode_quota_key(key)[1] for key, count in quotas.items() if count}
+    active_kinds = {decode_quota_key(key)[2] for key, count in quotas.items() if count}
     rng = random.Random(seed)
     for _ in range(100_000):
         shuffled = cells.copy()
@@ -968,9 +1016,9 @@ def build_model_quotas(
         for model_cells in chunks.values():
             decoded = [decode_quota_key(key) for key in model_cells]
             if (
-                {lang for lang, _, _ in decoded} != set(LANG_WEIGHTS)
-                or {tier for _, tier, _ in decoded} != set(TIER_WEIGHTS)
-                or {kind for _, _, kind in decoded} != set(KIND_WEIGHTS)
+                {lang for lang, _, _ in decoded} != active_langs
+                or {tier for _, tier, _ in decoded} != active_tiers
+                or {kind for _, _, kind in decoded} != active_kinds
             ):
                 complete = False
                 break
@@ -1062,7 +1110,7 @@ def initial_checkpoint(
     model_quotas: dict[str, int],
 ) -> dict[str, Any]:
     return {
-        "version": 3,
+        "version": 4,
         "batch_id": args.batch_id,
         "models": args.models,
         "base_seed": args.seed,
@@ -1079,6 +1127,9 @@ def initial_checkpoint(
         "exhausted_cells": [],
         "unavailable_models": {},
         "model_network_failures": {model: 0 for model in args.models},
+        "model_batch_stats": {
+            model: {"success": 0, "failure": 0} for model in args.models
+        },
         "api_attempt_count": 0,
         "rejections": {},
     }
@@ -1108,10 +1159,16 @@ def load_checkpoint(
         checkpoint["rejections"] = {}
         checkpoint.pop("consecutive_error_signature", None)
         checkpoint.pop("consecutive_error_count", None)
+    if checkpoint.get("version") == 3:
+        checkpoint["version"] = 4
     checkpoint.setdefault("cell_schedule_misses", {})
     checkpoint.setdefault("exhausted_cells", [])
     checkpoint.setdefault("unavailable_models", {})
     checkpoint.setdefault("model_network_failures", {model: 0 for model in args.models})
+    checkpoint.setdefault(
+        "model_batch_stats",
+        {model: {"success": 0, "failure": 0} for model in args.models},
+    )
     checkpoint.setdefault("api_attempt_count", int(checkpoint.get("call_count", 0)))
     checkpoint.setdefault("rejections", {})
     expected = {
@@ -1139,12 +1196,7 @@ def reconcile_checkpoint_with_gold(
     for record in gold_records:
         cell_key = quota_key(record["lang"], record["meta"]["tier"], record["kind"])
         key = model_quota_key(record["gen"]["model"], cell_key)
-        if key not in completed:
-            raise ValueError(f"pilot gold 含不属于本 checkpoint 的配额键: {key}")
-        completed[key] += 1
-        soft_cap = math.ceil(checkpoint["model_quotas"][key] * SOFT_QUOTA_FACTOR)
-        if completed[key] > soft_cap:
-            raise ValueError(f"pilot gold 的配额 {key} 已超出 125% 软上限")
+        completed[key] = completed.get(key, 0) + 1
         if record["id"] in ids:
             raise ValueError(f"pilot gold 含重复 id: {record['id']}")
         ids.add(record["id"])
@@ -1296,15 +1348,11 @@ def write_review_markdown(path: Path, records: list[dict[str, Any]]) -> None:
     path.write_bytes("".join(sections).encode("utf-8"))
 
 
-def soft_quota_cap(target: int) -> int:
-    return math.ceil(target * SOFT_QUOTA_FACTOR) if target else 0
-
-
 def is_quality_error(exc: BaseException) -> bool:
     message = str(exc)
     return isinstance(exc, ParseError) or any(
         marker in message
-        for marker in ("实体密度", "实体绝对数", "API 未返回非空文本 content")
+        for marker in ("实体密度", "实体绝对数")
     )
 
 
@@ -1322,7 +1370,7 @@ def classify_api_error(exc: BaseException) -> str:
     if isinstance(exc, (httpx.TimeoutException, httpx.NetworkError)):
         return "network"
     if isinstance(exc, ValueError) and "API 未返回非空文本 content" in str(exc):
-        return "quality"
+        return "network"
     return "fatal"
 
 
@@ -1489,7 +1537,7 @@ def run_status(args: argparse.Namespace) -> None:
 
 def run_pilot(args: argparse.Namespace) -> None:
     axes = load_axes()
-    quotas = build_quotas(args.pilot)
+    quotas = build_quotas(args.pilot, args.tiers)
     base_model_quotas = build_model_quotas(quotas, args.models, args.seed)
     output_path = INTERIM_DIR / f"{args.batch_id}.jsonl"
     checkpoint_path = INTERIM_DIR / f"{args.batch_id}.checkpoint.json"
@@ -1511,12 +1559,20 @@ def run_pilot(args: argparse.Namespace) -> None:
     stop_event = threading.Event()
 
     persist_checkpoint(checkpoint_path, checkpoint, lock)
+    if args.tiers is not None:
+        quota_rows = [
+            {"tier": tier, "lang": lang, "kind": kind, "quota": count}
+            for key, count in quotas.items()
+            for lang, tier, kind in (decode_quota_key(key),)
+        ]
+        print("=== 实际调度配额 ===")
+        print(json.dumps(quota_rows, ensure_ascii=False, indent=2))
     print(
         "如需中途停止，在另一个窗口执行："
         f"New-Item finetune\\data\\interim\\{args.batch_id}.stop",
         flush=True,
     )
-    for record in records[:3]:
+    for record in records[:10]:
         print_record_full(record, "续跑前已保存")
 
     def elapsed() -> float:
@@ -1618,23 +1674,41 @@ def run_pilot(args: argparse.Namespace) -> None:
                     accepted: list[dict[str, Any]] = []
                     quality_errors: list[str] = []
                     other_errors: list[str] = []
-                    overflow_count = 0
+                    model_stats = checkpoint["model_batch_stats"].setdefault(
+                        model, {"success": 0, "failure": 0}
+                    )
 
                     if outcome["error"]:
+                        model_stats["failure"] = int(model_stats["failure"]) + 1
                         signature = outcome["error"]
                         category = outcome["error_class"]
                         if category == "quality":
                             quality_errors.append(signature)
                         elif category in ("auth", "network"):
                             checkpoint["model_network_failures"][model] = int(checkpoint["model_network_failures"].get(model, 0)) + 1
-                            if category == "auth" or checkpoint["model_network_failures"][model] >= MAX_NETWORK_FAILURES_PER_MODEL:
+                            attempts = int(model_stats["success"]) + int(model_stats["failure"])
+                            success_rate = int(model_stats["success"]) / attempts if attempts else 0.0
+                            network_unavailable = (
+                                checkpoint["model_network_failures"][model]
+                                >= MAX_NETWORK_FAILURES_PER_MODEL
+                                and success_rate < 0.05
+                            )
+                            if category == "auth" or network_unavailable:
+                                stats_text = (
+                                    f"累计成功 {model_stats['success']} / 失败 {model_stats['failure']}，"
+                                    f"成功率 {success_rate:.2%}"
+                                )
                                 message = (
                                     "DashScope 鉴权失败(401/403)。请检查环境变量 DASHSCOPE_API_KEY，"
                                     "或到百炼控制台确认余额。"
                                     f"已完成的 {sum(completed.values())} 条已保存在 "
                                     f"finetune/data/interim/{args.batch_id}.jsonl，修好后重跑同一条命令即可续跑。"
+                                    f"{stats_text}"
                                     if category == "auth"
-                                    else f"连续 {checkpoint['model_network_failures'][model]} 个批次在重试耗尽后仍为网络失败"
+                                    else (
+                                        f"连续 {checkpoint['model_network_failures'][model]} 个批次在重试耗尽后仍为网络失败，"
+                                        f"{stats_text}"
+                                    )
                                 )
                                 checkpoint["unavailable_models"][model] = message
                                 unavailable.add(model)
@@ -1668,9 +1742,6 @@ def run_pilot(args: argparse.Namespace) -> None:
                                     if gold["id"] in existing_ids:
                                         raise ValueError(f"与已有批次 id 冲突: {gold['id']}")
                                     actual_key = model_quota_key(model, quota_key(context["lang"], gold["meta"]["tier"], context["kind"]))
-                                    if completed.get(actual_key, 0) >= soft_quota_cap(model_quotas.get(actual_key, 0)):
-                                        overflow_count += 1
-                                        continue
                                     accepted.append(gold)
                                     completed[actual_key] = completed.get(actual_key, 0) + 1
                                     existing_texts.add(text_value)
@@ -1681,6 +1752,9 @@ def run_pilot(args: argparse.Namespace) -> None:
                         except (ParseError, ValueError) as exc:
                             signature = error_signature(exc)
                             (quality_errors if is_quality_error(exc) else other_errors).append(signature)
+                        model_stats[
+                            "success" if accepted else "failure"
+                        ] = int(model_stats["success" if accepted else "failure"]) + 1
 
                     append_jsonl(output_path, accepted)
                     records.extend(accepted)
@@ -1699,16 +1773,12 @@ def run_pilot(args: argparse.Namespace) -> None:
                         "network_attempts": outcome["network_attempts"],
                         "error_signature": signature,
                         "error_counts": dict(sorted(Counter(all_errors).items())),
-                        "overflow_rejections": overflow_count,
                         "success": bool(accepted),
                         "accepted": len(accepted),
                         "dry_run": bool(args.dry_run),
                     }])
                     for signature_value in all_errors:
                         checkpoint["rejections"][signature_value] = int(checkpoint["rejections"].get(signature_value, 0)) + 1
-                    if overflow_count:
-                        checkpoint["rejections"]["合格但实测归入已满单元"] = int(checkpoint["rejections"].get("合格但实测归入已满单元", 0)) + overflow_count
-
                     if accepted:
                         checkpoint["cell_failures"][context["cell_key"]] = 0
                         checkpoint["cell_schedule_misses"][context["cell_key"]] = 0
@@ -1718,12 +1788,12 @@ def run_pilot(args: argparse.Namespace) -> None:
                         if failures >= MAX_SAMPLE_ATTEMPTS:
                             exhausted.add(context["cell_key"])
                             print(f"质量失败连续 {failures} 次，停止单元 {context['cell_key']}，继续其他单元。")
-                    elif overflow_count or other_errors:
+                    elif other_errors:
                         misses = int(checkpoint["cell_schedule_misses"].get(context["cell_key"], 0)) + 1
                         checkpoint["cell_schedule_misses"][context["cell_key"]] = misses
                         if misses >= MAX_SCHEDULING_MISSES:
                             exhausted.add(context["cell_key"])
-                            print(f"单元连续 {misses} 批没有样本落入可接收软桶，停止调度 {context['cell_key']}；这不计入质量失败。")
+                            print(f"单元连续 {misses} 批没有产出可接受样本，停止调度 {context['cell_key']}；这不计入质量失败。")
                     checkpoint["completed"] = completed
                     checkpoint["exhausted_cells"] = sorted(exhausted)
                     checkpoint["elapsed_seconds"] = round(elapsed(), 6)
@@ -1733,15 +1803,20 @@ def run_pilot(args: argparse.Namespace) -> None:
                     if sum(completed.values()) >= args.pilot:
                         stop_event.set()
 
-                    for record in accepted:
-                        if len(records) - len(accepted) + accepted.index(record) < 3:
+                    previous_total = len(records) - len(accepted)
+                    for offset, record in enumerate(accepted):
+                        if previous_total + offset < 10:
                             print_record_full(record, context["tier"])
                     total_now = sum(completed.values())
-                    entity_count = sum(len(record["spans"]) for record in accepted)
-                    char_count = sum(len(record["text"]) for record in accepted)
-                    print(f"[{total_now:4d}/{args.pilot}] {model:<14} {context['lang']}/{context['tier']}/{context['kind']:<15} {char_count}字 {entity_count}实体  调用{checkpoint['api_attempt_count']}  用时 {format_elapsed(elapsed())}  拒绝{len(all_errors) + overflow_count}")
-                    if total_now and total_now % 200 < len(accepted):
-                        print(json.dumps(distribution_tables(records) | {"milestone": total_now}, ensure_ascii=False, indent=2))
+                    if total_now // 100 > previous_total // 100:
+                        tier_counts = dict(sorted(Counter(
+                            record["meta"]["tier"] for record in records
+                        ).items()))
+                        rejected_total = sum(int(value) for value in checkpoint["rejections"].values())
+                        print(
+                            f"[{total_now:4d}/{args.pilot}] 汇总  调用{checkpoint['api_attempt_count']}  "
+                            f"用时 {format_elapsed(elapsed())}  拒绝{rejected_total}  档位{tier_counts}"
+                        )
                 if stop_reason:
                     break
     except KeyboardInterrupt:
