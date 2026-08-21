@@ -47,8 +47,23 @@ DASHSCOPE_CHAT_COMPLETIONS = (
 TIER_TARGETS = {
     "短密": {"code": "dense", "zh": "50-160", "en": "150-400", "entities": (4, 6)},
     "短": {"code": "short", "zh": "50-150", "en": "150-400", "entities": (1, 3)},
-    "中": {"code": "mid", "zh": "300-800", "en": "700-1100", "entities": (2, 6)},
-    "长": {"code": "long", "zh": "1500-3000", "en": "1500-3000", "entities": (0, 3)},
+    "中": {"code": "mid", "zh": "300-540", "en": "300-540", "entities": (2, 6)},
+    "长": {"code": "long", "zh": "600-1000", "en": "600-1000", "entities": (0, 3)},
+}
+TIER_STRUCTURE = {
+    "短密": "写 2-4 个句子。",
+    "短": "写 2-4 个句子。",
+    "中": "写 1-2 个自然段，每段 3-5 句。",
+    "长": (
+        "写 2-3 个自然段，每段 3-4 句。"
+        "不要写成长篇独白或连续吐槽，段落之间要有明确的话题推进。"
+    ),
+}
+TIER_REQUEST_LIMITS = {
+    "短密": {"timeout": 45.0, "max_tokens": 2000},
+    "短": {"timeout": 45.0, "max_tokens": 2000},
+    "中": {"timeout": 60.0, "max_tokens": 2500},
+    "长": {"timeout": 60.0, "max_tokens": 1500},
 }
 TIER_CODES = {name: target["code"] for name, target in TIER_TARGETS.items()}
 MAX_ENTITY_DENSITY_PER_THOUSAND = 60.0
@@ -71,14 +86,15 @@ ENTITY_COUNT_LEAK_RE = re.compile(
 )
 
 LANG_WEIGHTS = {"zh": 0.50, "en": 0.30, "mixed": 0.20}
-TIER_WEIGHTS = {"短密": 0.05, "短": 0.25, "中": 0.40, "长": 0.30}
+TIER_WEIGHTS = {"短密": 0.05, "短": 0.30, "中": 0.55, "长": 0.10}
 KIND_WEIGHTS = {"positive": 0.70, "hard_negative": 0.20, "true_negative": 0.10}
 DEFAULT_MODEL_WEIGHTS = {
-    "glm-5.2": 0.40,
-    "deepseek-v4-pro": 0.30,
-    "qwen3.7-plus": 0.30,
+    "glm-5.2": 0.30,
+    "deepseek-v4-pro": 0.25,
+    "qwen3.7-plus": 0.25,
+    "kimi-k2.6": 0.20,
 }
-BATCH_SIZE_BY_TIER = {"短密": 8, "短": 8, "中": 4, "长": 2}
+BATCH_SIZE_BY_TIER = {"短密": 8, "短": 8, "中": 4, "长": 1}
 MAX_PILOT_SAMPLES = 5000
 MAX_API_CALLS = 2500
 MAX_WALL_SECONDS = 7200.0
@@ -89,6 +105,17 @@ MAX_NETWORK_FAILURES_PER_MODEL = 5
 NETWORK_BACKOFF_SECONDS = (2, 4, 8, 16, 32)
 INTERIM_DIR = FINETUNE_DIR / "data" / "interim"
 CALLS_PATH = INTERIM_DIR / "calls.jsonl"
+
+
+class FastInterruptExecutor(ThreadPoolExecutor):
+    """KeyboardInterrupt 时不等待在途请求；主线程随后持久化并立即退出。"""
+
+    def __exit__(self, exc_type, exc_value, traceback) -> bool:
+        self.shutdown(
+            wait=exc_type is not KeyboardInterrupt,
+            cancel_futures=exc_type is KeyboardInterrupt,
+        )
+        return False
 
 
 def parse_model_allocations(value: str) -> dict[str, int]:
@@ -128,18 +155,33 @@ def parse_args() -> argparse.Namespace:
     model_group = parser.add_mutually_exclusive_group()
     model_group.add_argument("--model")
     model_group.add_argument("--models", type=parse_model_allocations)
+    parser.add_argument("--probe-models", type=lambda value: [item.strip() for item in value.split(",") if item.strip()])
     parser.add_argument("--seed", default=100, type=int)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--status", action="store_true")
-    parser.add_argument("--concurrency", type=int, default=3)
+    parser.add_argument("--concurrency", type=int, default=8)
     parser.add_argument(
         "--pilot",
         type=int,
         metavar="N",
         help="批量生成条数；当前最多 5000，支持 checkpoint 续跑",
     )
+    parser.add_argument("--target", type=int, metavar="N", help="正式批次目标；默认 500")
     parser.add_argument("--batch-id")
     args = parser.parse_args()
+    if args.pilot is not None and args.target is not None:
+        parser.error("--pilot 与 --target 互斥")
+    if args.target is not None:
+        args.pilot = args.target
+    elif (
+        args.pilot is None
+        and not args.status
+        and args.probe_models is None
+        and args.tier is None
+        and args.lang is None
+        and args.model is None
+    ):
+        args.pilot = 500
     if args.concurrency < 1:
         parser.error("--concurrency 必须为正整数")
     if args.status:
@@ -147,6 +189,14 @@ def parse_args() -> argparse.Namespace:
             parser.error("--status 必须提供 --batch-id")
         if args.pilot is not None or args.model is not None or args.models is not None:
             parser.error("--status 不接受 --pilot/--model/--models")
+        return args
+    if args.probe_models is not None:
+        if not args.probe_models:
+            parser.error("--probe-models 不能为空")
+        if args.pilot is not None or args.model is not None or args.models is not None:
+            parser.error("--probe-models 不接受 --pilot/--target/--model/--models")
+        if args.tier is not None or args.lang is not None:
+            parser.error("--probe-models 自动覆盖语种与短/中档，不接受 --tier/--lang")
         return args
     if args.pilot is None:
         if args.model is None:
@@ -270,7 +320,6 @@ def build_prompt(
     entity_seeds: dict[str, list[str]] | None = None,
 ) -> str:
     target = TIER_TARGETS[tier]
-    length = target["en"] if lang == "en" else target["zh"]
     minimum, maximum = (0, 0) if kind == "true_negative" else target["entities"]
     locale = {
         "zh": "使用自然中文；姓名、地址和地名采用中文语境。",
@@ -281,10 +330,9 @@ def build_prompt(
     placeholders = " ".join(f"{{{{{label}}}}}" for label in STRUCTURED_LABELS)
     sparse = (
         "\n文中要自然地出现若干句子，提到“地址”“电话”“联系人”“邮箱”"
-        "这类词，但并不给出具体的个人信息。例如“请把地址发给我”“那个电话"
-        "一直没打通”“联系人还没定”。这类句子和真正含个人信息的句子应当"
-        "交替出现。"
-        if tier == "长"
+        "这类词，但并不给出具体的个人信息。例如“请把地址发给我”"
+        "“那个电话一直没打通”。"
+        if tier in {"中", "长"}
         else ""
     )
     annotation_rules = (
@@ -308,7 +356,7 @@ PHONE、EMAIL、ID_CARD、BANK_CARD、PASSPORT 的标签内容只能分别写成
 载体：{sampled['format']}
 语气：{sampled['tone']}
 语言约束：{locale}
-长度档：{tier}（{length} 字符）
+篇章结构：{TIER_STRUCTURE[tier]}
 实体数量：{minimum}–{maximum} 个
 {annotation_rules}
 {seeds_rule}
@@ -406,16 +454,17 @@ def fake_batch_response(
     seed: int,
     trap_sets: list[list[tuple[str, str]]] | None = None,
 ) -> str:
-    target_chars = {
-        "短密": {"zh": 110, "en": 260},
-        "短": {"zh": 110, "en": 260},
-        "中": {"zh": 450, "en": 820},
-        "长": {"zh": 1650, "en": 1650},
+    target_range = {
+        "短密": {"zh": (50, 160), "en": (150, 400)},
+        "短": {"zh": (50, 150), "en": (150, 400)},
+        "中": {"zh": (300, 540), "en": (300, 540)},
+        "长": {"zh": (600, 1000), "en": (600, 1000)},
     }[tier]["en" if lang == "en" else "zh"]
     entity_count = {"短密": 4, "短": 2, "中": 3, "长": 2}[tier]
     blocks: list[str] = []
     for index in range(sample_count):
         rng = random.Random(seed * 1009 + index)
+        target_chars = rng.randint(*target_range)
         seeds = seed_entities(seed + index, lang, tier, sampled["label_group"])
         values = {
             "PERSON": seeds["people"][0] if seeds["people"] else ("Alex Chen" if lang == "en" else "张伟"),
@@ -435,25 +484,41 @@ def fake_batch_response(
                 else:
                     prefix_parts.append(surface)
         prefix = " ".join(prefix_parts)
+        requested_id = make_sample_id(seed + index, lang, tier)
+        visible_prefix = re.sub(
+            r"</?[A-Z_]+>",
+            "",
+            replace_structured_placeholders(
+                prefix, seed + index, requested_id, True, lang
+            ),
+        )
+        separator_length = 1 if visible_prefix else 0
+        filler_length = max(1, target_chars - len(visible_prefix) - separator_length)
         if lang == "en":
             alphabet = "abcdefghijklmnopqrstuvwxyz"
-            filler = " ".join(
-                "".join(rng.choice(alphabet) for _ in range(9))
-                for _ in range(target_chars // 10 + 8)
-            )
+            filler_chars = [rng.choice(alphabet) for _ in range(filler_length)]
+            for position in range(9, filler_length, 10):
+                filler_chars[position] = " "
+            filler = "".join(filler_chars)
         elif lang == "mixed":
             alphabet = "数据隐私系统审计记录流程安全服务"
-            filler = "".join(rng.choice(alphabet) for _ in range(target_chars))
-            filler = "mixed dry run " + filler
+            mixed_prefix = "mixed dry run "[:filler_length]
+            filler = mixed_prefix + "".join(
+                rng.choice(alphabet)
+                for _ in range(filler_length - len(mixed_prefix))
+            )
         else:
             alphabet = "数据隐私系统审计记录流程安全服务"
-            filler = "".join(rng.choice(alphabet) for _ in range(target_chars))
+            filler = "".join(rng.choice(alphabet) for _ in range(filler_length))
         body = (prefix + " " + filler).strip()
         blocks.append(f"<SAMPLE>\n{body}\n</SAMPLE>")
     return "\n".join(blocks)
 
 
-def call_dashscope_with_usage(model: str, prompt: str) -> tuple[str, dict[str, int]]:
+def call_dashscope_with_usage(
+    model: str, prompt: str, tier: str
+) -> tuple[str, dict[str, int]]:
+    limits = TIER_REQUEST_LIMITS[tier]
     response = httpx.post(
         DASHSCOPE_CHAT_COMPLETIONS,
         headers={"Authorization": f"Bearer {os.environ['DASHSCOPE_API_KEY']}"},
@@ -461,8 +526,9 @@ def call_dashscope_with_usage(model: str, prompt: str) -> tuple[str, dict[str, i
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 1.0,
+            "max_tokens": limits["max_tokens"],
         },
-        timeout=180.0,
+        timeout=limits["timeout"],
     )
     if not response.is_success:
         print("=== API 原始响应 ===")
@@ -486,8 +552,8 @@ def call_dashscope_with_usage(model: str, prompt: str) -> tuple[str, dict[str, i
     }
 
 
-def call_dashscope(model: str, prompt: str) -> str:
-    content, _ = call_dashscope_with_usage(model, prompt)
+def call_dashscope(model: str, prompt: str, tier: str) -> str:
+    content, _ = call_dashscope_with_usage(model, prompt, tier)
     return content
 
 
@@ -652,7 +718,7 @@ def substring_leak_warnings(
 
 def classify_tier(lang: str, character_count: int, entity_count: int) -> str:
     """规格「长度分档」表 B：按实测长度与实体数归类或丢弃。"""
-    character_maximum = 7500 if lang == "en" else 4000
+    character_maximum = 4000
     if character_count < 40 or character_count > character_maximum:
         raise ValueError(
             f"字符数 {character_count} 超出 {lang} 允许区间 [40, {character_maximum}]"
@@ -660,7 +726,7 @@ def classify_tier(lang: str, character_count: int, entity_count: int) -> str:
     short_upper = 450 if lang == "en" else 200
     if character_count <= short_upper:
         tier = "短密" if entity_count >= 4 else "短"
-    elif character_count <= 1199:
+    elif character_count <= 549:
         tier = "中"
     else:
         tier = "长"
@@ -1291,7 +1357,7 @@ def request_batch(
         if stop_event.is_set():
             return {"raw": "", "usage": {"input_tokens": 0, "output_tokens": 0}, "network_attempts": network_attempts, "error": "全局已停止，取消网络重试", "error_class": "cancelled", "latency": time.perf_counter() - started}
         try:
-            raw, usage = call_dashscope_with_usage(model, prompt)
+            raw, usage = call_dashscope_with_usage(model, prompt, requested_tier)
             return {
                 "raw": raw,
                 "usage": usage,
@@ -1428,6 +1494,7 @@ def run_pilot(args: argparse.Namespace) -> None:
     output_path = INTERIM_DIR / f"{args.batch_id}.jsonl"
     checkpoint_path = INTERIM_DIR / f"{args.batch_id}.checkpoint.json"
     review_path = INTERIM_DIR / f"{args.batch_id}_review.md"
+    stop_path = INTERIM_DIR / f"{args.batch_id}.stop"
     checkpoint = load_checkpoint(checkpoint_path, args, quotas, base_model_quotas)
     model_quotas = checkpoint["model_quotas"]
     records = read_jsonl(output_path)
@@ -1444,6 +1511,11 @@ def run_pilot(args: argparse.Namespace) -> None:
     stop_event = threading.Event()
 
     persist_checkpoint(checkpoint_path, checkpoint, lock)
+    print(
+        "如需中途停止，在另一个窗口执行："
+        f"New-Item finetune\\data\\interim\\{args.batch_id}.stop",
+        flush=True,
+    )
     for record in records[:3]:
         print_record_full(record, "续跑前已保存")
 
@@ -1451,11 +1523,30 @@ def run_pilot(args: argparse.Namespace) -> None:
         return elapsed_before + time.perf_counter() - started
 
     futures: dict[Future[dict[str, Any]], dict[str, Any]] = {}
-    active_models: set[str] = set()
+
+    def exit_for_stop_file() -> None:
+        stop_event.set()
+        for future in futures:
+            future.cancel()
+        checkpoint["completed"] = completed
+        checkpoint["elapsed_seconds"] = round(elapsed(), 6)
+        persist_checkpoint(checkpoint_path, checkpoint, lock)
+        try:
+            stop_path.unlink()
+        except FileNotFoundError:
+            pass
+        print(
+            f"检测到停止文件，已保存 {sum(completed.values())} 条，"
+            "重跑同一条命令即可续跑",
+            flush=True,
+        )
+        os._exit(0)
 
     try:
-        with ThreadPoolExecutor(max_workers=min(args.concurrency, len(args.models))) as executor:
+        with FastInterruptExecutor(max_workers=args.concurrency) as executor:
             while True:
+                if stop_path.exists():
+                    exit_for_stop_file()
                 total = sum(completed.values())
                 all_reached = all(completed.get(key, 0) >= target for key, target in model_quotas.items())
                 if total >= args.pilot or all_reached:
@@ -1471,14 +1562,17 @@ def run_pilot(args: argparse.Namespace) -> None:
                 remaining_total = args.pilot - total
                 tail_threshold = max(BATCH_SIZE_BY_TIER.values()) * (args.concurrency + 1)
                 desired_concurrency = 1 if remaining_total <= tail_threshold else args.concurrency
-                for model in args.models:
-                    if len(futures) >= desired_concurrency:
+                while len(futures) < desired_concurrency:
+                    schedulable = [
+                        model for model in args.models
+                        if model not in unavailable
+                        and choose_model_target(model, model_quotas, completed, exhausted) is not None
+                    ]
+                    if not schedulable:
                         break
-                    if model in unavailable or model in active_models:
-                        continue
+                    model = schedulable[int(checkpoint["call_count"]) % len(schedulable)]
                     target = choose_model_target(model, model_quotas, completed, exhausted)
-                    if target is None:
-                        continue
+                    assert target is not None
                     _, lang, requested_tier, kind = target
                     cell_key = model_quota_key(model, quota_key(lang, requested_tier, kind))
                     call_index = int(checkpoint["call_count"])
@@ -1511,7 +1605,6 @@ def run_pilot(args: argparse.Namespace) -> None:
                         stop_event=stop_event,
                     )
                     futures[future] = {"model": model, "lang": lang, "tier": requested_tier, "kind": kind, "cell_key": cell_key, "call_index": call_index, "seed": call_seed, "sample_count": sample_count, "sampled": sampled, "trap_sets": trap_sets}
-                    active_models.add(model)
 
                 if not futures:
                     stop_reason = "所有剩余单元均已耗尽或模型均不可用"
@@ -1520,7 +1613,6 @@ def run_pilot(args: argparse.Namespace) -> None:
                 for future in done:
                     context = futures.pop(future)
                     model = context["model"]
-                    active_models.remove(model)
                     outcome = future.result()
                     checkpoint["api_attempt_count"] = int(checkpoint.get("api_attempt_count", 0)) + int(outcome["network_attempts"])
                     accepted: list[dict[str, Any]] = []
@@ -1636,6 +1728,8 @@ def run_pilot(args: argparse.Namespace) -> None:
                     checkpoint["exhausted_cells"] = sorted(exhausted)
                     checkpoint["elapsed_seconds"] = round(elapsed(), 6)
                     persist_checkpoint(checkpoint_path, checkpoint, lock)
+                    if stop_path.exists():
+                        exit_for_stop_file()
                     if sum(completed.values()) >= args.pilot:
                         stop_event.set()
 
@@ -1651,11 +1745,17 @@ def run_pilot(args: argparse.Namespace) -> None:
                 if stop_reason:
                     break
     except KeyboardInterrupt:
+        stop_event.set()
+        for future in futures:
+            future.cancel()
         checkpoint["completed"] = completed
         checkpoint["elapsed_seconds"] = round(elapsed(), 6)
         persist_checkpoint(checkpoint_path, checkpoint, lock)
-        print(f"已保存 {sum(completed.values())} 条，重跑同一条命令即可续跑")
-        return
+        print(
+            f"已保存 {sum(completed.values())} 条，重跑同一条命令即可续跑",
+            flush=True,
+        )
+        os._exit(130)
 
     checkpoint["completed"] = completed
     checkpoint["elapsed_seconds"] = round(elapsed(), 6)
@@ -1687,7 +1787,7 @@ def run_single(args: argparse.Namespace) -> None:
     print("=== Prompt ===")
     print(prompt)
 
-    raw = fake_response(args.lang, sampled, args.tier, args.seed) if args.dry_run else call_dashscope(args.model, prompt)
+    raw = fake_response(args.lang, sampled, args.tier, args.seed) if args.dry_run else call_dashscope(args.model, prompt, args.tier)
     print("=== 原始返回 ===")
     print(raw)
 
@@ -1741,10 +1841,111 @@ def run_single(args: argparse.Namespace) -> None:
     print(json.dumps(gold, ensure_ascii=False, indent=2))
 
 
+def run_probe_models(args: argparse.Namespace) -> None:
+    axes = load_axes()
+    combinations = (
+        ("zh", "短"), ("en", "短"), ("mixed", "短"),
+        ("zh", "中"), ("en", "中"), ("mixed", "中"),
+        ("zh", "短"), ("en", "中"),
+    )
+    stop_event = threading.Event()
+    futures: dict[Future[dict[str, Any]], dict[str, Any]] = {}
+    results: dict[str, list[dict[str, Any]]] = {
+        model: [] for model in args.probe_models
+    }
+    with FastInterruptExecutor(max_workers=args.concurrency) as executor:
+        for model_index, model in enumerate(args.probe_models):
+            for item_index, (lang, tier) in enumerate(combinations):
+                seed = args.seed + model_index * 100 + item_index
+                sampled = sample_axes(axes, tier, lang, seed)
+                prompt = build_batch_prompt(
+                    tier, lang, sampled, "positive", 1, seed, [[]]
+                )
+                future = executor.submit(
+                    request_batch,
+                    model=model,
+                    prompt=prompt,
+                    dry_run=args.dry_run,
+                    requested_tier=tier,
+                    lang=lang,
+                    sampled=sampled,
+                    kind="positive",
+                    sample_count=1,
+                    seed=seed,
+                    trap_sets=[[]],
+                    stop_event=stop_event,
+                )
+                futures[future] = {
+                    "model": model, "lang": lang, "tier": tier,
+                    "seed": seed, "sampled": sampled,
+                }
+        try:
+            for future in futures:
+                context = futures[future]
+                outcome = future.result()
+                item = {
+                    "lang": context["lang"],
+                    "tier": context["tier"],
+                    "latency": float(outcome["latency"]),
+                    "good": False,
+                    "characters": None,
+                    "empty_content": bool(
+                        outcome["error"]
+                        and "API 未返回非空文本 content" in outcome["error"]
+                    ),
+                    "error": outcome["error"],
+                }
+                if not outcome["error"]:
+                    try:
+                        raw = parse_batch_response(outcome["raw"], 1)[0]
+                        gold, _ = process_generated_sample(
+                            raw,
+                            axes=axes,
+                            requested_tier=context["tier"],
+                            lang=context["lang"],
+                            model=context["model"],
+                            seed=context["seed"],
+                            batch="probe-models",
+                            kind="positive",
+                            sampled=context["sampled"],
+                        )
+                        item["good"] = True
+                        item["characters"] = len(gold["text"])
+                    except (ParseError, ValueError) as exc:
+                        item["error"] = f"{type(exc).__name__}: {exc}"
+                results[context["model"]].append(item)
+        except KeyboardInterrupt:
+            stop_event.set()
+            for future in futures:
+                future.cancel()
+            print("候选模型试水已中断，未完成项已放弃。", flush=True)
+            os._exit(130)
+
+    report = {}
+    for model, items in results.items():
+        good = [item for item in items if item["good"]]
+        report[model] = {
+            "total": len(items),
+            "good": len(good),
+            "good_rate": round(len(good) / len(items), 4) if items else 0.0,
+            "average_characters": round(
+                sum(item["characters"] for item in good) / len(good), 2
+            ) if good else None,
+            "empty_content": sum(item["empty_content"] for item in items),
+            "average_latency_seconds": round(
+                sum(item["latency"] for item in items) / len(items), 3
+            ) if items else None,
+            "items": items,
+        }
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+
+
 def main() -> None:
     args = parse_args()
     if args.status:
         run_status(args)
+    elif args.probe_models is not None:
+        run_probe_models(args)
     elif args.pilot is not None:
         run_pilot(args)
     else:
