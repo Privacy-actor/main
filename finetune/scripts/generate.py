@@ -27,7 +27,9 @@ from primitives import (
     make_bank_card,
     make_email,
     make_id_card,
+    make_org_name,
     make_passport,
+    make_person_name,
     make_phone,
     parse_inline_tagged,
     find_all,
@@ -57,11 +59,25 @@ STRUCTURED_TAG_RE = re.compile(
     r"<(PHONE|EMAIL|ID_CARD|BANK_CARD|PASSPORT)>(.*?)</\1>", re.S
 )
 SAMPLE_BLOCK_RE = re.compile(r"<SAMPLE>\s*(.*?)\s*</SAMPLE>", re.S)
-TRAP_PLACEHOLDER_RE = re.compile(r"\{\{TRAP_(\d+)\}\}")
+LABEL_LEAK_RE = re.compile(
+    r"(?<![A-Za-z_])(?:PERSON|ORG|LOCATION|ADDRESS|PHONE|EMAIL|ID_CARD|BANK_CARD|PASSPORT)(?![A-Za-z_])"
+)
+META_LEAK_RE = re.compile(
+    r"标注|实体数|占位符|内联|跨度|span|本条|本次生成|训练数据|陷阱|标为",
+    re.I,
+)
+ENTITY_COUNT_LEAK_RE = re.compile(
+    r"(?:[零一二三四五六七八九十百两\d]+\s*个\s*实体|实体\s*(?:共|总计|一共|共有)?\s*[零一二三四五六七八九十百两\d]+)"
+)
 
 LANG_WEIGHTS = {"zh": 0.50, "en": 0.30, "mixed": 0.20}
 TIER_WEIGHTS = {"短密": 0.05, "短": 0.25, "中": 0.40, "长": 0.30}
 KIND_WEIGHTS = {"positive": 0.70, "hard_negative": 0.20, "true_negative": 0.10}
+DEFAULT_MODEL_WEIGHTS = {
+    "glm-5.2": 0.40,
+    "deepseek-v4-pro": 0.30,
+    "qwen3.7-plus": 0.30,
+}
 BATCH_SIZE_BY_TIER = {"短密": 8, "短": 8, "中": 4, "长": 2}
 MAX_PILOT_SAMPLES = 5000
 MAX_API_CALLS = 2500
@@ -93,6 +109,16 @@ def parse_model_allocations(value: str) -> dict[str, int]:
     if not allocations:
         raise argparse.ArgumentTypeError("--models 不能为空")
     return allocations
+
+
+def default_model_allocations(total: int) -> dict[str, int]:
+    exact = {model: total * weight for model, weight in DEFAULT_MODEL_WEIGHTS.items()}
+    allocated = {model: int(value) for model, value in exact.items()}
+    for model in sorted(exact, key=lambda name: (-(exact[name] - allocated[name]), name))[
+        : total - sum(allocated.values())
+    ]:
+        allocated[model] += 1
+    return allocated
 
 
 def parse_args() -> argparse.Namespace:
@@ -132,7 +158,7 @@ def parse_args() -> argparse.Namespace:
             if args.dry_run:
                 args.models = {"dry-run": args.pilot}
             else:
-                parser.error("批量模式必须提供 --models")
+                args.models = default_model_allocations(args.pilot)
         if args.tier is not None or args.lang is not None:
             parser.error("批量模式由配额调度档位与语种，不接受 --tier/--lang")
         if not 1 <= args.pilot <= MAX_PILOT_SAMPLES:
@@ -203,11 +229,45 @@ def sample_axes(
     }
 
 
+def seed_entities(
+    seed: int, lang: str, tier: str, labels: list[str]
+) -> dict[str, list[str]]:
+    """用独立 slot_rng 给 prompt 注入可复现的人名与机构名。"""
+    sample_id = make_sample_id(seed, lang, tier)
+    if lang == "mixed":
+        locales = ("zh", "en")
+    else:
+        locales = ("en", "en") if lang == "en" else ("zh", "zh")
+    people = []
+    orgs = []
+    if "PERSON" in labels:
+        people = [
+            make_person_name(slot_rng(seed, sample_id, f"person_seed:{index}"), locale)
+            for index, locale in enumerate(locales)
+        ]
+    if "ORG" in labels:
+        orgs = [
+            make_org_name(slot_rng(seed, sample_id, f"org_seed:{index}"), locale)
+            for index, locale in enumerate(locales)
+        ]
+    return {"people": people, "orgs": orgs}
+
+
+def seed_instruction(seeds: dict[str, list[str]]) -> str:
+    parts = []
+    if seeds["people"]:
+        parts.append("本条中的人物姓名使用：" + "、".join(seeds["people"]) + "。")
+    if seeds["orgs"]:
+        parts.append("机构名使用：" + "、".join(seeds["orgs"]) + "。")
+    return "\n".join(parts)
+
+
 def build_prompt(
     tier: str,
     lang: str,
     sampled: dict[str, Any],
     kind: str = "positive",
+    entity_seeds: dict[str, list[str]] | None = None,
 ) -> str:
     target = TIER_TARGETS[tier]
     length = target["en"] if lang == "en" else target["zh"]
@@ -233,13 +293,15 @@ def build_prompt(
         else f"""本条可使用的标签：{labels}
 label_group 只是允许标签池，不要求每个标签都出现。
 
-ORG 只标注可独立识别的公司、学校、医院、政府机关或社会组织。公司内部的产品部、销售部、人事部、财务部、技术部等部门名不得标成 ORG。
+ORG 标注可独立识别的公司、学校、医院、政府机关、国际组织或社会组织；含姓氏的店名整体标 ORG，但其中姓氏不标 PERSON。公司内部的产品部、销售部、人事部、财务部、技术部等部门名不得标成 ORG。
+机场、车站、产业园、大厦、科技城等命名设施标 LOCATION；若跨度延伸到楼层或门牌则整体标 ADDRESS。小李、张哥、李总、老周、小刘等称谓不标 PERSON，全名必须标 PERSON。
 
 必须用成对的内联标签标注实体，例如 <PERSON>张伟</PERSON>。
 PHONE、EMAIL、ID_CARD、BANK_CARD、PASSPORT 的标签内容只能分别写成以下占位符，禁止自行编写号码或邮箱：
 {placeholders}
 示例：<PHONE>{{{{PHONE}}}}</PHONE>、<BANK_CARD>{{{{BANK_CARD}}}}</BANK_CARD>。"""
     )
+    seeds_rule = seed_instruction(entity_seeds or {"people": [], "orgs": []})
     return f"""生成一条用于隐私实体识别的合成文本，只输出正文，不要解释，不要 Markdown 代码块。
 
 场景：{sampled['domain']}
@@ -249,6 +311,7 @@ PHONE、EMAIL、ID_CARD、BANK_CARD、PASSPORT 的标签内容只能分别写成
 长度档：{tier}（{length} 字符）
 实体数量：{minimum}–{maximum} 个
 {annotation_rules}
+{seeds_rule}
 不要输出未闭合标签、嵌套标签、列表、标题或 JSON。{sparse}"""
 
 
@@ -258,22 +321,34 @@ def build_batch_prompt(
     sampled: dict[str, Any],
     kind: str,
     sample_count: int,
-    trap_count: int = 2,
+    seed: int,
+    trap_sets: list[list[tuple[str, str]]] | None = None,
 ) -> str:
     base = build_prompt(tier, lang, sampled, kind)
     if kind == "hard_negative":
-        placeholders = " ".join(f"{{{{TRAP_{i}}}}}" for i in range(trap_count))
-        kind_rule = f"""
-样本性质：hard_negative。每条正文必须自然地、各恰好一次包含以下未标注陷阱占位符：
-{placeholders}
-陷阱占位符不得放进任何实体标签；程序会在解析前替换它们。正文可以同时包含按规则标注的真实 PII。"""
+        kind_rule = """
+样本性质：hard_negative。每条正文必须把后面为该条指定的陷阱串原样、自然地写入正文，不得生硬拼接。店名整体按 ORG 规则标注，但店名中的姓氏不标 PERSON；其他陷阱串不得放进实体标签。正文可以同时包含按规则标注的真实 PII。"""
     elif kind == "true_negative":
         kind_rule = """
 样本性质：true_negative。每条正文必须完全不含任何个人信息，不得输出任何实体标签、结构化 PII 占位符或 trap 占位符。"""
     else:
         kind_rule = "\n样本性质：positive。按上述规则生成并标注真实 PII。"
+    per_sample = []
+    for index in range(sample_count):
+        seeds = (
+            seed_entities(seed + index, lang, tier, sampled["label_group"])
+            if kind != "true_negative" else {"people": [], "orgs": []}
+        )
+        directives = [f"第 {index + 1} 条：", seed_instruction(seeds)]
+        if kind == "hard_negative":
+            selected = (trap_sets or [])[index]
+            directives.append("正文中要自然地提到：" + "、".join(surface for _, surface in selected) + "。")
+        per_sample.append("\n".join(part for part in directives if part))
     return f"""{base}
 {kind_rule}
+
+每条的确定性内容要求如下；不得在正文中复述这些要求：
+{chr(10).join(per_sample)}
 
 本次必须生成 {sample_count} 条彼此明显不同的正文。严格按以下格式输出，不要添加编号、解释或代码块：
 <SAMPLE>
@@ -285,23 +360,26 @@ def build_batch_prompt(
 依此类推，必须恰好输出 {sample_count} 个 SAMPLE 块。"""
 
 
-def fake_response(lang: str, sampled: dict[str, Any], tier: str) -> str:
+def fake_response(
+    lang: str, sampled: dict[str, Any], tier: str, seed: int
+) -> str:
+    seeds = seed_entities(seed, lang, tier, sampled["label_group"])
     values = {
         "zh": {
-            "PERSON": "张伟",
-            "ORG": "明远科技有限公司",
+            "PERSON": seeds["people"][0] if seeds["people"] else "张伟",
+            "ORG": seeds["orgs"][0] if seeds["orgs"] else "明远科技有限公司",
             "LOCATION": "杭州",
             "ADDRESS": "杭州市西湖区文三路88号",
         },
         "en": {
-            "PERSON": "Alex Chen",
-            "ORG": "Northwind Analytics",
+            "PERSON": seeds["people"][0] if seeds["people"] else "Alex Chen",
+            "ORG": seeds["orgs"][0] if seeds["orgs"] else "Northwind Analytics",
             "LOCATION": "Seattle",
             "ADDRESS": "120 Pine Street, Seattle",
         },
         "mixed": {
-            "PERSON": "张伟",
-            "ORG": "Northwind 杭州团队",
+            "PERSON": seeds["people"][0] if seeds["people"] else "张伟",
+            "ORG": seeds["orgs"][0] if seeds["orgs"] else "Northwind 杭州团队",
             "LOCATION": "Hangzhou",
             "ADDRESS": "杭州市西湖区文三路88号",
         },
@@ -326,6 +404,7 @@ def fake_batch_response(
     kind: str,
     sample_count: int,
     seed: int,
+    trap_sets: list[list[tuple[str, str]]] | None = None,
 ) -> str:
     target_chars = {
         "短密": {"zh": 110, "en": 260},
@@ -334,21 +413,27 @@ def fake_batch_response(
         "长": {"zh": 1650, "en": 1650},
     }[tier]["en" if lang == "en" else "zh"]
     entity_count = {"短密": 4, "短": 2, "中": 3, "长": 2}[tier]
-    values = {
-        "zh": {"PERSON": "张伟", "ORG": "明远科技有限公司", "LOCATION": "杭州", "ADDRESS": "杭州市西湖区文三路88号"},
-        "en": {"PERSON": "Alex Chen", "ORG": "Northwind Analytics", "LOCATION": "Seattle", "ADDRESS": "120 Pine Street, Seattle"},
-        "mixed": {"PERSON": "张伟", "ORG": "Northwind 杭州团队", "LOCATION": "Hangzhou", "ADDRESS": "杭州市西湖区文三路88号"},
-    }[lang]
     blocks: list[str] = []
     for index in range(sample_count):
         rng = random.Random(seed * 1009 + index)
+        seeds = seed_entities(seed + index, lang, tier, sampled["label_group"])
+        values = {
+            "PERSON": seeds["people"][0] if seeds["people"] else ("Alex Chen" if lang == "en" else "张伟"),
+            "ORG": seeds["orgs"][0] if seeds["orgs"] else ("Northwind Analytics" if lang == "en" else "明远科技有限公司"),
+            "LOCATION": "Seattle" if lang == "en" else ("Hangzhou" if lang == "mixed" else "杭州"),
+            "ADDRESS": "120 Pine Street, Seattle" if lang == "en" else "杭州市西湖区文三路88号",
+        }
         prefix_parts: list[str] = []
         if kind != "true_negative":
             for label in sampled["label_group"][:entity_count]:
                 value = f"{{{{{label}}}}}" if label in STRUCTURED_LABELS else values[label]
                 prefix_parts.append(f"<{label}>{value}</{label}>")
         if kind == "hard_negative":
-            prefix_parts.extend(("{{TRAP_0}}", "{{TRAP_1}}"))
+            for trap_type, surface in (trap_sets or [])[index]:
+                if trap_type == "店名中的姓氏不是 PERSON" and "ORG" in sampled["label_group"]:
+                    prefix_parts.append(f"<ORG>{surface}</ORG>")
+                else:
+                    prefix_parts.append(surface)
         prefix = " ".join(prefix_parts)
         if lang == "en":
             alphabet = "abcdefghijklmnopqrstuvwxyz"
@@ -444,19 +529,19 @@ def replace_structured_placeholders(
         index = counters[label]
         counters[label] += 1
         rng = slot_rng(seed, sample_id, f"{label}:{index}")
+        if lang == "mixed":
+            locale = "zh" if rng.random() < 0.70 else "en"
+        else:
+            locale = "en" if lang == "en" else "zh"
         if label == "PHONE":
-            return make_phone(rng)
+            return make_phone(rng, locale)
         if label == "EMAIL":
             return make_email(rng)
         if label == "ID_CARD":
             return make_id_card(rng, valid=checksum_valid)
         if label == "BANK_CARD":
-            return make_bank_card(rng, valid=checksum_valid)
+            return make_bank_card(rng, valid=checksum_valid, locale=locale)
         if label == "PASSPORT":
-            if lang == "mixed":
-                locale = "zh" if rng.random() < 0.70 else "en"
-            else:
-                locale = "en" if lang == "en" else "zh"
             return make_passport(rng, locale)
         raise ParseError(f"未知占位符: {label}")
 
@@ -490,23 +575,6 @@ def select_traps(
     return random.Random(seed).sample(flattened, count)
 
 
-def replace_trap_placeholders(
-    raw: str, selected: list[tuple[str, str]]
-) -> str:
-    indexes = [int(value) for value in TRAP_PLACEHOLDER_RE.findall(raw)]
-    expected = list(range(len(selected)))
-    if sorted(indexes) != expected:
-        raise ParseError(
-            f"trap 占位符必须各出现一次，实际 {indexes}，期望 {expected}"
-        )
-    result = raw
-    for index, (_, surface) in enumerate(selected):
-        result = result.replace(f"{{{{TRAP_{index}}}}}", surface)
-    if TRAP_PLACEHOLDER_RE.search(result):
-        raise ParseError("替换后仍残留 trap 占位符")
-    return result
-
-
 def build_trap_spans(
     text: str,
     selected: list[tuple[str, str]],
@@ -516,15 +584,70 @@ def build_trap_spans(
     for trap_type, surface in selected:
         positions = find_all(text, surface)
         if not positions:
-            raise ParseError(f"trap 替换后未在正文中找到: {surface!r}")
+            raise ParseError(f"模型未在正文中写入指定 trap: {surface!r}")
         for start, end in positions:
-            if any(not (end <= span["start"] or span["end"] <= start) for span in spans):
+            overlaps = [span for span in spans if not (end <= span["start"] or span["end"] <= start)]
+            if trap_type == "店名中的姓氏不是 PERSON":
+                if any(span["label"] == "PERSON" for span in overlaps):
+                    raise ParseError(f"店名中的姓氏被标成 PERSON: {surface!r} [{start}:{end}]")
+                if any(span["label"] != "ORG" for span in overlaps):
+                    raise ParseError(f"店名 trap 与非 ORG span 重叠: {surface!r} [{start}:{end}]")
+            elif overlaps:
                 raise ParseError(f"trap 被实体 span 覆盖: {surface!r} [{start}:{end}]")
             trap_spans.append(
                 {"start": start, "end": end, "text": surface, "trap": trap_type}
             )
     trap_spans.sort(key=lambda item: (item["start"], item["end"], item["trap"]))
     return trap_spans
+
+
+def prompt_leakage_hits(text: str, spans: list[dict[str, Any]]) -> list[str]:
+    """确定性检查正文是否复述生成/标注指令；实体 span 内容不检查。"""
+    def covered(start: int, end: int) -> bool:
+        return any(span["start"] <= start and end <= span["end"] for span in spans)
+
+    hits: list[str] = []
+    for name, pattern in (
+        ("标签名裸露", LABEL_LEAK_RE),
+        ("元话语", META_LEAK_RE),
+        ("计数自述", ENTITY_COUNT_LEAK_RE),
+    ):
+        for match in pattern.finditer(text):
+            if not covered(match.start(), match.end()):
+                hits.append(f"{name}:{match.group(0)!r}@{match.start()}")
+    return hits
+
+
+def reject_prompt_leakage(text: str, spans: list[dict[str, Any]]) -> None:
+    hits = prompt_leakage_hits(text, spans)
+    if hits:
+        raise ParseError("提示词泄漏: " + "; ".join(hits))
+
+
+def substring_leak_warnings(
+    text: str, spans: list[dict[str, Any]]
+) -> list[str]:
+    """只提示 PERSON/ORG/LOCATION 的前缀在其他未覆盖位置出现，不自动补标。"""
+    occupied = [(span["start"], span["end"]) for span in spans]
+    found: dict[tuple[str, int], str] = {}
+    for span in spans:
+        if span["label"] not in {"PERSON", "ORG", "LOCATION"}:
+            continue
+        surface = text[span["start"]:span["end"]]
+        for length in range(2, len(surface)):
+            prefix = surface[:length]
+            for start, end in find_all(text, prefix, latin_boundary=False):
+                if any(not (end <= left or right <= start) for left, right in occupied):
+                    continue
+                found[(prefix, start)] = (
+                    f"⚠ 可能的子串泄漏：『{prefix}』出现在位置 {start}，未被覆盖"
+                )
+    # 同一位置只保留最长前缀，减少人工清单噪声。
+    by_position: dict[int, tuple[str, str]] = {}
+    for (prefix, start), warning in found.items():
+        if start not in by_position or len(prefix) > len(by_position[start][0]):
+            by_position[start] = (prefix, warning)
+    return [by_position[start][1] for start in sorted(by_position)]
 
 
 def classify_tier(lang: str, character_count: int, entity_count: int) -> str:
@@ -653,17 +776,13 @@ def process_generated_sample(
             < float(axes["checksum_validity"]["valid_ratio"])
         )
     selected_traps = select_traps(axes, seed) if kind == "hard_negative" else []
-    replaced = (
-        replace_trap_placeholders(raw, selected_traps)
-        if selected_traps
-        else raw
-    )
     replaced = replace_structured_placeholders(
-        replaced, seed, requested_id, checksum_valid, lang
+        raw, seed, requested_id, checksum_valid, lang
     )
     allowed = tuple(sampled["label_group"]) if kind != "true_negative" else ()
     text, tagged_spans = parse_inline_tagged(replaced, allowed=allowed)
     spans = expand_spans(text, tagged_spans)
+    reject_prompt_leakage(text, spans)
     if kind == "true_negative" and spans:
         raise ParseError("true_negative 的 spans 必须为空")
     trap_spans = build_trap_spans(text, selected_traps, spans)
@@ -993,7 +1112,7 @@ REVIEW_HEADER = """# pilot 60 条人工审阅
 ## 看什么（按重要性）
 1. **文中出现了人名/机构名/地名，却没有被【】标出** ← 最重要。
    SWEEP 对这三类的召回只有 3.4%，程序抓不到，只能靠人眼。
-2. 标了但不该标：部门名（产品部/技术部）、公众人物、店名。
+2. 标了但不该标：部门名（产品部/技术部）、公众人物、店名中的姓氏被另标 PERSON。
 3. 文本读起来假不假：模板感、逻辑矛盾、为凑实体而堆砌。
 
 ## 怎么记
@@ -1002,24 +1121,26 @@ REVIEW_HEADER = """# pilot 60 条人工审阅
 
 
 def review_annotations(record: dict[str, Any]) -> list[dict[str, Any]]:
-    annotations = [
-        {
-            "start": span["start"],
-            "end": span["end"],
-            "open": "【",
-            "suffix": f"|{span['label']}】",
+    grouped: dict[tuple[int, int], dict[str, Any]] = {}
+    for span in record["spans"]:
+        grouped[(span["start"], span["end"])] = {
+            "start": span["start"], "end": span["end"],
+            "open": "【", "suffix": f"|{span['label']}】",
         }
-        for span in record["spans"]
-    ]
-    annotations.extend(
-        {
-            "start": trap["start"],
-            "end": trap["end"],
-            "open": "⟪",
-            "suffix": f"|{trap['trap']}⟫",
-        }
-        for trap in record["trap_spans"]
-    )
+    for trap in record["trap_spans"]:
+        key = (trap["start"], trap["end"])
+        if key in grouped:
+            annotation = grouped[key]
+            if annotation["suffix"] != "|ORG】" or trap["trap"] != "店名中的姓氏不是 PERSON":
+                raise ValueError(f"review 非法重合注解: {key}")
+            annotation["open"] = "【⟪"
+            annotation["suffix"] = f"|{trap['trap']}⟫|ORG】"
+        else:
+            grouped[key] = {
+                "start": trap["start"], "end": trap["end"],
+                "open": "⟪", "suffix": f"|{trap['trap']}⟫",
+            }
+    annotations = list(grouped.values())
     annotations.sort(key=lambda item: (item["start"], item["end"]))
     for left, right in zip(annotations, annotations[1:]):
         if left["end"] > right["start"]:
@@ -1088,12 +1209,14 @@ def write_review_markdown(path: Path, records: list[dict[str, Any]]) -> None:
         text = record["text"]
         entity_count = len(record["spans"])
         density = entity_count * 1000 / len(text)
+        warnings = substring_leak_warnings(text, record["spans"])
+        warning_block = "\n".join(warnings) + "\n\n" if warnings else ""
         sections.append(
             f"\n### {index} · {record['id']} · {record['gen']['model']} · "
             f"{record['lang']}/{record['meta']['tier']} · {record['kind']}\n"
             f"{len(text)} 字 / {entity_count} 实体 / {density:.2f} 千分比\n\n"
             f"{render_review_text(record)}\n\n"
-            "问题：\n\n---\n"
+            f"{warning_block}问题：\n\n---\n"
         )
     sections.append(
         "\n## 汇总（人工填写）\n"
@@ -1148,13 +1271,14 @@ def request_batch(
     kind: str,
     sample_count: int,
     seed: int,
+    trap_sets: list[list[tuple[str, str]]],
     stop_event: threading.Event,
 ) -> dict[str, Any]:
     started = time.perf_counter()
     if dry_run:
         return {
             "raw": fake_batch_response(
-                requested_tier, lang, sampled, kind, sample_count, seed
+                requested_tier, lang, sampled, kind, sample_count, seed, trap_sets
             ),
             "usage": {"input_tokens": 0, "output_tokens": 0},
             "network_attempts": 0,
@@ -1363,7 +1487,15 @@ def run_pilot(args: argparse.Namespace) -> None:
                     checkpoint["call_count"] = call_index + 1
                     checkpoint["next_seed"] = call_seed + sample_count
                     sampled = sample_axes(axes, requested_tier, lang, call_seed)
-                    prompt = build_batch_prompt(requested_tier, lang, sampled, kind, sample_count)
+                    trap_sets = [
+                        select_traps(axes, call_seed + index)
+                        if kind == "hard_negative" else []
+                        for index in range(sample_count)
+                    ]
+                    prompt = build_batch_prompt(
+                        requested_tier, lang, sampled, kind, sample_count,
+                        call_seed, trap_sets,
+                    )
                     future = executor.submit(
                         request_batch,
                         model=model,
@@ -1375,9 +1507,10 @@ def run_pilot(args: argparse.Namespace) -> None:
                         kind=kind,
                         sample_count=sample_count,
                         seed=call_seed,
+                        trap_sets=trap_sets,
                         stop_event=stop_event,
                     )
-                    futures[future] = {"model": model, "lang": lang, "tier": requested_tier, "kind": kind, "cell_key": cell_key, "call_index": call_index, "seed": call_seed, "sample_count": sample_count, "sampled": sampled}
+                    futures[future] = {"model": model, "lang": lang, "tier": requested_tier, "kind": kind, "cell_key": cell_key, "call_index": call_index, "seed": call_seed, "sample_count": sample_count, "sampled": sampled, "trap_sets": trap_sets}
                     active_models.add(model)
 
                 if not futures:
@@ -1546,14 +1679,15 @@ def run_single(args: argparse.Namespace) -> None:
     checksum_valid = (
         slot_rng(args.seed, rng_sample_id, "checksum_validity").random() < valid_ratio
     )
-    prompt = build_prompt(args.tier, args.lang, sampled)
+    seeds = seed_entities(args.seed, args.lang, args.tier, sampled["label_group"])
+    prompt = build_prompt(args.tier, args.lang, sampled, entity_seeds=seeds)
 
     print("=== 抽样轴 ===")
     print(json.dumps(sampled, ensure_ascii=False, indent=2))
     print("=== Prompt ===")
     print(prompt)
 
-    raw = fake_response(args.lang, sampled, args.tier) if args.dry_run else call_dashscope(args.model, prompt)
+    raw = fake_response(args.lang, sampled, args.tier, args.seed) if args.dry_run else call_dashscope(args.model, prompt)
     print("=== 原始返回 ===")
     print(raw)
 
@@ -1567,6 +1701,7 @@ def run_single(args: argparse.Namespace) -> None:
         replaced, allowed=tuple(sampled["label_group"])
     )
     spans = expand_spans(text, tagged_spans)
+    reject_prompt_leakage(text, spans)
     sweep_structured_pii(text, spans)
     print("=== 标签扩展 ===")
     print(f"{len(tagged_spans)} → {len(spans)}")

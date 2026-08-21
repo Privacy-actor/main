@@ -49,7 +49,7 @@ def make_id_card(rng: random.Random, valid: bool = True) -> str:
         return body + right
     return body + rng.choice([d for d in "10X98765432" if d != right])
 
-_BIN = ("622202","621700","622848","622588","622262","621661")
+_ZH_BIN = ("622202","621700","622848","622588","622262","621661")
 def _luhn_ok(num: str) -> bool:
     total, alt = 0, False
     for ch in reversed(num):
@@ -60,17 +60,30 @@ def _luhn_ok(num: str) -> bool:
         total += n; alt = not alt
     return total % 10 == 0
 
-def make_bank_card(rng: random.Random, valid: bool = True) -> str:
+def make_bank_card(
+    rng: random.Random, valid: bool = True, locale: str = "zh"
+) -> str:
     """valid=False 时 Luhn 故意不过。依据：队友前端演示样例里的
     6222021001116247 就是这一类（Luhn 余数 9），规则层完全漏掉。"""
-    body = rng.choice(_BIN) + "".join(str(rng.randint(0,9)) for _ in range(9))
+    if locale not in {"zh", "en"}:
+        raise ValueError(f"未知银行卡 locale: {locale}")
+    if locale == "zh":
+        body = rng.choice(_ZH_BIN) + "".join(str(rng.randint(0,9)) for _ in range(9))
+    else:
+        body = rng.choice("45") + "".join(str(rng.randint(0,9)) for _ in range(14))
     right = next(d for d in range(10) if _luhn_ok(body + str(d)))
     if valid:
         return body + str(right)
     return body + str(rng.choice([d for d in range(10) if d != right]))
 
-def make_phone(rng: random.Random) -> str:
-    return rng.choice(("138","139","150","151","176","188","199","135")) + "".join(str(rng.randint(0,9)) for _ in range(8))
+def make_phone(rng: random.Random, locale: str = "zh") -> str:
+    if locale == "zh":
+        return rng.choice(("138","139","150","151","176","188","199","135")) + "".join(str(rng.randint(0,9)) for _ in range(8))
+    if locale == "en":
+        area = f"{rng.randint(200, 999):03d}"
+        exchange = rng.choice("23456789") + f"{rng.randint(0, 99):02d}"
+        return f"+1 {area}-{exchange}-{rng.randint(0, 9999):04d}"
+    raise ValueError(f"未知电话号码 locale: {locale}")
 
 _MAIL_DOMAINS = ("example.com", "example.net", "example.org", "mailbridge.cn",
                  "inbox-hub.com", "cloudpost.cn", "letterbox.net", "mail.qingyun.cn",
@@ -95,6 +108,34 @@ def make_passport(rng: random.Random, locale: str = "zh") -> str:
 def slot_rng(seed: int, sample_id: str, slot: str) -> random.Random:
     h = hashlib.sha256(f"{seed}:{sample_id}:{slot}".encode()).digest()
     return random.Random(int.from_bytes(h, "big"))
+
+# ---- 姓名与机构种子：由程序给模型指定，压低模型先验导致的重复 ----
+CN_SURNAMES = tuple("赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦尤许何吕施张孔曹严华金魏陶姜戚谢邹喻柏水窦章云苏潘葛奚范彭郎鲁韦昌马苗凤花方俞任袁柳鲍史唐费廉岑薛雷贺倪汤滕殷罗毕郝邬安常乐于时傅皮卞齐康伍余元卜顾孟平黄穆萧尹姚邵湛汪祁毛禹狄米贝明臧计伏成戴谈宋茅庞熊纪舒屈项祝董梁杜阮蓝闵席季麻强贾路娄危江童颜郭梅盛林刁钟徐邱骆高夏蔡田樊胡凌霍虞万支柯管卢莫经房裘缪干解应宗丁宣邓郁单杭洪包诸左石崔吉龚程嵇邢滑裴陆荣翁荀羊甄曲封芮羿储靳汲邴糜隗侯宓蓬全郗班仰秋仲伊宫宁仇栾暴甘钭厉戎祖武符刘景詹束龙叶幸司韶郜黎蓟薄印宿白蒲邰鄂索咸籍赖卓蔺屠蒙池乔阴胥能苍双闻莘党翟谭贡劳逄姬申扶堵冉宰郦雍郤璩桑桂濮牛寿通边扈燕冀郏浦尚农温别庄晏柴瞿阎充慕连茹习宦艾鱼容向古易慎戈廖庾终暨居衡步都耿满弘匡国文寇广禄阙东欧殳沃利蔚越夔隆师巩厍聂晁勾敖融冷訾辛阚那简饶空曾毋沙乜养鞠须丰巢关蒯相查后荆红游竺权逯盖益桓公")
+_CN_GIVEN_A = tuple("书立雅思雨泽宇嘉明若安子云清昕景亦知承以浩宁语文远俊欣")
+_CN_GIVEN_B = tuple("瑶恒琴文琳涵辰轩然怡彤哲宁悦航川清博嘉妍琪睿晨峰")
+CN_GIVEN_NAMES = tuple(a + b for a in _CN_GIVEN_A for b in _CN_GIVEN_B)
+EN_FIRST_NAMES = tuple("Aiden Amelia Andrew Audrey Benjamin Brooke Caleb Cameron Charlotte Chloe Claire Daniel David Dylan Eleanor Elijah Ella Emily Emma Ethan Evelyn Fiona Gabriel Grace Hannah Harper Hazel Henry Isaac Isabella Jack Jackson Jacob James Jasmine Jordan Joseph Julia Julian Katherine Leah Leo Liam Lily Lucas Lucy Luke Madison Maya Mia Nathan Natalie Noah Nora Oliver Olivia Owen Penelope Rachel Ryan Samuel Sarah Scarlett Sebastian Sophia Stella Theodore Thomas Victoria Violet William Wyatt Zoe Adrian Alice Arthur Bella Colin Diana Eric Felicity George Helen Ian Jennifer Kevin Laura Marcus Nina Oscar Peter Quinn Rebecca Steven Teresa Ursula Vincent Wendy Xavier Yvonne Zachary".split())
+EN_LAST_NAMES = tuple("Adams Allen Anderson Baker Bell Bennett Brooks Brown Campbell Carter Clark Collins Cook Cooper Cox Davis Edwards Evans Fisher Flores Foster Garcia Gray Green Hall Harris Hayes Henderson Hill Howard Hughes Jackson James Jenkins Johnson Kelly King Lee Lewis Long Martin Martinez Miller Mitchell Moore Morgan Morris Murphy Nelson Parker Perry Peterson Phillips Powell Price Reed Richardson Rivera Roberts Robinson Rogers Ross Russell Sanchez Scott Smith Stewart Taylor Thomas Thompson Turner Walker Ward Watson White Williams Wilson Wood Wright Young Bailey Barnes Butler Coleman Diaz Griffin Hamilton Kennedy Marshall Mason Murray Ortiz Palmer Patterson Porter Ramirez Reynolds Sanders Simmons Stone Sullivan Wallace Warren Webb Wells Wheeler".split())
+CN_ORG_REGIONS = tuple("北京 上海 天津 重庆 广州 深圳 杭州 南京 苏州 成都 武汉 西安 长沙 郑州 青岛 厦门 宁波 无锡 合肥 福州 济南 大连 昆明 南宁 贵阳 海口 石家庄 太原 沈阳 长春 哈尔滨 兰州 西宁 银川 乌鲁木齐 珠海 佛山 东莞 泉州 温州 嘉兴 绍兴 南通 常州 洛阳 桂林 黔南".split())
+CN_ORG_INDUSTRIES = tuple("云影 星桥 远航 明川 清源 智联 数科 信息 数据 网络 软件 能源 生物 医药 健康 医疗 教育 文化 传媒 物流 交通 建筑 设计 材料 环保 农业 食品 商贸 金融 咨询 检测 仪器 光电 通信 智能 机器人 航空 海洋 安全".split())
+CN_ORG_SUFFIXES = ("科技有限公司", "信息有限公司", "研究院", "医院", "大学", "集团", "实验室", "基金会", "协会", "中心", "设计院", "合作社")
+EN_ORG_REGIONS = tuple("Aurora Beacon Cedar Delta Ember Falcon Granite Harbor Indigo Juniper Keystone Linden Meridian Northstar Oak Pacific Quartz River Summit Timber Union Valley Willow Zenith Alpine Brighton Cascade Dover Franklin Hudson Irvine Kingston Liberty Madison Newport Oxford Portland Quincy Richmond Salem Trenton Urbana Ventura Weston Yorktown Ashland Bristol Clayton Dayton Edison Fairfax Georgetown Hamilton".split())
+EN_ORG_INDUSTRIES = tuple("Analytics BioHealth Cloud Data Digital Energy Engineering Finance Foods Health Learning Logistics Materials Media Medical Networks Robotics Security Software Systems Telecom Transport Ventures Aerospace Agriculture Architecture Automation Consulting Design Diagnostics Education Environmental Imaging Infrastructure Insurance Research".split())
+EN_ORG_SUFFIXES = ("Corporation", "Group", "Institute", "University", "Hospital", "Laboratory", "Foundation", "Association", "Center", "Partners", "Holdings", "Limited")
+
+def make_person_name(rng: random.Random, locale: str = "zh") -> str:
+    if locale == "zh":
+        return rng.choice(CN_SURNAMES) + rng.choice(CN_GIVEN_NAMES)
+    if locale == "en":
+        return f"{rng.choice(EN_FIRST_NAMES)} {rng.choice(EN_LAST_NAMES)}"
+    raise ValueError(f"未知姓名 locale: {locale}")
+
+def make_org_name(rng: random.Random, locale: str = "zh") -> str:
+    if locale == "zh":
+        return rng.choice(CN_ORG_REGIONS) + rng.choice(CN_ORG_INDUSTRIES) + rng.choice(CN_ORG_SUFFIXES)
+    if locale == "en":
+        return f"{rng.choice(EN_ORG_REGIONS)} {rng.choice(EN_ORG_INDUSTRIES)} {rng.choice(EN_ORG_SUFFIXES)}"
+    raise ValueError(f"未知机构 locale: {locale}")
 
 # ---- 落地：所有出现位置 ----
 def find_all(text: str, surface: str, latin_boundary=True) -> list[tuple[int,int]]:
@@ -276,6 +317,35 @@ def _self_test() -> None:
     address_start = text.index("上海市浦东新区世纪大道88号")
     assert not any(s["label"] == "LOCATION" and s["start"] == address_start for s in expanded)
     ok(True, "扩展 7 个 span · 原文一致 · 无重叠 · ADDRESS 内 LOCATION 已丢弃")
+
+    print("[12] 姓名与机构种子 · 可复现且 500 条重复率低于 5%")
+    pools = {
+        "中文人名": [make_person_name(slot_rng(i, f"seed-{i}", "person"), "zh") for i in range(500)],
+        "英文人名": [make_person_name(slot_rng(i, f"seed-{i}", "person"), "en") for i in range(500)],
+        "中文机构": [make_org_name(slot_rng(i, f"seed-{i}", "org"), "zh") for i in range(500)],
+        "英文机构": [make_org_name(slot_rng(i, f"seed-{i}", "org"), "en") for i in range(500)],
+    }
+    rates = {name: 1 - len(set(values)) / 500 for name, values in pools.items()}
+    assert all(rate < 0.05 for rate in rates.values()), rates
+    assert make_person_name(slot_rng(7, "same", "person"), "zh") == make_person_name(slot_rng(7, "same", "person"), "zh")
+    ok(True, " · ".join(f"{name}重复率 {rate:.1%}" for name, rate in rates.items()))
+
+    print("[13] 英文 PHONE / BANK_CARD · 格式正确且被规则层检出")
+    r, misses = random.Random(37), 0
+    for _ in range(100):
+        phone = make_phone(r, "en")
+        card = make_bank_card(r, locale="en")
+        assert re.fullmatch(r"\+1 \d{3}-[2-9]\d{2}-\d{4}", phone), phone
+        assert card[0] in "45" and len(card) == 16 and _luhn(card), card
+        got = {(s.entity_type.value, s.text) for s in detect_rule_spans(
+            f"Phone {phone}; card {card}.", Strategy.MASK
+        )[0]}
+        if not {("PHONE", phone), ("BANK_CARD", card)} <= got:
+            misses += 1
+    assert misses == 0, f"{misses}/100 未被规则层精确检出"
+    invalid = [make_bank_card(r, False, "en") for _ in range(100)]
+    assert all(not _luhn(card) for card in invalid)
+    ok(True, "100 组北美电话与 Visa/Mastercard 全部被规则层检出，100 张故意错误卡均未过 Luhn")
 
     print("\n全部通过。")
 
