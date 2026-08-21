@@ -65,7 +65,7 @@ def test_prompt_uses_structure_not_character_count() -> None:
 
 
 def test_tier_weights_and_request_limits() -> None:
-    assert TIER_WEIGHTS == {"短密": 0.05, "短": 0.30, "中": 0.55, "长": 0.10}
+    assert TIER_WEIGHTS == {"短密": 0.20, "短": 0.40, "中": 0.28, "长": 0.12}
     assert BATCH_SIZE_BY_TIER == {"短密": 8, "短": 8, "中": 4, "长": 1}
     assert TIER_REQUEST_LIMITS == {
         "短密": {"timeout": 45.0, "max_tokens": 2000},
@@ -84,5 +84,7 @@ def test_tier_weights_and_request_limits() -> None:
 def test_measured_tier_boundary_moves_to_550() -> None:
     assert classify_tier("zh", 549, 0) == "中"
     assert classify_tier("zh", 550, 0) == "长"
+    assert classify_tier("en", 300, 0) == "短"
+    assert classify_tier("en", 301, 0) == "中"
     assert classify_tier("en", 549, 0) == "中"
     assert classify_tier("en", 550, 0) == "长"

@@ -86,7 +86,7 @@ ENTITY_COUNT_LEAK_RE = re.compile(
 )
 
 LANG_WEIGHTS = {"zh": 0.50, "en": 0.30, "mixed": 0.20}
-TIER_WEIGHTS = {"短密": 0.05, "短": 0.30, "中": 0.55, "长": 0.10}
+TIER_WEIGHTS = {"短密": 0.20, "短": 0.40, "中": 0.28, "长": 0.12}
 KIND_WEIGHTS = {"positive": 0.70, "hard_negative": 0.20, "true_negative": 0.10}
 DEFAULT_MODEL_WEIGHTS = {
     "glm-5.2": 0.30,
@@ -723,7 +723,7 @@ def classify_tier(lang: str, character_count: int, entity_count: int) -> str:
         raise ValueError(
             f"字符数 {character_count} 超出 {lang} 允许区间 [40, {character_maximum}]"
         )
-    short_upper = 450 if lang == "en" else 200
+    short_upper = 300 if lang == "en" else 200
     if character_count <= short_upper:
         tier = "短密" if entity_count >= 4 else "短"
     elif character_count <= 549:
