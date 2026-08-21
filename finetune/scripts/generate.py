@@ -60,8 +60,8 @@ TIER_STRUCTURE = {
     ),
 }
 TIER_REQUEST_LIMITS = {
-    "短密": {"timeout": 45.0, "max_tokens": 2000},
-    "短": {"timeout": 45.0, "max_tokens": 2000},
+    "短密": {"timeout": 45.0, "max_tokens": 2500},
+    "短": {"timeout": 45.0, "max_tokens": 2500},
     "中": {"timeout": 60.0, "max_tokens": 2500},
     "长": {"timeout": 60.0, "max_tokens": 1500},
 }
@@ -104,6 +104,26 @@ MAX_NETWORK_FAILURES_PER_MODEL = 20
 NETWORK_BACKOFF_SECONDS = (2, 4, 8, 16, 32)
 INTERIM_DIR = FINETUNE_DIR / "data" / "interim"
 CALLS_PATH = INTERIM_DIR / "calls.jsonl"
+THINKING_FIELDS = {
+    "enable_thinking": False,
+    "thinking": {"type": "disabled"},
+    "chat_template_kwargs": {"enable_thinking": False},
+    "reasoning_effort": "none",
+}
+THINKING_FIELD_OVERRIDES: dict[str, set[str]] = defaultdict(
+    set, {"deepseek-v4-pro": {"reasoning_effort"}}
+)
+THINKING_FIELD_LOCK = threading.Lock()
+
+
+class EmptyContentError(ValueError):
+    def __init__(
+        self, model: str, reasoning_tokens: int, completion_tokens: int
+    ) -> None:
+        super().__init__("API 未返回非空文本 content")
+        self.model = model
+        self.reasoning_tokens = reasoning_tokens
+        self.completion_tokens = completion_tokens
 
 
 class FastInterruptExecutor(ThreadPoolExecutor):
@@ -366,7 +386,7 @@ def build_prompt(
         """本条不使用任何实体标签，也不得出现 PHONE、EMAIL、ID_CARD、BANK_CARD、PASSPORT 占位符。"""
         if kind == "true_negative"
         else f"""本条可使用的标签：{labels}
-label_group 只是允许标签池，不要求每个标签都出现。
+label_group 是本条建议使用的标签，不是限制。若正文中出现了其他类别的实体（例如店名属于 ORG），仍应按规范正常标注。
 
 ORG 标注可独立识别的公司、学校、医院、政府机关、国际组织或社会组织；含姓氏的店名整体标 ORG，但其中姓氏不标 PERSON。公司内部的产品部、销售部、人事部、财务部、技术部等部门名不得标成 ORG。
 机场、车站、产业园、大厦、科技城等命名设施标 LOCATION；若跨度延伸到楼层或门牌则整体标 ADDRESS。小李、张哥、李总、老周、小刘等称谓不标 PERSON，全名必须标 PERSON。
@@ -544,38 +564,84 @@ def fake_batch_response(
 
 def call_dashscope_with_usage(
     model: str, prompt: str, tier: str
-) -> tuple[str, dict[str, int]]:
+) -> tuple[str, dict[str, Any]]:
     limits = TIER_REQUEST_LIMITS[tier]
-    response = httpx.post(
-        DASHSCOPE_CHAT_COMPLETIONS,
-        headers={"Authorization": f"Bearer {os.environ['DASHSCOPE_API_KEY']}"},
-        json={
+    with THINKING_FIELD_LOCK:
+        removed_fields = set(THINKING_FIELD_OVERRIDES[model])
+    while True:
+        request_body = {
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 1.0,
             "max_tokens": limits["max_tokens"],
-        },
-        timeout=limits["timeout"],
-    )
+        }
+        request_body.update(
+            {
+                key: value
+                for key, value in THINKING_FIELDS.items()
+                if key not in removed_fields
+            }
+        )
+        response = httpx.post(
+            DASHSCOPE_CHAT_COMPLETIONS,
+            headers={"Authorization": f"Bearer {os.environ['DASHSCOPE_API_KEY']}"},
+            json=request_body,
+            timeout=limits["timeout"],
+        )
+        if response.status_code != 400:
+            break
+        response_body = response.text.lower()
+        unsupported = next(
+            (
+                field
+                for field in sorted(THINKING_FIELDS, key=len, reverse=True)
+                if field not in removed_fields and field.lower() in response_body
+            ),
+            None,
+        )
+        if unsupported is None:
+            break
+        removed_fields.add(unsupported)
+        with THINKING_FIELD_LOCK:
+            THINKING_FIELD_OVERRIDES[model].add(unsupported)
+        print(
+            f"{model} 返回 400，不支持关闭 thinking 字段 {unsupported!r}；"
+            f"已为该模型剔除。原始响应：{response.text}"
+        )
+        if len(removed_fields) == len(THINKING_FIELDS):
+            raise ValueError(
+                f"{model} 不支持任何关闭 thinking 的参数，拒绝在 thinking 未关闭时继续"
+            )
     if not response.is_success:
         print("=== API 原始响应 ===")
         print(response.text)
         response.raise_for_status()
     try:
-        content = response.json()["choices"][0]["message"]["content"]
+        payload = response.json()
+        content = payload["choices"][0]["message"]["content"]
     except (KeyError, IndexError, TypeError, ValueError):
         print("=== API 原始响应 ===")
         print(response.text)
         raise
-    if not isinstance(content, str) or not content:
+    usage = payload.get("usage") or {}
+    completion_tokens = int(usage.get("completion_tokens", 0) or 0)
+    details = usage.get("completion_tokens_details") or {}
+    reasoning_tokens = int(details.get("reasoning_tokens", 0) or 0)
+    if not isinstance(content, str) or not content.strip():
         print("=== API 原始响应 ===")
         print(response.text)
-        raise ValueError("API 未返回非空文本 content")
-    payload = response.json()
-    usage = payload.get("usage") or {}
+        if reasoning_tokens > 0:
+            print(
+                f"{model} 仍在使用 thinking 模式（reasoning_tokens={reasoning_tokens}），"
+                "关闭 thinking 的参数未生效"
+            )
+        raise EmptyContentError(model, reasoning_tokens, completion_tokens)
     return content, {
         "input_tokens": int(usage.get("prompt_tokens", 0) or 0),
-        "output_tokens": int(usage.get("completion_tokens", 0) or 0),
+        "output_tokens": completion_tokens,
+        "completion_tokens": completion_tokens,
+        "reasoning_tokens": reasoning_tokens,
+        "thinking_fields_removed": sorted(removed_fields),
     }
 
 
@@ -1110,7 +1176,7 @@ def initial_checkpoint(
     model_quotas: dict[str, int],
 ) -> dict[str, Any]:
     return {
-        "version": 4,
+        "version": 5,
         "batch_id": args.batch_id,
         "models": args.models,
         "base_seed": args.seed,
@@ -1131,6 +1197,9 @@ def initial_checkpoint(
             model: {"success": 0, "failure": 0} for model in args.models
         },
         "api_attempt_count": 0,
+        "logged_call_count": 0,
+        "reasoning_positive_call_count": 0,
+        "thinking_failure_count": 0,
         "rejections": {},
     }
 
@@ -1161,6 +1230,8 @@ def load_checkpoint(
         checkpoint.pop("consecutive_error_count", None)
     if checkpoint.get("version") == 3:
         checkpoint["version"] = 4
+    if checkpoint.get("version") == 4:
+        checkpoint["version"] = 5
     checkpoint.setdefault("cell_schedule_misses", {})
     checkpoint.setdefault("exhausted_cells", [])
     checkpoint.setdefault("unavailable_models", {})
@@ -1170,6 +1241,9 @@ def load_checkpoint(
         {model: {"success": 0, "failure": 0} for model in args.models},
     )
     checkpoint.setdefault("api_attempt_count", int(checkpoint.get("call_count", 0)))
+    checkpoint.setdefault("logged_call_count", 0)
+    checkpoint.setdefault("reasoning_positive_call_count", 0)
+    checkpoint.setdefault("thinking_failure_count", 0)
     checkpoint.setdefault("rejections", {})
     expected = {
         "batch_id": args.batch_id,
@@ -1357,6 +1431,8 @@ def is_quality_error(exc: BaseException) -> bool:
 
 
 def classify_api_error(exc: BaseException) -> str:
+    if isinstance(exc, EmptyContentError) and exc.reasoning_tokens > 0:
+        return "thinking"
     if isinstance(exc, httpx.HTTPStatusError):
         status = exc.response.status_code
         body = exc.response.text.lower()
@@ -1394,7 +1470,13 @@ def request_batch(
             "raw": fake_batch_response(
                 requested_tier, lang, sampled, kind, sample_count, seed, trap_sets
             ),
-            "usage": {"input_tokens": 0, "output_tokens": 0},
+            "usage": {
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "completion_tokens": 0,
+                "reasoning_tokens": 0,
+                "thinking_fields_removed": [],
+            },
             "network_attempts": 0,
             "error": None,
             "error_class": None,
@@ -1403,7 +1485,7 @@ def request_batch(
     network_attempts = 0
     while True:
         if stop_event.is_set():
-            return {"raw": "", "usage": {"input_tokens": 0, "output_tokens": 0}, "network_attempts": network_attempts, "error": "全局已停止，取消网络重试", "error_class": "cancelled", "latency": time.perf_counter() - started}
+            return {"raw": "", "usage": {"input_tokens": 0, "output_tokens": 0, "completion_tokens": 0, "reasoning_tokens": 0, "thinking_fields_removed": []}, "network_attempts": network_attempts, "error": "全局已停止，取消网络重试", "error_class": "cancelled", "latency": time.perf_counter() - started}
         try:
             raw, usage = call_dashscope_with_usage(model, prompt, requested_tier)
             return {
@@ -1418,9 +1500,20 @@ def request_batch(
             category = classify_api_error(exc)
             network_attempts += 1
             if category != "network" or network_attempts > len(NETWORK_BACKOFF_SECONDS):
+                usage = {
+                    "input_tokens": 0,
+                    "output_tokens": 0,
+                    "completion_tokens": int(
+                        getattr(exc, "completion_tokens", 0)
+                    ),
+                    "reasoning_tokens": int(getattr(exc, "reasoning_tokens", 0)),
+                    "thinking_fields_removed": sorted(
+                        THINKING_FIELD_OVERRIDES.get(model, set())
+                    ),
+                }
                 return {
                     "raw": "",
-                    "usage": {"input_tokens": 0, "output_tokens": 0},
+                    "usage": usage,
                     "network_attempts": network_attempts,
                     "error": f"{type(exc).__name__}: {exc}",
                     "error_class": category,
@@ -1671,6 +1764,13 @@ def run_pilot(args: argparse.Namespace) -> None:
                     model = context["model"]
                     outcome = future.result()
                     checkpoint["api_attempt_count"] = int(checkpoint.get("api_attempt_count", 0)) + int(outcome["network_attempts"])
+                    checkpoint["logged_call_count"] = int(
+                        checkpoint.get("logged_call_count", 0)
+                    ) + 1
+                    if int(outcome["usage"].get("reasoning_tokens", 0)) > 0:
+                        checkpoint["reasoning_positive_call_count"] = int(
+                            checkpoint.get("reasoning_positive_call_count", 0)
+                        ) + 1
                     accepted: list[dict[str, Any]] = []
                     quality_errors: list[str] = []
                     other_errors: list[str] = []
@@ -1714,6 +1814,11 @@ def run_pilot(args: argparse.Namespace) -> None:
                                 unavailable.add(model)
                                 redistribute_model_quotas(model, model_quotas, completed, args.models, unavailable)
                                 print(f"模型 {model} 已标记为不可用：{message}；剩余配额已分给其他模型。")
+                            other_errors.append(signature)
+                        elif category == "thinking":
+                            checkpoint["thinking_failure_count"] = int(
+                                checkpoint.get("thinking_failure_count", 0)
+                            ) + 1
                             other_errors.append(signature)
                         elif category == "balance":
                             stop_reason = (
@@ -1770,6 +1875,9 @@ def run_pilot(args: argparse.Namespace) -> None:
                         "latency": round(float(outcome["latency"]), 6),
                         "input_tokens": outcome["usage"]["input_tokens"],
                         "output_tokens": outcome["usage"]["output_tokens"],
+                        "completion_tokens": outcome["usage"]["completion_tokens"],
+                        "reasoning_tokens": outcome["usage"]["reasoning_tokens"],
+                        "thinking_fields_removed": outcome["usage"]["thinking_fields_removed"],
                         "network_attempts": outcome["network_attempts"],
                         "error_signature": signature,
                         "error_counts": dict(sorted(Counter(all_errors).items())),
@@ -1843,7 +1951,10 @@ def run_pilot(args: argparse.Namespace) -> None:
         done = completed.get(key, 0)
         if done < target:
             shortages[key] = {"done": done, "target": target, "ratio": round(done / target, 4) if target else 1.0, "below_80_percent": bool(target and done / target < 0.8)}
-    print(json.dumps({"stop_reason": stop_reason, "total": sum(completed.values()), "target": args.pilot, "logical_calls": checkpoint["call_count"], "api_attempts": checkpoint["api_attempt_count"], "estimated_api_calls": checkpoint["call_count"] if args.dry_run else checkpoint["api_attempt_count"], "elapsed_seconds": checkpoint["elapsed_seconds"], "shortages": shortages, "unavailable_models": checkpoint["unavailable_models"], "rejections": checkpoint["rejections"], "distributions": distribution_tables(records)}, ensure_ascii=False, indent=2))
+    logged_calls = int(checkpoint.get("logged_call_count", 0))
+    reasoning_positive = int(checkpoint.get("reasoning_positive_call_count", 0))
+    reasoning_ratio = reasoning_positive / logged_calls if logged_calls else 0.0
+    print(json.dumps({"stop_reason": stop_reason, "total": sum(completed.values()), "target": args.pilot, "logical_calls": checkpoint["call_count"], "api_attempts": checkpoint["api_attempt_count"], "estimated_api_calls": checkpoint["call_count"] if args.dry_run else checkpoint["api_attempt_count"], "elapsed_seconds": checkpoint["elapsed_seconds"], "reasoning_tokens_positive_calls": reasoning_positive, "reasoning_tokens_positive_ratio": round(reasoning_ratio, 6), "thinking_failures": checkpoint.get("thinking_failure_count", 0), "shortages": shortages, "unavailable_models": checkpoint["unavailable_models"], "rejections": checkpoint["rejections"], "distributions": distribution_tables(records)}, ensure_ascii=False, indent=2))
 
 
 def run_single(args: argparse.Namespace) -> None:

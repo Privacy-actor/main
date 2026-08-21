@@ -12,9 +12,11 @@ from generate import (
     DEFAULT_MODEL_WEIGHTS,
     TIER_REQUEST_LIMITS,
     TIER_WEIGHTS,
+    EmptyContentError,
     ParseError,
     build_prompt,
     build_quotas,
+    call_dashscope_with_usage,
     classify_api_error,
     classify_tier,
     is_quality_error,
@@ -67,6 +69,7 @@ def test_prompt_uses_structure_not_character_count() -> None:
     assert "1-2 个自然段，每段 3-5 句" in middle
     assert "300-540" not in middle and "字符" not in middle
     assert "那个电话一直没打通" in middle
+    assert "label_group 是本条建议使用的标签，不是限制" in middle
     long = build_prompt("长", "zh", sampled)
     assert "2-3 个自然段，每段 3-4 句" in long
     assert "不要写成长篇独白或连续吐槽" in long
@@ -76,8 +79,8 @@ def test_tier_weights_and_request_limits() -> None:
     assert TIER_WEIGHTS == {"短密": 0.20, "短": 0.40, "中": 0.28, "长": 0.12}
     assert BATCH_SIZE_BY_TIER == {"短密": 8, "短": 8, "中": 4, "长": 1}
     assert TIER_REQUEST_LIMITS == {
-        "短密": {"timeout": 45.0, "max_tokens": 2000},
-        "短": {"timeout": 45.0, "max_tokens": 2000},
+        "短密": {"timeout": 45.0, "max_tokens": 2500},
+        "短": {"timeout": 45.0, "max_tokens": 2500},
         "中": {"timeout": 60.0, "max_tokens": 2500},
         "长": {"timeout": 60.0, "max_tokens": 1500},
     }
@@ -126,3 +129,42 @@ def test_empty_content_is_network_not_quality() -> None:
     error = ValueError("API 未返回非空文本 content")
     assert classify_api_error(error) == "network"
     assert not is_quality_error(error)
+    thinking_error = EmptyContentError("glm-5.2", 2000, 2001)
+    assert classify_api_error(thinking_error) == "thinking"
+
+
+def test_request_explicitly_disables_thinking_and_reads_usage(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured: dict = {}
+
+    class FakeResponse:
+        status_code = 200
+        is_success = True
+        text = "ok"
+
+        @staticmethod
+        def json() -> dict:
+            return {
+                "choices": [{"message": {"content": "<SAMPLE>ok</SAMPLE>"}}],
+                "usage": {
+                    "prompt_tokens": 12,
+                    "completion_tokens": 34,
+                    "completion_tokens_details": {"reasoning_tokens": 0},
+                },
+            }
+
+    def fake_post(url: str, **kwargs: object) -> FakeResponse:
+        captured.update(kwargs["json"])
+        return FakeResponse()
+
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "test-key")
+    monkeypatch.setattr("generate.httpx.post", fake_post)
+    _, usage = call_dashscope_with_usage("unit-test-thinking", "prompt", "短")
+    assert captured["enable_thinking"] is False
+    assert captured["thinking"] == {"type": "disabled"}
+    assert captured["chat_template_kwargs"] == {"enable_thinking": False}
+    assert captured["reasoning_effort"] == "none"
+    assert captured["max_tokens"] == 2500
+    assert usage["completion_tokens"] == 34
+    assert usage["reasoning_tokens"] == 0
