@@ -179,6 +179,20 @@ def parse_tier_allocations(value: str) -> dict[str, int]:
     return allocations
 
 
+def parse_label_group_indices(value: str) -> tuple[int, ...]:
+    try:
+        indices = tuple(int(item.strip()) for item in value.split(","))
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(
+            "--label-groups 必须是逗号分隔的正整数，例如 3,5,7,8"
+        ) from exc
+    if not indices or any(index <= 0 for index in indices):
+        raise argparse.ArgumentTypeError("--label-groups 必须至少包含一个正整数")
+    if len(set(indices)) != len(indices):
+        raise argparse.ArgumentTypeError("--label-groups 不得包含重复编号")
+    return indices
+
+
 def default_model_allocations(total: int) -> dict[str, int]:
     exact = {model: total * weight for model, weight in DEFAULT_MODEL_WEIGHTS.items()}
     allocated = {model: int(value) for model, value in exact.items()}
@@ -199,6 +213,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--probe-models", type=lambda value: [item.strip() for item in value.split(",") if item.strip()])
     parser.add_argument("--seed", default=100, type=int)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--label-groups",
+        type=parse_label_group_indices,
+        help="只从 axes.yaml 中指定的 1-based label_groups 编号采样，例如 3,5,7,8",
+    )
     parser.add_argument("--status", action="store_true")
     parser.add_argument("--concurrency", type=int, default=8)
     batch_target_group = parser.add_mutually_exclusive_group()
@@ -236,6 +255,8 @@ def parse_args() -> argparse.Namespace:
             parser.error("--status 必须提供 --batch-id")
         if args.pilot is not None or args.model is not None or args.models is not None:
             parser.error("--status 不接受 --pilot/--model/--models")
+        if args.label_groups is not None:
+            parser.error("--status 不接受 --label-groups")
         return args
     if args.probe_models is not None:
         if not args.probe_models:
@@ -291,6 +312,27 @@ def load_axes() -> dict[str, Any]:
     return axes
 
 
+def print_label_group_limit(
+    axes: dict[str, Any], indices: tuple[int, ...] | None, dry_run: bool
+) -> None:
+    if not dry_run or indices is None:
+        return
+    maximum = len(axes["label_groups"])
+    invalid = [index for index in indices if index > maximum]
+    if invalid:
+        raise ValueError(
+            f"--label-groups 编号越界: {invalid}；axes.yaml 共 {maximum} 项"
+        )
+    allowed = set(indices)
+    rows = [
+        {"index": index, "labels": group}
+        for index, group in enumerate(axes["label_groups"], start=1)
+        if index in allowed
+    ]
+    print("=== 限定 label_groups ===")
+    print(json.dumps(rows, ensure_ascii=False, indent=2))
+
+
 def make_sample_id(seed: int, lang: str, tier: str) -> str:
     digest = hashlib.sha256(f"{seed}:{lang}:{tier}".encode("utf-8")).digest()
     sequence = int.from_bytes(digest[:8], "big") % 1_000_000
@@ -298,15 +340,46 @@ def make_sample_id(seed: int, lang: str, tier: str) -> str:
 
 
 def sample_axes(
-    axes: dict[str, Any], tier: str, lang: str, seed: int
+    axes: dict[str, Any],
+    tier: str,
+    lang: str,
+    seed: int,
+    label_group_indices: tuple[int, ...] | None = None,
 ) -> dict[str, Any]:
     rng = random.Random(seed)
     domains = axes["domain_en"] if lang == "en" else axes["domain_zh"]
-    groups = axes["label_groups"][-2:] if tier == "短密" else axes["label_groups"]
-    if tier == "短密" and (len(groups) != 2 or any(len(group) != 5 for group in groups)):
+    indexed_groups = list(enumerate(axes["label_groups"], start=1))
+    if label_group_indices is not None:
+        maximum = len(indexed_groups)
+        invalid = [index for index in label_group_indices if index > maximum]
+        if invalid:
+            raise ValueError(
+                f"--label-groups 编号越界: {invalid}；axes.yaml 共 {maximum} 项"
+            )
+        allowed = set(label_group_indices)
+        indexed_groups = [
+            (index, group)
+            for index, group in indexed_groups
+            if index in allowed
+        ]
+    if tier == "短密":
+        dense_indices = {
+            len(axes["label_groups"]) - 1,
+            len(axes["label_groups"]),
+        }
+        indexed_groups = [
+            (index, group)
+            for index, group in indexed_groups
+            if index in dense_indices
+        ]
+        if any(len(group) != 5 for _, group in indexed_groups):
+            raise ValueError("短密档可用 label_group 必须恰好包含 5 个标签")
+    if not indexed_groups:
+        raise ValueError(f"档位 {tier} 在 --label-groups 限定下没有可用条目")
+    if tier == "短密" and label_group_indices is None and len(indexed_groups) != 2:
         raise ValueError("短密档要求 axes.yaml 最后两个 label_group 都恰好包含 5 个标签")
 
-    labels = list(rng.choice(groups))
+    labels = list(rng.choice(indexed_groups)[1])
     if lang == "en":
         labels = ["PASSPORT" if label == "ID_CARD" else label for label in labels]
 
@@ -389,6 +462,7 @@ def build_prompt(
 label_group 是本条建议使用的标签，不是限制。若正文中出现了其他类别的实体（例如店名属于 ORG），仍应按规范正常标注。
 
 ORG 标注可独立识别的公司、学校、医院、政府机关、国际组织或社会组织；含姓氏的店名整体标 ORG，但其中姓氏不标 PERSON。公司内部的产品部、销售部、人事部、财务部、技术部等部门名不得标成 ORG。
+省、市、区、县这一级的行政区地名，独立出现时标 LOCATION（如「杭州」「北京市海淀区」「London」）；只有当跨度延伸到路、街、巷、号、栋、单元、室时，才整体标 ADDRESS。地址内部的市/区不再单独标 LOCATION。
 机场、车站、产业园、大厦、科技城等命名设施标 LOCATION；若跨度延伸到楼层或门牌则整体标 ADDRESS。小李、张哥、李总、老周、小刘等称谓不标 PERSON，全名必须标 PERSON。
 
 必须用成对的内联标签标注实体，例如 <PERSON>张伟</PERSON>。
@@ -1630,6 +1704,7 @@ def run_status(args: argparse.Namespace) -> None:
 
 def run_pilot(args: argparse.Namespace) -> None:
     axes = load_axes()
+    print_label_group_limit(axes, args.label_groups, args.dry_run)
     quotas = build_quotas(args.pilot, args.tiers)
     base_model_quotas = build_model_quotas(quotas, args.models, args.seed)
     output_path = INTERIM_DIR / f"{args.batch_id}.jsonl"
@@ -1729,7 +1804,13 @@ def run_pilot(args: argparse.Namespace) -> None:
                     sample_count = BATCH_SIZE_BY_TIER[requested_tier]
                     checkpoint["call_count"] = call_index + 1
                     checkpoint["next_seed"] = call_seed + sample_count
-                    sampled = sample_axes(axes, requested_tier, lang, call_seed)
+                    sampled = sample_axes(
+                        axes,
+                        requested_tier,
+                        lang,
+                        call_seed,
+                        args.label_groups,
+                    )
                     trap_sets = [
                         select_traps(axes, call_seed + index)
                         if kind == "hard_negative" else []
@@ -1959,7 +2040,14 @@ def run_pilot(args: argparse.Namespace) -> None:
 
 def run_single(args: argparse.Namespace) -> None:
     axes = load_axes()
-    sampled = sample_axes(axes, args.tier, args.lang, args.seed)
+    print_label_group_limit(axes, args.label_groups, args.dry_run)
+    sampled = sample_axes(
+        axes,
+        args.tier,
+        args.lang,
+        args.seed,
+        args.label_groups,
+    )
     rng_sample_id = make_sample_id(args.seed, args.lang, args.tier)
     valid_ratio = float(axes["checksum_validity"]["valid_ratio"])
     checksum_valid = (
@@ -2029,6 +2117,7 @@ def run_single(args: argparse.Namespace) -> None:
 
 def run_probe_models(args: argparse.Namespace) -> None:
     axes = load_axes()
+    print_label_group_limit(axes, args.label_groups, args.dry_run)
     combinations = (
         ("zh", "短"), ("en", "短"), ("mixed", "短"),
         ("zh", "中"), ("en", "中"), ("mixed", "中"),
@@ -2043,7 +2132,13 @@ def run_probe_models(args: argparse.Namespace) -> None:
         for model_index, model in enumerate(args.probe_models):
             for item_index, (lang, tier) in enumerate(combinations):
                 seed = args.seed + model_index * 100 + item_index
-                sampled = sample_axes(axes, tier, lang, seed)
+                sampled = sample_axes(
+                    axes,
+                    tier,
+                    lang,
+                    seed,
+                    args.label_groups,
+                )
                 prompt = build_batch_prompt(
                     tier, lang, sampled, "positive", 1, seed, [[]]
                 )

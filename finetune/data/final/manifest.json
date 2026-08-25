@@ -1,0 +1,120 @@
+{
+  "seed": 20260821,
+  "generated_at": "2026-08-25T07:18:27.126424Z",
+  "input": {
+    "file": "finetune\\data\\interim\\merged_all.jsonl",
+    "sha256": "76224ece896cdc848eb0ebf5bfeef56d483e8522af0463a8c2ba68fbc723439e",
+    "count": 5010
+  },
+  "reserved_test_traps": [
+    "销售部",
+    "王记牛肉面"
+  ],
+  "splits": {
+    "train": {
+      "file": "train.jsonl",
+      "sha256": "a114c70bc155a6a570e65ed27e507a6ad02bc56937bdca041860ee39e55891d2",
+      "count": 3760,
+      "entity_count": 12962,
+      "distribution": {
+        "tier": {
+          "短密": 1970,
+          "短": 1368,
+          "中": 366,
+          "长": 56
+        },
+        "lang": {
+          "zh": 1828,
+          "en": 1194,
+          "mixed": 738
+        },
+        "kind": {
+          "positive": 2772,
+          "hard_negative": 426,
+          "true_negative": 562
+        },
+        "label": {
+          "PERSON": 5420,
+          "ORG": 4748,
+          "LOCATION": 289,
+          "ADDRESS": 671,
+          "PHONE": 785,
+          "EMAIL": 457,
+          "ID_CARD": 36,
+          "BANK_CARD": 248,
+          "PASSPORT": 308
+        }
+      }
+    },
+    "dev": {
+      "file": "dev.jsonl",
+      "sha256": "5393ef2bba47e6c9ea6354dcb4b7895451e82869422c5eb3d5fdeede3b996bc1",
+      "count": 450,
+      "entity_count": 1554,
+      "distribution": {
+        "tier": {
+          "短密": 235,
+          "短": 164,
+          "中": 44,
+          "长": 7
+        },
+        "lang": {
+          "zh": 230,
+          "en": 133,
+          "mixed": 87
+        },
+        "kind": {
+          "positive": 335,
+          "hard_negative": 48,
+          "true_negative": 67
+        },
+        "label": {
+          "PERSON": 655,
+          "ORG": 563,
+          "LOCATION": 35,
+          "ADDRESS": 85,
+          "PHONE": 100,
+          "EMAIL": 44,
+          "ID_CARD": 6,
+          "BANK_CARD": 31,
+          "PASSPORT": 35
+        }
+      }
+    },
+    "test": {
+      "file": "test.jsonl",
+      "sha256": "469340fcf60407859fa0950fd7ea52baa0d3b4000c69983c6057e4845afbdc11",
+      "count": 800,
+      "entity_count": 2774,
+      "distribution": {
+        "tier": {
+          "短密": 290,
+          "短": 300,
+          "中": 160,
+          "长": 50
+        },
+        "lang": {
+          "zh": 354,
+          "en": 307,
+          "mixed": 139
+        },
+        "kind": {
+          "positive": 495,
+          "hard_negative": 178,
+          "true_negative": 127
+        },
+        "label": {
+          "PERSON": 1143,
+          "ORG": 1047,
+          "LOCATION": 59,
+          "ADDRESS": 123,
+          "PHONE": 152,
+          "EMAIL": 114,
+          "ID_CARD": 17,
+          "BANK_CARD": 48,
+          "PASSPORT": 71
+        }
+      }
+    }
+  }
+}
