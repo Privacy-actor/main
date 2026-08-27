@@ -1,0 +1,40 @@
+# PrivShield 第三层 · GPU 环境依赖
+#
+# 实测跑通的组合(2026-08-27,矩池云 A100-PCIE-40GB)。
+# 镜像:Pytorch 2.6.0_cuda_12.4 (Ubuntu 22.04 / Python 3.11 / CUDA 12.4)
+#
+# ⚠️ torch 由镜像预装,不要用本文件安装它,也不要升级它。
+#    安装任何包之后都必须复验:
+#      python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+#    期望输出:2.6.0+cu124 True
+#
+# ⚠️ 不要用 --no-deps 保护 torch,那会跳过版本约束、装出不兼容的组合
+#    (踩过的坑:fastapi 0.116 + starlette 1.6 -> Router.__init__() 报 on_startup)。
+#    正确做法是用约束文件:
+#      printf "torch==2.6.0\ntransformers==4.51.3\n" > pin.txt
+#      pip install <包> -c pin.txt
+#
+# 国内机器一律走镜像源:
+#      pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
+
+# ---- 训练 ----
+transformers==4.51.3
+peft==0.15.2
+accelerate==1.6.0
+datasets==3.5.0
+bitsandbytes==0.45.5
+
+# ---- 推理服务 ----
+# vllm 会尝试改 torch,必须带 -c pin.txt 安装
+vllm==0.8.5
+
+# ---- 模型下载(ModelScope,国内直连;不要用 HuggingFace)----
+modelscope
+
+# ---- 评测脚本需要能 import backend/app ----
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+pydantic-settings==2.10.1
+httpx==0.28.1
+python-multipart==0.0.20
+requests
