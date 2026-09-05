@@ -45,7 +45,9 @@ RISK_PATTERN = re.compile(r"我叫|姓名|联系人|住在|地址|电话|手机|
 
 
 def routed_context(text: str) -> str:
-    sentences = list(re.finditer(r".*?(?:[。！？!?\n]|$)", text, re.S))
+    sentences = list(re.finditer(r".*?(?:[。！？!?\n]|\.(?=\s)|$)", text, re.S))
+    # 英文句号仅在其后为空白时才算句末，避免切碎邮箱 a.b@c.com、
+    # 小数 3.14、文件名 x.v2.pdf
     risky = [m for m in sentences if m.group() and (RISK_PATTERN.search(m.group()) or (re.search(r"[A-Za-z]", m.group()) and re.search(r"[\u4e00-\u9fff]", m.group())))]
     selected = [(item.start(), item.end(), item.group()) for item in risky[:settings.llm_max_routed_sentences]]
     if not selected:

@@ -1,0 +1,1343 @@
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"彭小军\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.829970359802246, "idx": 0}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_9e3b0e4aa2\", \"keep\": false, \"label\": \"ORG\", \"certainty\": \"low\"}], \"additions\": [{\"text\": \"温格\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 3.263681411743164, "idx": 1}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"雅典娜\", \"start\": 10, \"end\": 13, \"label\": \"PERSON\", \"certainty\": \"medium\"}]}", "latency": 2.8582112789154053, "idx": 2}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"郑阿姨\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9860663414001465, "idx": 3}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.921633243560791, "idx": 4}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"吴三桂\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.0118985176086426, "idx": 5}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.552647590637207, "idx": 6}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.9197368621826172, "idx": 7}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"程阳\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8517987728118896, "idx": 8}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.9171688556671143, "idx": 9}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.6227624416351318, "idx": 10}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"记者\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8191165924072266, "idx": 11}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.9430513381958008, "idx": 12}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"沈东军\", \"start\": 17, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.9929134845733643, "idx": 13}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.5768740177154541, "idx": 14}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.5756418704986572, "idx": 15}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18399667739868164, "idx": 16}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"Svensson\", \"start\": 0, \"end\": 8, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.6029016971588135, "idx": 17}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18346357345581055, "idx": 18}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"雅清苑\", \"start\": 10, \"end\": 13, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.6770689487457275, "idx": 19}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_329de7074b\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"san\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"hot\", \"start\": 4, \"end\": 7, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"hk\", \"start\": 8, \"end\": 10, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 4.400509357452393, "idx": 20}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4997982978820801, "idx": 21}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1869959831237793, "idx": 22}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4779956340789795, "idx": 23}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47755908966064453, "idx": 24}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47867250442504883, "idx": 25}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"唐曜华\", \"start\": 6, \"end\": 9, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.377389669418335, "idx": 26}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"Pis\", \"start\": 24, \"end\": 27, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"卜严骏\", \"start\": 28, \"end\": 31, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 3.3405380249023438, "idx": 27}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"宝玺\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.5128655433654785, "idx": 28}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.42401623725891113, "idx": 29}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"都灵\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.5721461772918701, "idx": 30}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"郭庆\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.2390146255493164, "idx": 31}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.46839427947998047, "idx": 32}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14638185501098633, "idx": 33}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1458117961883545, "idx": 34}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"队\", \"start\": 0, \"end\": 1, \"label\": \"PERSON\", \"certainty\": \"low\"}, {\"text\": \"友\", \"start\": 2, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 2.368558883666992, "idx": 35}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"先\", \"start\": 0, \"end\": 1, \"label\": \"PERSON\", \"certainty\": \"low\"}, {\"text\": \"锋\", \"start\": 1, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 2.3045451641082764, "idx": 36}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.41884922981262207, "idx": 37}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4027574062347412, "idx": 38}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5637426376342773, "idx": 39}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21998286247253418, "idx": 40}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"陈艳萍\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.0621750354766846, "idx": 41}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5451688766479492, "idx": 42}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"雷吉纳\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.4567537307739258, "idx": 43}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.25362229347229004, "idx": 44}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5155916213989258, "idx": 45}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"欧\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"low\"}]}", "latency": 1.2833251953125, "idx": 46}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4561471939086914, "idx": 47}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4403688907623291, "idx": 48}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"金石\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.257664680480957, "idx": 49}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"日内瓦\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 2.2156572341918945, "idx": 50}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.5568869113922119, "idx": 51}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.9009089469909668, "idx": 52}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"长春\", \"start\": 12, \"end\": 14, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 2.2431743144989014, "idx": 53}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"米勒\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.3215270042419434, "idx": 54}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"阳光\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 3.243577480316162, "idx": 55}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"颜鲲\", \"start\": 34, \"end\": 36, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.3639726638793945, "idx": 56}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.8967273235321045, "idx": 57}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.8946549892425537, "idx": 58}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.8924148082733154, "idx": 59}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.8917436599731445, "idx": 60}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.5461194515228271, "idx": 61}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"杰瑞\", \"start\": 23, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.420828104019165, "idx": 62}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.9326598644256592, "idx": 63}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.5732548236846924, "idx": 64}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.5714259147644043, "idx": 65}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_f51ca2529f\", \"keep\": true, \"label\": \"ADDRESS\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"王府井\", \"start\": 0, \"end\": 3, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 3.1259424686431885, "idx": 66}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18482422828674316, "idx": 67}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5820910930633545, "idx": 68}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5822436809539795, "idx": 69}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.12911701202392578, "idx": 70}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6155169010162354, "idx": 71}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"林达\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.893810510635376, "idx": 72}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6570019721984863, "idx": 73}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.23490428924560547, "idx": 74}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"《杀\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 1.9218060970306396, "idx": 75}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.26432085037231445, "idx": 76}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.613762378692627, "idx": 77}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.559638261795044, "idx": 78}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"查良镛\", \"start\": 14, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8284552097320557, "idx": 79}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1996910572052002, "idx": 80}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19990801811218262, "idx": 81}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14759564399719238, "idx": 82}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5346689224243164, "idx": 83}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1799454689025879, "idx": 84}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"银兴网吧晨曦店\", \"start\": 10, \"end\": 18, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.9905717372894287, "idx": 85}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1821613311767578, "idx": 86}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"姜山\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6934776306152344, "idx": 87}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16383695602416992, "idx": 88}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.163285493850708, "idx": 89}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47327423095703125, "idx": 90}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49256253242492676, "idx": 91}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16672778129577637, "idx": 92}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_75dcb06ddd\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.7494680881500244, "idx": 93}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5796360969543457, "idx": 94}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_74d3a33350\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.9176506996154785, "idx": 95}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21670079231262207, "idx": 96}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.23455405235290527, "idx": 97}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5436153411865234, "idx": 98}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"公安部\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.6759088039398193, "idx": 99}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"丹尼斯\", \"start\": 10, \"end\": 13, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.8269124031066895, "idx": 100}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.525763750076294, "idx": 101}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_d1bba013f3\", \"keep\": true, \"label\": \"ADDRESS\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"张丽\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 3.2002103328704834, "idx": 102}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"清华\", \"start\": 16, \"end\": 18, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7743134498596191, "idx": 103}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48845982551574707, "idx": 104}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1618814468383789, "idx": 105}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16244101524353027, "idx": 106}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5091073513031006, "idx": 107}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"戴维\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7045652866363525, "idx": 108}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16747474670410156, "idx": 109}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"他\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.6756980419158936, "idx": 110}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4405221939086914, "idx": 111}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"成钢\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.892723798751831, "idx": 112}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.43718528747558594, "idx": 113}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"三蛋\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.7885112762451172, "idx": 114}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4895970821380615, "idx": 115}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"ID\", \"start\": 0, \"end\": 2, \"label\": \"CUSTOM\", \"certainty\": \"high\"}] }", "latency": 1.8344190120697021, "idx": 116}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1642615795135498, "idx": 117}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"McGee\", \"start\": 11, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9920070171356201, "idx": 118}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1639549732208252, "idx": 119}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14888286590576172, "idx": 120}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5461130142211914, "idx": 121}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16684341430664062, "idx": 122}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5459284782409668, "idx": 123}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"伊势\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9281659126281738, "idx": 124}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14945554733276367, "idx": 125}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5297682285308838, "idx": 126}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.17044329643249512, "idx": 127}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5513145923614502, "idx": 128}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5515568256378174, "idx": 129}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14972639083862305, "idx": 130}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5459752082824707, "idx": 131}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5439765453338623, "idx": 132}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"中国\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 2.734745502471924, "idx": 133}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5315568447113037, "idx": 134}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.17039823532104492, "idx": 135}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"米拉\", \"start\": 26, \"end\": 28, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.984107494354248, "idx": 136}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5668423175811768, "idx": 137}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"全国人大\", \"start\": 0, \"end\": 4, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.704685688018799, "idx": 138}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5647644996643066, "idx": 139}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"张瑜\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7606563568115234, "idx": 140}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16562271118164062, "idx": 141}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_ac7702ae26\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"赵加\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"杜硕\", \"start\": 34, \"end\": 36, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 4.354491949081421, "idx": 142}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20573687553405762, "idx": 143}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6026575565338135, "idx": 144}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6029505729675293, "idx": 145}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_69b2a2bae4\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.9188649654388428, "idx": 146}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_6564c57b8b\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"但价\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 2.9786195755004883, "idx": 147}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6006615161895752, "idx": 148}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"蒂芬\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.7712655067443848, "idx": 149}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20387625694274902, "idx": 150}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16512417793273926, "idx": 151}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.165877103805542, "idx": 152}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18422484397888184, "idx": 153}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"大\", \"start\": 0, \"end\": 1, \"label\": \"PERSON\", \"certainty\": \"low\"}, {\"text\": \"众\", \"start\": 1, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 2.7691264152526855, "idx": 154}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李总\", \"start\": 18, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"张总\", \"start\": 21, \"end\": 23, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 3.969468832015991, "idx": 155}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21957802772521973, "idx": 156}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21913719177246094, "idx": 157}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20341181755065918, "idx": 158}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"2008\", \"start\": 0, \"end\": 4, \"label\": \"YEAR\", \"certainty\": \"high\"}]}", "latency": 2.5420119762420654, "idx": 159}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5311918258666992, "idx": 160}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"就o\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 1.6368439197540283, "idx": 161}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20538544654846191, "idx": 162}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2049412727355957, "idx": 163}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.511458158493042, "idx": 164}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4539945125579834, "idx": 165}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14815139770507812, "idx": 166}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"印度\", \"start\": 4, \"end\": 6, \"label\": \"LOCATION\", \"certainty\": \"high\"}, {\"text\": \"美国\", \"start\": 13, \"end\": 15, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 2.7506885528564453, "idx": 167}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"《幻\", \"start\": 0, \"end\": 2, \"label\": \"CUSTOM\", \"certainty\": \"low\"}] }", "latency": 1.572486400604248, "idx": 168}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1470639705657959, "idx": 169}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16428399085998535, "idx": 170}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.436420202255249, "idx": 171}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李晨洋\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.473554849624634, "idx": 172}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.43608784675598145, "idx": 173}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"图为\", \"start\": 0, \"end\": 2, \"label\": \"CUSTOM\", \"certainty\": \"low\"}] }", "latency": 1.566943645477295, "idx": 174}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4534308910369873, "idx": 175}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"梅塔\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.5674748420715332, "idx": 176}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4374840259552002, "idx": 177}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"尤文\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.6291682720184326, "idx": 178}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4673025608062744, "idx": 179}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16137242317199707, "idx": 180}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"姜山\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6614902019500732, "idx": 181}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"新华社\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.6757140159606934, "idx": 182}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.44685864448547363, "idx": 183}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"青年\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.6057260036468506, "idx": 184}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14136981964111328, "idx": 185}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"安吉丽娜·茱莉\", \"start\": 10, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.0129315853118896, "idx": 186}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.46186065673828125, "idx": 187}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14452195167541504, "idx": 188}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49535393714904785, "idx": 189}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"卡卡\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"加图索\", \"start\": 18, \"end\": 21, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 3.4404447078704834, "idx": 190}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"韩亚\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.8083598613739014, "idx": 191}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14438915252685547, "idx": 192}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16097116470336914, "idx": 193}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5133764743804932, "idx": 194}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"Sonokong\", \"start\": 24, \"end\": 32, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.0308024883270264, "idx": 195}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19657659530639648, "idx": 196}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李总\", \"start\": 10, \"end\": 12, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.9906225204467773, "idx": 197}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5192050933837891, "idx": 198}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14620304107666016, "idx": 199}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"金尼尔\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9373054504394531, "idx": 200}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1420590877532959, "idx": 201}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18330955505371094, "idx": 202}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18318700790405273, "idx": 203}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5418353080749512, "idx": 204}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18323612213134766, "idx": 205}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5187597274780273, "idx": 206}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5190877914428711, "idx": 207}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"国基\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.9775750637054443, "idx": 208}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5206708908081055, "idx": 209}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20330142974853516, "idx": 210}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_89c951f91b\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"迈伦\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"斯科尔斯\", \"start\": 14, \"end\": 18, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 4.665242910385132, "idx": 211}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5054090023040771, "idx": 212}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16154170036315918, "idx": 213}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16199970245361328, "idx": 214}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.580439567565918, "idx": 215}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20336437225341797, "idx": 216}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5996260643005371, "idx": 217}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.598919153213501, "idx": 218}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1878807544708252, "idx": 219}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18765473365783691, "idx": 220}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5959877967834473, "idx": 221}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"姚总\", \"start\": 17, \"end\": 19, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.794388771057129, "idx": 222}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5951483249664307, "idx": 223}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"陈克\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7526535987854004, "idx": 224}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6004128456115723, "idx": 225}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18245959281921387, "idx": 226}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_4dd9d77bd9\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"于澄\", \"start\": 10, \"end\": 12, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 3.127178430557251, "idx": 227}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6453065872192383, "idx": 228}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1847689151763916, "idx": 229}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"张博\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6610045433044434, "idx": 230}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6248273849487305, "idx": 231}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19081902503967285, "idx": 232}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19036006927490234, "idx": 233}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"哈维尔\", \"start\": 24, \"end\": 28, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.8363089561462402, "idx": 234}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20444011688232422, "idx": 235}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5727732181549072, "idx": 236}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20557951927185059, "idx": 237}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.571063756942749, "idx": 238}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"If\", \"start\": 1, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.6448452472686768, "idx": 239}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20836710929870605, "idx": 240}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18787622451782227, "idx": 241}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5417907238006592, "idx": 242}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49801182746887207, "idx": 243}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49816036224365234, "idx": 244}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"于县\", \"start\": 24, \"end\": 26, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.589146852493286, "idx": 245}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47658634185791016, "idx": 246}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_597fe05958\", \"keep\": false, \"label\": \"ORG\", \"certainty\": \"low\"}], \"additions\": [{\"text\": \"他\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8949742317199707, "idx": 247}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5042316913604736, "idx": 248}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"汇丰\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.6544139385223389, "idx": 249}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49883460998535156, "idx": 250}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"张智伟\", \"start\": 24, \"end\": 27, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.68778395652771, "idx": 251}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.45954251289367676, "idx": 252}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"你\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.60736083984375, "idx": 253}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1605691909790039, "idx": 254}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"□\", \"start\": 0, \"end\": 1, \"label\": \"CUSTOM\", \"certainty\": \"low\"}, {\"text\": \"本报记者\", \"start\": 2, \"end\": 6, \"label\": \"ORG\", \"certainty\": \"medium\"}] }", "latency": 3.767568588256836, "idx": 255}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4236159324645996, "idx": 256}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"《半\", \"start\": 0, \"end\": 2, \"label\": \"CUSTOM\", \"certainty\": \"low\"}]}", "latency": 1.6310381889343262, "idx": 257}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.12621831893920898, "idx": 258}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14505314826965332, "idx": 259}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47984981536865234, "idx": 260}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4772605895996094, "idx": 261}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16193246841430664, "idx": 262}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1615607738494873, "idx": 263}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"陆慧明\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.8363819122314453, "idx": 264}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"《次贷危机》\", \"start\": 0, \"end\": 6, \"label\": \"BOOK\", \"certainty\": \"high\"}]}", "latency": 2.770744800567627, "idx": 265}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14356017112731934, "idx": 266}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5148725509643555, "idx": 267}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"威廉\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.770442008972168, "idx": 268}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5199744701385498, "idx": 269}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16126227378845215, "idx": 270}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14717411994934082, "idx": 271}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"维拉\", \"start\": 2, \"end\": 4, \"label\": \"ORG\", \"certainty\": \"high\"}, {\"text\": \"富勒姆\", \"start\": 6, \"end\": 9, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 3.0803914070129395, "idx": 272}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5062460899353027, "idx": 273}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5198147296905518, "idx": 274}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"姜山\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.7716915607452393, "idx": 275}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"中国\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.7422285079956055, "idx": 276}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14947056770324707, "idx": 277}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14861273765563965, "idx": 278}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14685630798339844, "idx": 279}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5412399768829346, "idx": 280}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"专\", \"start\": 0, \"end\": 1, \"label\": \"PERSON\", \"certainty\": \"low\"}, {\"text\": \"家\", \"start\": 1, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 3.013781785964966, "idx": 281}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.201124906539917, "idx": 282}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20133399963378906, "idx": 283}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5137884616851807, "idx": 284}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5133285522460938, "idx": 285}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"姚不仙\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7330021858215332, "idx": 286}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5325734615325928, "idx": 287}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"政治\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 1.6570227146148682, "idx": 288}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.133209228515625, "idx": 289}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5307917594909668, "idx": 290}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"k2\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"medium\"}] }", "latency": 2.9329652786254883, "idx": 291}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5309131145477295, "idx": 292}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.530447244644165, "idx": 293}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"马里布\", \"start\": 0, \"end\": 3, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.8691773414611816, "idx": 294}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1490037441253662, "idx": 295}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.488689661026001, "idx": 296}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4720456600189209, "idx": 297}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4894134998321533, "idx": 298}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5090892314910889, "idx": 299}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"CCM\", \"start\": 10, \"end\": 13, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.893951654434204, "idx": 300}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"利兹\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.8190839290618896, "idx": 301}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47509050369262695, "idx": 302}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"Cai\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8824923038482666, "idx": 303}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"新华网\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.8342483043670654, "idx": 304}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5036716461181641, "idx": 305}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48981308937072754, "idx": 306}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5433857440948486, "idx": 307}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14744806289672852, "idx": 308}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14771819114685059, "idx": 309}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"巨人\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.8854639530181885, "idx": 310}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5798366069793701, "idx": 311}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.22246026992797852, "idx": 312}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"盖茨\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.885356903076172, "idx": 313}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5832598209381104, "idx": 314}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20575308799743652, "idx": 315}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2227630615234375, "idx": 316}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5474212169647217, "idx": 317}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"嘉\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7821643352508545, "idx": 318}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5476784706115723, "idx": 319}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15276670455932617, "idx": 320}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16386198997497559, "idx": 321}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5109493732452393, "idx": 322}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"李力\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.958986759185791, "idx": 323}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5262701511383057, "idx": 324}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5081696510314941, "idx": 325}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.507716178894043, "idx": 326}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"20\", \"start\": 0, \"end\": 2, \"label\": \"YEAR\", \"certainty\": \"high\"}]}", "latency": 1.8487522602081299, "idx": 327}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14707541465759277, "idx": 328}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"黄设计师\", \"start\": 10, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.9010729789733887, "idx": 329}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21803498268127441, "idx": 330}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.25275707244873047, "idx": 331}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.25464844703674316, "idx": 332}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.25485658645629883, "idx": 333}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_cdd4d17a70\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"贾德界\", \"start\": 22, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 3.3451356887817383, "idx": 334}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2750098705291748, "idx": 335}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2745516300201416, "idx": 336}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6365659236907959, "idx": 337}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.23930072784423828, "idx": 338}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"黄培修\", \"start\": 17, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.943549871444702, "idx": 339}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"张奶奶\", \"start\": 22, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.849980115890503, "idx": 340}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5974924564361572, "idx": 341}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2026829719543457, "idx": 342}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2028827667236328, "idx": 343}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5084881782531738, "idx": 344}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1838846206665039, "idx": 345}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1694657802581787, "idx": 346}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5057787895202637, "idx": 347}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"夏马兰\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7309279441833496, "idx": 348}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"马骏\", \"start\": 8, \"end\": 10, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.760350465774536, "idx": 349}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"花旗\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.734929084777832, "idx": 350}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47678232192993164, "idx": 351}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14633870124816895, "idx": 352}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14836335182189941, "idx": 353}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4957849979400635, "idx": 354}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_99093bb089\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.8988773822784424, "idx": 355}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14702105522155762, "idx": 356}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"陈水扁\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7988626956939697, "idx": 357}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"梅森\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8449959754943848, "idx": 358}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15106940269470215, "idx": 359}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5083210468292236, "idx": 360}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"吕正\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7956864833831787, "idx": 361}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15051865577697754, "idx": 362}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14821124076843262, "idx": 363}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"张大千\", \"start\": 10, \"end\": 13, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8328843116760254, "idx": 364}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5250017642974854, "idx": 365}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16561341285705566, "idx": 366}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15192675590515137, "idx": 367}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1807405948638916, "idx": 368}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5530931949615479, "idx": 369}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"索维娅\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.7626123428344727, "idx": 370}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18251442909240723, "idx": 371}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4951770305633545, "idx": 372}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5111494064331055, "idx": 373}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.54726243019104, "idx": 374}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.151503324508667, "idx": 375}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16441106796264648, "idx": 376}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"游康\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7509756088256836, "idx": 377}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16683650016784668, "idx": 378}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5454952716827393, "idx": 379}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5452945232391357, "idx": 380}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18662810325622559, "idx": 381}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18616771697998047, "idx": 382}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5467705726623535, "idx": 383}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5425257682800293, "idx": 384}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5414154529571533, "idx": 385}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5416150093078613, "idx": 386}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"《魔\", \"start\": 0, \"end\": 2, \"label\": \"CUSTOM\", \"certainty\": \"low\"}]}", "latency": 1.7049572467803955, "idx": 387}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14740538597106934, "idx": 388}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5456228256225586, "idx": 389}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"王朗\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.7216081619262695, "idx": 390}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5424706935882568, "idx": 391}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"LOL\", \"start\": 1, \"end\": 4, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.7186174392700195, "idx": 392}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19598126411437988, "idx": 393}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4939565658569336, "idx": 394}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49415087699890137, "idx": 395}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"鲁迅\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.767413854598999, "idx": 396}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5058577060699463, "idx": 397}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"主持人\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.6600637435913086, "idx": 398}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14567041397094727, "idx": 399}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"陈伟明\", \"start\": 14, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"许秦豪\", \"start\": 19, \"end\": 22, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 3.300100326538086, "idx": 400}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18250107765197754, "idx": 401}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"微软\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7567424774169922, "idx": 402}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.504709005355835, "idx": 403}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"moma\", \"start\": 34, \"end\": 38, \"label\": \"LOCATION\", \"certainty\": \"medium\"}]}", "latency": 1.8696465492248535, "idx": 404}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"DptA\", \"start\": 0, \"end\": 4, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.793916940689087, "idx": 405}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.45323801040649414, "idx": 406}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"Scrabulous\", \"start\": 2, \"end\": 12, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.9640307426452637, "idx": 407}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"ReMinD\", \"start\": 0, \"end\": 5, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"Hawk\", \"start\": 17, \"end\": 21, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"哈撒克斯坦\", \"start\": 24, \"end\": 29, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 4.974426031112671, "idx": 408}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13065600395202637, "idx": 409}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16890287399291992, "idx": 410}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5126504898071289, "idx": 411}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5128545761108398, "idx": 412}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_11e5fa63f7\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.9295158386230469, "idx": 413}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"梁洛施\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.794527530670166, "idx": 414}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15139412879943848, "idx": 415}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"早报\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"medium\"}]}", "latency": 2.731520414352417, "idx": 416}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16125226020812988, "idx": 417}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18561172485351562, "idx": 418}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5791351795196533, "idx": 419}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"谭雅玲\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.808431625366211, "idx": 420}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21980929374694824, "idx": 421}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5614161491394043, "idx": 422}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2002108097076416, "idx": 423}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20037293434143066, "idx": 424}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5632598400115967, "idx": 425}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18241429328918457, "idx": 426}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"润泽\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.727917194366455, "idx": 427}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"金石开\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7641282081604004, "idx": 428}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13347268104553223, "idx": 429}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18294000625610352, "idx": 430}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18313908576965332, "idx": 431}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"邱礼\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.86234450340271, "idx": 432}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5816230773925781, "idx": 433}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.24544668197631836, "idx": 434}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2453601360321045, "idx": 435}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"我们\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 2.8156683444976807, "idx": 436}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5865697860717773, "idx": 437}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"泰禾\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.9309749603271484, "idx": 438}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47521448135375977, "idx": 439}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_cdde292b06\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.7079987525939941, "idx": 440}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.43836450576782227, "idx": 441}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4560058116912842, "idx": 442}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"王主任\", \"start\": 24, \"end\": 27, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8225970268249512, "idx": 443}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48967957496643066, "idx": 444}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1509568691253662, "idx": 445}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4906330108642578, "idx": 446}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14786624908447266, "idx": 447}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14805388450622559, "idx": 448}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5213866233825684, "idx": 449}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"行业\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.016730308532715, "idx": 450}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14631032943725586, "idx": 451}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1815776824951172, "idx": 452}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5068600177764893, "idx": 453}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1819744110107422, "idx": 454}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.492448091506958, "idx": 455}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4890413284301758, "idx": 456}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5060820579528809, "idx": 457}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.542269229888916, "idx": 458}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5580224990844727, "idx": 459}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16384506225585938, "idx": 460}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"俄\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 2.1071465015411377, "idx": 461}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"晨\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 2.957385540008545, "idx": 462}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5797388553619385, "idx": 463}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5802371501922607, "idx": 464}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20170950889587402, "idx": 465}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6147239208221436, "idx": 466}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18374419212341309, "idx": 467}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"你\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 2.0698866844177246, "idx": 468}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18002820014953613, "idx": 469}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6875224113464355, "idx": 470}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6907930374145508, "idx": 471}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18271517753601074, "idx": 472}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16835594177246094, "idx": 473}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16485166549682617, "idx": 474}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20445728302001953, "idx": 475}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21802353858947754, "idx": 476}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21756291389465332, "idx": 477}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21805429458618164, "idx": 478}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.8005869388580322, "idx": 479}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.7609689235687256, "idx": 480}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"马略卡\", \"start\": 12, \"end\": 15, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 2.0113492012023926, "idx": 481}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2570052146911621, "idx": 482}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"朱博士\", \"start\": 25, \"end\": 28, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9664807319641113, "idx": 483}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2571980953216553, "idx": 484}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2567574977874756, "idx": 485}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.292771577835083, "idx": 486}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.25542783737182617, "idx": 487}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2710695266723633, "idx": 488}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6827292442321777, "idx": 489}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.27049708366394043, "idx": 490}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"杨正\", \"start\": 34, \"end\": 38, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.9172544479370117, "idx": 491}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.66758131980896, "idx": 492}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.23786544799804688, "idx": 493}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"徐宗\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.7025575637817383, "idx": 494}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"赛迪\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.754621982574463, "idx": 495}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18436455726623535, "idx": 496}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.573505163192749, "idx": 497}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.537322998046875, "idx": 498}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19794034957885742, "idx": 499}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"Boxer\", \"start\": 27, \"end\": 32, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7914626598358154, "idx": 500}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"老挝\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 2.6087586879730225, "idx": 501}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"西伯利亚\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.7171499729156494, "idx": 502}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14550399780273438, "idx": 503}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"中国\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.6680796146392822, "idx": 504}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"张连\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.5471973419189453, "idx": 505}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5042321681976318, "idx": 506}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14645648002624512, "idx": 507}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"记者\", \"start\": 5, \"end\": 7, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"孟梅\", \"start\": 7, \"end\": 9, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"实习生\", \"start\": 9, \"end\": 12, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"夏冬梅\", \"start\": 12, \"end\": 15, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 5.548313617706299, "idx": 508}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14910030364990234, "idx": 509}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1486527919769287, "idx": 510}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"徐悲\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.5417075157165527, "idx": 511}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.45350146293640137, "idx": 512}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1479959487915039, "idx": 513}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李蕾\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"张羽飞\", \"start\": 17, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 3.9297828674316406, "idx": 514}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4343850612640381, "idx": 515}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5207011699676514, "idx": 516}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"这\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 2.5843920707702637, "idx": 517}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.17774128913879395, "idx": 518}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"金庸\", \"start\": 23, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.749321460723877, "idx": 519}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1619882583618164, "idx": 520}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5206167697906494, "idx": 521}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"刘中山\", \"start\": 12, \"end\": 15, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6302490234375, "idx": 522}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5192439556121826, "idx": 523}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"陈玉华\", \"start\": 28, \"end\": 31, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7528266906738281, "idx": 524}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13169026374816895, "idx": 525}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"WE\", \"start\": 14, \"end\": 16, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7051856517791748, "idx": 526}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4973907470703125, "idx": 527}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"姜伟新\", \"start\": 22, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6558468341827393, "idx": 528}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"潘石屹\", \"start\": 14, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6427741050720215, "idx": 529}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14498233795166016, "idx": 530}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14542913436889648, "idx": 531}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4668116569519043, "idx": 532}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"吴明\", \"start\": 34, \"end\": 36, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6381402015686035, "idx": 533}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.130354642868042, "idx": 534}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14607644081115723, "idx": 535}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4856691360473633, "idx": 536}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1637723445892334, "idx": 537}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"电\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 2.589484214782715, "idx": 538}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4558753967285156, "idx": 539}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.43588781356811523, "idx": 540}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"DotA\", \"start\": 1, \"end\": 5, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.6534924507141113, "idx": 541}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4875190258026123, "idx": 542}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.505767822265625, "idx": 543}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16498160362243652, "idx": 544}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5067977905273438, "idx": 545}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48975658416748047, "idx": 546}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48892664909362793, "idx": 547}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48847126960754395, "idx": 548}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48998284339904785, "idx": 549}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"黄福华\", \"start\": 22, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8787429332733154, "idx": 550}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"周富强\", \"start\": 34, \"end\": 37, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8761074542999268, "idx": 551}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49289774894714355, "idx": 552}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5084307193756104, "idx": 553}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5093936920166016, "idx": 554}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18390750885009766, "idx": 555}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"他的\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.759186029434204, "idx": 556}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"记者\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.813105821609497, "idx": 557}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"新华\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.7506754398345947, "idx": 558}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5073649883270264, "idx": 559}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5068950653076172, "idx": 560}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14864277839660645, "idx": 561}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.147108793258667, "idx": 562}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.526820182800293, "idx": 563}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.528578519821167, "idx": 564}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5287644863128662, "idx": 565}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5278186798095703, "idx": 566}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16566038131713867, "idx": 567}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5250065326690674, "idx": 568}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5062456130981445, "idx": 569}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5213253498077393, "idx": 570}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5208735466003418, "idx": 571}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5563809871673584, "idx": 572}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"大\", \"start\": 0, \"end\": 1, \"label\": \"PERSON\", \"certainty\": \"low\"}, {\"text\": \"众\", \"start\": 1, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 3.9222960472106934, "idx": 573}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.572840690612793, "idx": 574}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"一位\", \"start\": 10, \"end\": 12, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.736215353012085, "idx": 575}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16210699081420898, "idx": 576}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"张经理\", \"start\": 17, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8173909187316895, "idx": 577}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.613255500793457, "idx": 578}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6504151821136475, "idx": 579}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21773791313171387, "idx": 580}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.649850606918335, "idx": 581}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"智\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.6774909496307373, "idx": 582}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18403148651123047, "idx": 583}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1835479736328125, "idx": 584}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18374919891357422, "idx": 585}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18187737464904785, "idx": 586}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1820540428161621, "idx": 587}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5426030158996582, "idx": 588}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"邢晓\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.608891248703003, "idx": 589}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"吴冠中\", \"start\": 14, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.8155946731567383, "idx": 590}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_2621b824bd\", \"keep\": false, \"label\": \"ADDRESS\", \"certainty\": \"low\"}], \"additions\": [{\"text\": \"张传\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"陈某\", \"start\": 24, \"end\": 26, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"阿霞\", \"start\": 34, \"end\": 36, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 5.640054225921631, "idx": 591}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"战锤\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 2.6265053749084473, "idx": 592}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16582107543945312, "idx": 593}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"c罗\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6099166870117188, "idx": 594}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47906041145324707, "idx": 595}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.46048879623413086, "idx": 596}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14154529571533203, "idx": 597}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4960482120513916, "idx": 598}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49442005157470703, "idx": 599}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1614079475402832, "idx": 600}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49376821517944336, "idx": 601}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4763777256011963, "idx": 602}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"住总\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.6559464931488037, "idx": 603}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4598500728607178, "idx": 604}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4598510265350342, "idx": 605}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"香港\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.6372129917144775, "idx": 606}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4801032543182373, "idx": 607}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48102831840515137, "idx": 608}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1436920166015625, "idx": 609}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16382408142089844, "idx": 610}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48389601707458496, "idx": 611}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"Take\", \"start\": 0, \"end\": 4, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.6980340480804443, "idx": 612}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"汤姆\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.719574213027954, "idx": 613}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14497661590576172, "idx": 614}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5208654403686523, "idx": 615}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13144946098327637, "idx": 616}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16185474395751953, "idx": 617}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16142988204956055, "idx": 618}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16159749031066895, "idx": 619}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5101516246795654, "idx": 620}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"朴茨茅\", \"start\": 0, \"end\": 3, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.769789218902588, "idx": 621}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5117583274841309, "idx": 622}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"石媛\", \"start\": 17, \"end\": 19, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8285140991210938, "idx": 623}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4936230182647705, "idx": 624}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1485884189605713, "idx": 625}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5306274890899658, "idx": 626}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"福克斯\", \"start\": 12, \"end\": 15, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7894525527954102, "idx": 627}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"八路军\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.7561910152435303, "idx": 628}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"史小明\", \"start\": 24, \"end\": 27, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8411338329315186, "idx": 629}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"何?\", \"start\": 4, \"end\": 6, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.5857675075531006, "idx": 630}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1858518123626709, "idx": 631}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48751115798950195, "idx": 632}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"盖蒂\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.6276421546936035, "idx": 633}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.46571850776672363, "idx": 634}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"莫陆军\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.68949294090271, "idx": 635}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.46249938011169434, "idx": 636}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.509385347366333, "idx": 637}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15967392921447754, "idx": 638}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16056227684020996, "idx": 639}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5141704082489014, "idx": 640}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"Valve\", \"start\": 0, \"end\": 5, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7061989307403564, "idx": 641}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16445136070251465, "idx": 642}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"布鲁\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"medium\"}]}", "latency": 1.632667064666748, "idx": 643}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14393329620361328, "idx": 644}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14322113990783691, "idx": 645}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"李家\", \"start\": 2, \"end\": 4, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.699115514755249, "idx": 646}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5167217254638672, "idx": 647}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16356348991394043, "idx": 648}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1790783405303955, "idx": 649}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"张玉鑫\", \"start\": 25, \"end\": 28, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8655850887298584, "idx": 650}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"封屹\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"罗军\", \"start\": 34, \"end\": 36, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 4.313062906265259, "idx": 651}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16302275657653809, "idx": 652}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"武当\", \"start\": 14, \"end\": 16, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.8068702220916748, "idx": 653}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"刘明\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7342355251312256, "idx": 654}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.45836615562438965, "idx": 655}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"王姝\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.876652956008911, "idx": 656}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"擎峰\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.790886163711548, "idx": 657}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14394807815551758, "idx": 658}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4433925151824951, "idx": 659}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4438638687133789, "idx": 660}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"报道\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 1.7950935363769531, "idx": 661}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14463591575622559, "idx": 662}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.12826800346374512, "idx": 663}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5234358310699463, "idx": 664}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.17997384071350098, "idx": 665}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5558815002441406, "idx": 666}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5638840198516846, "idx": 667}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"邹墨远\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.9865434169769287, "idx": 668}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16590499877929688, "idx": 669}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14808154106140137, "idx": 670}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1476449966430664, "idx": 671}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"67\", \"start\": 0, \"end\": 2, \"label\": \"ID_CARD\", \"certainty\": \"high\"}]}", "latency": 1.9734244346618652, "idx": 672}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"曹鹏飞\", \"start\": 12, \"end\": 15, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"于海\", \"start\": 24, \"end\": 26, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 4.3475117683410645, "idx": 673}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"王总\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"杭州\", \"start\": 18, \"end\": 20, \"label\": \"LOCATION\", \"certainty\": \"high\"}, {\"text\": \"艺苑\", \"start\": 23, \"end\": 25, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 4.691059827804565, "idx": 674}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2059774398803711, "idx": 675}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20551252365112305, "idx": 676}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18673491477966309, "idx": 677}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18585872650146484, "idx": 678}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2007899284362793, "idx": 679}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5641698837280273, "idx": 680}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20254087448120117, "idx": 681}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"24\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 1.9070091247558594, "idx": 682}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"埃雷拉\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9485971927642822, "idx": 683}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18564152717590332, "idx": 684}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1851813793182373, "idx": 685}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5479121208190918, "idx": 686}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14862680435180664, "idx": 687}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1481616497039795, "idx": 688}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_ae49a63835\", \"keep\": true, \"label\": \"ADDRESS\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.9905369281768799, "idx": 689}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18506503105163574, "idx": 690}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18602204322814941, "idx": 691}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18102192878723145, "idx": 692}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5386307239532471, "idx": 693}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5417046546936035, "idx": 694}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18255901336669922, "idx": 695}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14860177040100098, "idx": 696}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"动脉\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.8085477352142334, "idx": 697}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14966177940368652, "idx": 698}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14832305908203125, "idx": 699}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1806178092956543, "idx": 700}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6174530982971191, "idx": 701}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"彭小军\", \"start\": 23, \"end\": 26, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8695805072784424, "idx": 702}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18480658531188965, "idx": 703}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16717958450317383, "idx": 704}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"Moon\", \"start\": 12, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"Infi\", \"start\": 22, \"end\": 26, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 4.216154098510742, "idx": 705}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18999123573303223, "idx": 706}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"中国\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.7794487476348877, "idx": 707}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18939757347106934, "idx": 708}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19093704223632812, "idx": 709}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18440818786621094, "idx": 710}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18458080291748047, "idx": 711}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5611209869384766, "idx": 712}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5613276958465576, "idx": 713}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5291621685028076, "idx": 714}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"但丁\", \"start\": 17, \"end\": 19, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7330334186553955, "idx": 715}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16576075553894043, "idx": 716}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5115764141082764, "idx": 717}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16366124153137207, "idx": 718}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"李泽玲\", \"start\": 14, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8036143779754639, "idx": 719}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5334463119506836, "idx": 720}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"封屹\", \"start\": 17, \"end\": 19, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7808167934417725, "idx": 721}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李明\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.690854787826538, "idx": 722}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"Ace\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 1.6787424087524414, "idx": 723}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1334528923034668, "idx": 724}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.513164758682251, "idx": 725}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5127394199371338, "idx": 726}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18616914749145508, "idx": 727}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.511427640914917, "idx": 728}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"山东\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 2.7167768478393555, "idx": 729}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16370463371276855, "idx": 730}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49766111373901367, "idx": 731}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13277602195739746, "idx": 732}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"WCG\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7673866748809814, "idx": 733}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"安徽\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.7246959209442139, "idx": 734}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4757721424102783, "idx": 735}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4771687984466553, "idx": 736}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.44156551361083984, "idx": 737}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.45426416397094727, "idx": 738}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14962553977966309, "idx": 739}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15051794052124023, "idx": 740}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"涛哥\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7721517086029053, "idx": 741}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18180036544799805, "idx": 742}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"吴秋香\", \"start\": 22, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9919137954711914, "idx": 743}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"叶晴\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9499399662017822, "idx": 744}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4931797981262207, "idx": 745}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49352240562438965, "idx": 746}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16424226760864258, "idx": 747}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1683363914489746, "idx": 748}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5253305435180664, "idx": 749}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5437076091766357, "idx": 750}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13319754600524902, "idx": 751}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1809842586517334, "idx": 752}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18132257461547852, "idx": 753}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5886886119842529, "idx": 754}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.593482494354248, "idx": 755}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"韦斯特伍\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8570520877838135, "idx": 756}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"徐悲鸿\", \"start\": 12, \"end\": 15, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.9945976734161377, "idx": 757}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18180513381958008, "idx": 758}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"袁峰\", \"start\": 36, \"end\": 38, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"乔倩倩\", \"start\": 39, \"end\": 42, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 3.197315216064453, "idx": 759}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18175458908081055, "idx": 760}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"桑德兰\", \"start\": 0, \"end\": 4, \"label\": \"ORG\", \"certainty\": \"high\"}, {\"text\": \"博尔顿\", \"start\": 6, \"end\": 9, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 3.056814193725586, "idx": 761}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"招行\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.8409583568572998, "idx": 762}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5788612365722656, "idx": 763}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.559150218963623, "idx": 764}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19880008697509766, "idx": 765}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18567824363708496, "idx": 766}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18324708938598633, "idx": 767}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18280577659606934, "idx": 768}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5422284603118896, "idx": 769}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18027329444885254, "idx": 770}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"冀岩\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.726975917816162, "idx": 771}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6142318248748779, "idx": 772}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"蒂姆\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6652328968048096, "idx": 773}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"林森\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.699387788772583, "idx": 774}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16775846481323242, "idx": 775}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15083646774291992, "idx": 776}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5320699214935303, "idx": 777}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2367537021636963, "idx": 778}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"上海\", \"start\": 24, \"end\": 26, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.694917917251587, "idx": 779}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"霍芬\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.6747596263885498, "idx": 780}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5133559703826904, "idx": 781}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"小袁\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.6333954334259033, "idx": 782}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"吴永亮\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6018104553222656, "idx": 783}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_01614fd1aa\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"王\", \"start\": 19, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"为民\", \"start\": 20, \"end\": 22, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 4.434981822967529, "idx": 784}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14614081382751465, "idx": 785}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5339977741241455, "idx": 786}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13295984268188477, "idx": 787}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16850543022155762, "idx": 788}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16809797286987305, "idx": 789}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"鄱阳\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 2.7492613792419434, "idx": 790}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"兰茵\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7518503665924072, "idx": 791}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4806525707244873, "idx": 792}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18776416778564453, "idx": 793}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"安徒\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.6927123069763184, "idx": 794}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4245278835296631, "idx": 795}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"2008\", \"start\": 0, \"end\": 4, \"label\": \"YEAR\", \"certainty\": \"high\"}]}", "latency": 1.763866901397705, "idx": 796}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"深圳\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.7743890285491943, "idx": 797}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1315147876739502, "idx": 798}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"zonTik\", \"start\": 22, \"end\": 28, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9867348670959473, "idx": 799}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"记者\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8954596519470215, "idx": 800}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47078919410705566, "idx": 801}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1701059341430664, "idx": 802}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.12908172607421875, "idx": 803}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13074254989624023, "idx": 804}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18506479263305664, "idx": 805}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18459296226501465, "idx": 806}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_fe483de4bd\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.9759080410003662, "idx": 807}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"SPL\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.005579948425293, "idx": 808}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5833258628845215, "idx": 809}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20049238204956055, "idx": 810}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"陈林林\", \"start\": 14, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.0593202114105225, "idx": 811}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18782854080200195, "idx": 812}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5812549591064453, "idx": 813}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15123224258422852, "idx": 814}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16356325149536133, "idx": 815}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5646266937255859, "idx": 816}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5773868560791016, "idx": 817}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5775790214538574, "idx": 818}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1867380142211914, "idx": 819}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6029505729675293, "idx": 820}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1674799919128418, "idx": 821}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"02\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 1.9197070598602295, "idx": 822}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18129491806030273, "idx": 823}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.550346851348877, "idx": 824}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"焦善伟\", \"start\": 27, \"end\": 30, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.991957664489746, "idx": 825}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16679739952087402, "idx": 826}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5882585048675537, "idx": 827}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6011049747467041, "idx": 828}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"火来胜\", \"start\": 0, \"end\": 5, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9177026748657227, "idx": 829}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2052140235900879, "idx": 830}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6180565357208252, "idx": 831}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14820122718811035, "idx": 832}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"陈姗\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.796252489089966, "idx": 833}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"侯女士\", \"start\": 14, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.924769163131714, "idx": 834}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20241594314575195, "idx": 835}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20349860191345215, "idx": 836}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"记者\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.8650872707366943, "idx": 837}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18558812141418457, "idx": 838}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.525043249130249, "idx": 839}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"《墨\", \"start\": 0, \"end\": 2, \"label\": \"CUSTOM\", \"certainty\": \"low\"}] }", "latency": 1.8727409839630127, "idx": 840}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"他们\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.781766653060913, "idx": 841}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"国务院\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.7975614070892334, "idx": 842}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5253162384033203, "idx": 843}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1700289249420166, "idx": 844}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"banikostrava\", \"start\": 0, \"end\": 12, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9308056831359863, "idx": 845}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14744997024536133, "idx": 846}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16194486618041992, "idx": 847}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18670296669006348, "idx": 848}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_79e02d6d9e\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.9644923210144043, "idx": 849}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"曹雪芹\", \"start\": 10, \"end\": 13, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.890331745147705, "idx": 850}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2050917148590088, "idx": 851}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5313055515289307, "idx": 852}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1670517921447754, "idx": 853}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49384546279907227, "idx": 854}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.509251594543457, "idx": 855}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15044546127319336, "idx": 856}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14838314056396484, "idx": 857}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"于海\", \"start\": 17, \"end\": 19, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8413548469543457, "idx": 858}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5438477993011475, "idx": 859}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14943552017211914, "idx": 860}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.559330940246582, "idx": 861}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18204593658447266, "idx": 862}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"艾\", \"start\": 34, \"end\": 35, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8984103202819824, "idx": 863}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18504595756530762, "idx": 864}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16826820373535156, "idx": 865}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5622937679290771, "idx": 866}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5426814556121826, "idx": 867}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16245388984680176, "idx": 868}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"618\", \"start\": 0, \"end\": 3, \"label\": \"PHONE\", \"certainty\": \"low\"}]}", "latency": 1.7972841262817383, "idx": 869}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18152499198913574, "idx": 870}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"中国\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.7526562213897705, "idx": 871}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5427544116973877, "idx": 872}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"杜琪峰\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7816519737243652, "idx": 873}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1693730354309082, "idx": 874}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李永刚\", \"start\": 32, \"end\": 36, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8600404262542725, "idx": 875}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4750847816467285, "idx": 876}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4861629009246826, "idx": 877}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15052556991577148, "idx": 878}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"中行\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7987322807312012, "idx": 879}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"招行\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7980566024780273, "idx": 880}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13322854042053223, "idx": 881}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5320580005645752, "idx": 882}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"记者\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.8823931217193604, "idx": 883}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5313606262207031, "idx": 884}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5309698581695557, "idx": 885}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19223880767822266, "idx": 886}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李建\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.7546050548553467, "idx": 887}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14969110488891602, "idx": 888}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14899945259094238, "idx": 889}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14865994453430176, "idx": 890}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49805259704589844, "idx": 891}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"飞哥\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.77252197265625, "idx": 892}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2048506736755371, "idx": 893}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5277202129364014, "idx": 894}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"民营\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.765251398086548, "idx": 895}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49541306495666504, "idx": 896}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49599742889404297, "idx": 897}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"该校\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.741197109222412, "idx": 898}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.545844316482544, "idx": 899}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"毕加索\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8331429958343506, "idx": 900}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"陌e\", \"start\": 2, \"end\": 4, \"label\": \"PERSON\", \"certainty\": \"medium\"}]}", "latency": 1.8014988899230957, "idx": 901}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5467069149017334, "idx": 902}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14818906784057617, "idx": 903}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14838576316833496, "idx": 904}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"A：\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7579002380371094, "idx": 905}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5302870273590088, "idx": 906}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16418862342834473, "idx": 907}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5143542289733887, "idx": 908}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"泽尔尼克\", \"start\": 0, \"end\": 4, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.9013779163360596, "idx": 909}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20571017265319824, "idx": 910}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5144729614257812, "idx": 911}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_cfd56db480\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.8475563526153564, "idx": 912}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49342918395996094, "idx": 913}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14868879318237305, "idx": 914}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"亚历山大\", \"start\": 14, \"end\": 19, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.014569044113159, "idx": 915}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.511894702911377, "idx": 916}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5120890140533447, "idx": 917}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5120329856872559, "idx": 918}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"美国\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.8058488368988037, "idx": 919}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"45\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}] }", "latency": 2.9493770599365234, "idx": 920}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"北京市\", \"start\": 0, \"end\": 3, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.82049560546875, "idx": 921}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1671450138092041, "idx": 922}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"商为\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.9180848598480225, "idx": 923}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5336735248565674, "idx": 924}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16763019561767578, "idx": 925}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5358948707580566, "idx": 926}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5551080703735352, "idx": 927}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5553028583526611, "idx": 928}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_ee215b0e1f\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 2.0950052738189697, "idx": 929}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1537482738494873, "idx": 930}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1510624885559082, "idx": 931}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.623185396194458, "idx": 932}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6052932739257812, "idx": 933}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李贵斌\", \"start\": 12, \"end\": 15, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.978496789932251, "idx": 934}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1877758502960205, "idx": 935}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"成龙\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8313286304473877, "idx": 936}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18695926666259766, "idx": 937}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1871201992034912, "idx": 938}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"XiXi\", \"start\": 0, \"end\": 4, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8210017681121826, "idx": 939}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"姜山\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.821758985519409, "idx": 940}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18585968017578125, "idx": 941}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18603825569152832, "idx": 942}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5801396369934082, "idx": 943}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1822221279144287, "idx": 944}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5607147216796875, "idx": 945}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5599682331085205, "idx": 946}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"变\", \"start\": 0, \"end\": 1, \"label\": \"PERSON\", \"certainty\": \"low\"}, {\"text\": \"形\", \"start\": 1, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 3.0472683906555176, "idx": 947}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13362717628479004, "idx": 948}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6003704071044922, "idx": 949}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1828322410583496, "idx": 950}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6004593372344971, "idx": 951}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16618776321411133, "idx": 952}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5993750095367432, "idx": 953}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6020629405975342, "idx": 954}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1877579689025879, "idx": 955}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18730664253234863, "idx": 956}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_6a68d88979\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 1.9169533252716064, "idx": 957}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"张跃\", \"start\": 19, \"end\": 21, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8897004127502441, "idx": 958}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16756319999694824, "idx": 959}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1999969482421875, "idx": 960}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"北京市\", \"start\": 0, \"end\": 3, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.7519702911376953, "idx": 961}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18452811241149902, "idx": 962}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"美联\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 2.7252299785614014, "idx": 963}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20270562171936035, "idx": 964}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"潘凝\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7507102489471436, "idx": 965}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1839454174041748, "idx": 966}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5107700824737549, "idx": 967}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16582775115966797, "idx": 968}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李力\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.727928400039673, "idx": 969}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16451764106750488, "idx": 970}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4936811923980713, "idx": 971}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1328728199005127, "idx": 972}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1654953956604004, "idx": 973}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4943704605102539, "idx": 974}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"博洛尼\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}, {\"text\": \"于晓强\", \"start\": 21, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 3.2541136741638184, "idx": 975}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4777047634124756, "idx": 976}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15027546882629395, "idx": 977}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4600992202758789, "idx": 978}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14863371849060059, "idx": 979}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4592130184173584, "idx": 980}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"蒋喜\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"吕昆\", \"start\": 16, \"end\": 18, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 3.2850732803344727, "idx": 981}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"农业\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.744659185409546, "idx": 982}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"汉诺威\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.9145123958587646, "idx": 983}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"报\", \"start\": 0, \"end\": 1, \"label\": \"PERSON\", \"certainty\": \"low\"}, {\"text\": \"记\", \"start\": 1, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 3.954171895980835, "idx": 984}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.22193479537963867, "idx": 985}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"山东\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.8287642002105713, "idx": 986}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"不卑\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 1.8289742469787598, "idx": 987}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5802323818206787, "idx": 988}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"金佳妍\", \"start\": 18, \"end\": 21, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.928208112716675, "idx": 989}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1677405834197998, "idx": 990}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49198341369628906, "idx": 991}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1674795150756836, "idx": 992}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14884066581726074, "idx": 993}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"平儿\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"daisy\", \"start\": 19, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"铃铛\", \"start\": 25, \"end\": 27, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 4.613107442855835, "idx": 994}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13337349891662598, "idx": 995}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5105962753295898, "idx": 996}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18245410919189453, "idx": 997}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18200302124023438, "idx": 998}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.17041277885437012, "idx": 999}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"姜山\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.71877384185791, "idx": 1000}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4732539653778076, "idx": 1001}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1661238670349121, "idx": 1002}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"曹鹏\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.699735403060913, "idx": 1003}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5236306190490723, "idx": 1004}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13313007354736328, "idx": 1005}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16625642776489258, "idx": 1006}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"记者\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.919184684753418, "idx": 1007}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16669797897338867, "idx": 1008}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18128228187561035, "idx": 1009}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5460176467895508, "idx": 1010}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5455706119537354, "idx": 1011}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20044898986816406, "idx": 1012}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"王牧\", \"start\": 24, \"end\": 26, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7573115825653076, "idx": 1013}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.530432939529419, "idx": 1014}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5117685794830322, "idx": 1015}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5267102718353271, "idx": 1016}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1506023406982422, "idx": 1017}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5285179615020752, "idx": 1018}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5432617664337158, "idx": 1019}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5429203510284424, "idx": 1020}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16532683372497559, "idx": 1021}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5457818508148193, "idx": 1022}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5455770492553711, "idx": 1023}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5457212924957275, "idx": 1024}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18549561500549316, "idx": 1025}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16521048545837402, "idx": 1026}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5268604755401611, "idx": 1027}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"Infi\", \"start\": 22, \"end\": 26, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8127360343933105, "idx": 1028}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"教育部\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.7071423530578613, "idx": 1029}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"贝塞斯达\", \"start\": 10, \"end\": 15, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.890491008758545, "idx": 1030}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5264787673950195, "idx": 1031}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5243074893951416, "idx": 1032}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"我\", \"start\": 0, \"end\": 1, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.6515121459960938, "idx": 1033}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"沈力军\", \"start\": 24, \"end\": 27, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8365442752838135, "idx": 1034}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"东亚\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7020599842071533, "idx": 1035}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16408514976501465, "idx": 1036}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1510460376739502, "idx": 1037}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49162721633911133, "idx": 1038}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16531586647033691, "idx": 1039}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"记者\", \"start\": 10, \"end\": 12, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"杨莉\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"通讯员\", \"start\": 15, \"end\": 18, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"王媛\", \"start\": 18, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 6.844634532928467, "idx": 1040}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1667768955230713, "idx": 1041}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"县委\", \"start\": 2, \"end\": 4, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.724193811416626, "idx": 1042}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48576807975769043, "idx": 1043}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"LYN\", \"start\": 10, \"end\": 13, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7011780738830566, "idx": 1044}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14736700057983398, "idx": 1045}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"冷山德\", \"start\": 17, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.796818971633911, "idx": 1046}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16141867637634277, "idx": 1047}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5045340061187744, "idx": 1048}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18229913711547852, "idx": 1049}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16728878021240234, "idx": 1050}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"刘澜波\", \"start\": 10, \"end\": 13, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"孙志远\", \"start\": 15, \"end\": 18, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 4.181881666183472, "idx": 1051}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"方肇新\", \"start\": 14, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.81247878074646, "idx": 1052}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14864397048950195, "idx": 1053}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13103389739990234, "idx": 1054}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14856839179992676, "idx": 1055}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"Diablo\", \"start\": 12, \"end\": 17, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.8611886501312256, "idx": 1056}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18485116958618164, "idx": 1057}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5986933708190918, "idx": 1058}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18471193313598633, "idx": 1059}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1862483024597168, "idx": 1060}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19927287101745605, "idx": 1061}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19945120811462402, "idx": 1062}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6012740135192871, "idx": 1063}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20087671279907227, "idx": 1064}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20107340812683105, "idx": 1065}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5344142913818359, "idx": 1066}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"山东\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 2.5742344856262207, "idx": 1067}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16984248161315918, "idx": 1068}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"克里斯\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.5595738887786865, "idx": 1069}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"斯蒂芬\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"斯蒂芬\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 4.010653257369995, "idx": 1070}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5124697685241699, "idx": 1071}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"汪虎\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.6435978412628174, "idx": 1072}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"john\", \"start\": 0, \"end\": 4, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.598376750946045, "idx": 1073}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"stone\", \"start\": 0, \"end\": 5, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.6557776927947998, "idx": 1074}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"林黛玉\", \"start\": 12, \"end\": 15, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"北静王\", \"start\": 17, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 3.096137046813965, "idx": 1075}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4363131523132324, "idx": 1076}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.43585681915283203, "idx": 1077}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.44925594329833984, "idx": 1078}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"布塔利亚\", \"start\": 17, \"end\": 21, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.8721332550048828, "idx": 1079}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16447067260742188, "idx": 1080}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16559958457946777, "idx": 1081}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"杨\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.66481614112854, "idx": 1082}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16296768188476562, "idx": 1083}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5084655284881592, "idx": 1084}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5062217712402344, "idx": 1085}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16504216194152832, "idx": 1086}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1652381420135498, "idx": 1087}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5045583248138428, "idx": 1088}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16192364692687988, "idx": 1089}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5240225791931152, "idx": 1090}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14906549453735352, "idx": 1091}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14761734008789062, "idx": 1092}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1648702621459961, "idx": 1093}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1644153594970703, "idx": 1094}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"恒泰\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7367372512817383, "idx": 1095}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4850766658782959, "idx": 1096}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"蔡康永\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.8260974884033203, "idx": 1097}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48612451553344727, "idx": 1098}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"圈圈\", \"start\": 10, \"end\": 12, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7711279392242432, "idx": 1099}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14947915077209473, "idx": 1100}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.12898921966552734, "idx": 1101}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"cn\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 1.6925022602081299, "idx": 1102}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14983439445495605, "idx": 1103}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5427658557891846, "idx": 1104}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16668987274169922, "idx": 1105}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"邱丰凯\", \"start\": 32, \"end\": 37, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9313774108886719, "idx": 1106}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"visa\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.7422237396240234, "idx": 1107}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5052807331085205, "idx": 1108}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"toma\", \"start\": 0, \"end\": 4, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8845579624176025, "idx": 1109}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5235137939453125, "idx": 1110}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"每经\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.8706183433532715, "idx": 1111}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1683979034423828, "idx": 1112}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.471433162689209, "idx": 1113}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14737510681152344, "idx": 1114}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.46808862686157227, "idx": 1115}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.504662275314331, "idx": 1116}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"主持人\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.838653326034546, "idx": 1117}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.49175000190734863, "idx": 1118}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14448165893554688, "idx": 1119}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5353562831878662, "idx": 1120}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2112724781036377, "idx": 1121}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5515162944793701, "idx": 1122}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18524718284606934, "idx": 1123}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_3756091ade\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": []}", "latency": 2.0213003158569336, "idx": 1124}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5344383716583252, "idx": 1125}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5175445079803467, "idx": 1126}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"朴茨茅斯\", \"start\": 0, \"end\": 3, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 2.0474932193756104, "idx": 1127}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5178413391113281, "idx": 1128}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5982789993286133, "idx": 1129}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"施罗\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"medium\"}]}", "latency": 1.9373233318328857, "idx": 1130}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15170574188232422, "idx": 1131}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6010127067565918, "idx": 1132}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2203083038330078, "idx": 1133}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21815133094787598, "idx": 1134}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"大满贯\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 2.0685019493103027, "idx": 1135}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6160233020782471, "idx": 1136}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6162071228027344, "idx": 1137}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6005649566650391, "idx": 1138}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16827058792114258, "idx": 1139}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"花旗\", \"start\": 12, \"end\": 14, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.045849084854126, "idx": 1140}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15002202987670898, "idx": 1141}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"希洪\", \"start\": 15, \"end\": 17, \"label\": \"ORG\", \"certainty\": \"high\"}, {\"text\": \"贝蒂斯\", \"start\": 24, \"end\": 27, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 3.3294663429260254, "idx": 1142}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16735196113586426, "idx": 1143}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16813397407531738, "idx": 1144}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"覃化\", \"start\": 10, \"end\": 12, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8274266719818115, "idx": 1145}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.24862408638000488, "idx": 1146}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.248765230178833, "idx": 1147}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.24808907508850098, "idx": 1148}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.24764347076416016, "idx": 1149}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.23525357246398926, "idx": 1150}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"孙晶\", \"start\": 15, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.758998394012451, "idx": 1151}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.23444628715515137, "idx": 1152}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"三里\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.8517839908599854, "idx": 1153}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.23386573791503906, "idx": 1154}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"李连\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"吴理\", \"start\": 18, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 3.2124202251434326, "idx": 1155}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47397446632385254, "idx": 1156}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.47290945053100586, "idx": 1157}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"姚\", \"start\": 24, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6794183254241943, "idx": 1158}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5587379932403564, "idx": 1159}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.560075044631958, "idx": 1160}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"中国\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 2.6528825759887695, "idx": 1161}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16625571250915527, "idx": 1162}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16559910774230957, "idx": 1163}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1650376319885254, "idx": 1164}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"钟欣\", \"start\": 23, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7426950931549072, "idx": 1165}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"崇礼\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.7122938632965088, "idx": 1166}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20107078552246094, "idx": 1167}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2018277645111084, "idx": 1168}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2013847827911377, "idx": 1169}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"王\", \"start\": 22, \"end\": 23, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"南京西路\", \"start\": 12, \"end\": 16, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 4.046000957489014, "idx": 1170}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"新华网\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.6518099308013916, "idx": 1171}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20133519172668457, "idx": 1172}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5272305011749268, "idx": 1173}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20180869102478027, "idx": 1174}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.48869752883911133, "idx": 1175}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"清\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 1.5880753993988037, "idx": 1176}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15086841583251953, "idx": 1177}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4539306163787842, "idx": 1178}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14531254768371582, "idx": 1179}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"许总\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.5880825519561768, "idx": 1180}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_91834711b1\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"北\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 2.957994222640991, "idx": 1181}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13134479522705078, "idx": 1182}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"乔尔\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.6286230087280273, "idx": 1183}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16281485557556152, "idx": 1184}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16299843788146973, "idx": 1185}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"红御\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.6088638305664062, "idx": 1186}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14906668663024902, "idx": 1187}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4068605899810791, "idx": 1188}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5662331581115723, "idx": 1189}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.17146563529968262, "idx": 1190}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5673260688781738, "idx": 1191}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"孙健红\", \"start\": 24, \"end\": 27, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8499438762664795, "idx": 1192}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"婷婷\", \"start\": 17, \"end\": 19, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.7681992053985596, "idx": 1193}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"俄\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.7074229717254639, "idx": 1194}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1996924877166748, "idx": 1195}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"吴敏\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8511240482330322, "idx": 1196}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5280468463897705, "idx": 1197}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"周呈\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.7576239109039307, "idx": 1198}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"本报\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"medium\"}] }", "latency": 2.757819414138794, "idx": 1199}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5098860263824463, "idx": 1200}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13171601295471191, "idx": 1201}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5457580089569092, "idx": 1202}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16681647300720215, "idx": 1203}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18137001991271973, "idx": 1204}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1656200885772705, "idx": 1205}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16507458686828613, "idx": 1206}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18315935134887695, "idx": 1207}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"边春和\", \"start\": 36, \"end\": 39, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8983325958251953, "idx": 1208}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"孙健君\", \"start\": 14, \"end\": 17, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8984639644622803, "idx": 1209}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"陆慧\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8682494163513184, "idx": 1210}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15186333656311035, "idx": 1211}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14874744415283203, "idx": 1212}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14893054962158203, "idx": 1213}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14903640747070312, "idx": 1214}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4418306350708008, "idx": 1215}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"文迪\", \"start\": 24, \"end\": 26, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9575445652008057, "idx": 1216}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5088789463043213, "idx": 1217}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.144972562789917, "idx": 1218}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20297932624816895, "idx": 1219}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"叶老桂\", \"start\": 20, \"end\": 23, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 3.054185390472412, "idx": 1220}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5953900814056396, "idx": 1221}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.28101348876953125, "idx": 1222}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.23764657974243164, "idx": 1223}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5778052806854248, "idx": 1224}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5427355766296387, "idx": 1225}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.21736645698547363, "idx": 1226}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"塞尔比\", \"start\": 17, \"end\": 19, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.958373785018921, "idx": 1227}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5434916019439697, "idx": 1228}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"吉普森\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.8955531120300293, "idx": 1229}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13319706916809082, "idx": 1230}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1623826026916504, "idx": 1231}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"桑普\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.9101579189300537, "idx": 1232}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1822216510772705, "idx": 1233}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1830909252166748, "idx": 1234}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"施先生\", \"start\": 17, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.9433822631835938, "idx": 1235}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6133649349212646, "idx": 1236}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1839737892150879, "idx": 1237}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1711883544921875, "idx": 1238}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5636942386627197, "idx": 1239}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6291694641113281, "idx": 1240}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"江苏\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.8432669639587402, "idx": 1241}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"Relic\", \"start\": 1, \"end\": 6, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.8739120960235596, "idx": 1242}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5996179580688477, "idx": 1243}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"莫陆军\", \"start\": 2, \"end\": 5, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.8402721881866455, "idx": 1244}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18402314186096191, "idx": 1245}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1841754913330078, "idx": 1246}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1843113899230957, "idx": 1247}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_ddaacdb383\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"湖南信托\", \"start\": 0, \"end\": 4, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.976716995239258, "idx": 1248}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5237298011779785, "idx": 1249}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18645858764648438, "idx": 1250}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"武西尼奇\", \"start\": 0, \"end\": 4, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.8690359592437744, "idx": 1251}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5369260311126709, "idx": 1252}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"w岛\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 1.7261326313018799, "idx": 1253}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"郑宝军\", \"start\": 27, \"end\": 30, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.9268217086791992, "idx": 1254}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18186092376708984, "idx": 1255}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"中国\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 2.6839795112609863, "idx": 1256}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.12688279151916504, "idx": 1257}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15915870666503906, "idx": 1258}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15977954864501953, "idx": 1259}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.161329984664917, "idx": 1260}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16080236434936523, "idx": 1261}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5357763767242432, "idx": 1262}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.19765377044677734, "idx": 1263}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.523688793182373, "idx": 1264}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"10日\", \"start\": 0, \"end\": 2, \"label\": \"DATE\", \"certainty\": \"high\"}]}", "latency": 1.8433008193969727, "idx": 1265}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18112778663635254, "idx": 1266}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14603471755981445, "idx": 1267}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"张家口\", \"start\": 0, \"end\": 3, \"label\": \"LOCATION\", \"certainty\": \"high\"}]}", "latency": 2.7658517360687256, "idx": 1268}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5192050933837891, "idx": 1269}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"胡蝶\", \"start\": 12, \"end\": 14, \"label\": \"PERSON\", \"certainty\": \"high\"}, {\"text\": \"阮玲玉\", \"start\": 17, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 4.362677097320557, "idx": 1270}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"span_4006539e98\", \"keep\": true, \"label\": \"ORG\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"此\", \"start\": 0, \"end\": 2, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 3.205883741378784, "idx": 1271}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13617801666259766, "idx": 1272}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5119831562042236, "idx": 1273}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"蒋树忠\", \"start\": 24, \"end\": 27, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.9725408554077148, "idx": 1274}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5417642593383789, "idx": 1275}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5419783592224121, "idx": 1276}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14654064178466797, "idx": 1277}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14649415016174316, "idx": 1278}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.14746403694152832, "idx": 1279}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"《wicked\", \"start\": 0, \"end\": 6, \"label\": \"PERSON\", \"certainty\": \"low\"}]}", "latency": 1.8692452907562256, "idx": 1280}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"齐部\", \"start\": 25, \"end\": 27, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.9534106254577637, "idx": 1281}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20026278495788574, "idx": 1282}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2019205093383789, "idx": 1283}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2028820514678955, "idx": 1284}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5517258644104004, "idx": 1285}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"胡文\", \"start\": 14, \"end\": 16, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.8791160583496094, "idx": 1286}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18604397773742676, "idx": 1287}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"市民\", \"start\": 2, \"end\": 4, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 1.862748622894287, "idx": 1288}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"毛寿龙\", \"start\": 22, \"end\": 25, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.9204823970794678, "idx": 1289}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16810989379882812, "idx": 1290}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4784820079803467, "idx": 1291}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13327670097351074, "idx": 1292}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5491514205932617, "idx": 1293}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5493636131286621, "idx": 1294}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1346895694732666, "idx": 1295}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15109682083129883, "idx": 1296}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15025115013122559, "idx": 1297}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5336952209472656, "idx": 1298}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"东方\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.7326204776763916, "idx": 1299}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5315842628479004, "idx": 1300}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2036454677581787, "idx": 1301}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"白金\", \"start\": 0, \"end\": 2, \"label\": \"LOCATION\", \"certainty\": \"high\"}] }", "latency": 1.9137060642242432, "idx": 1302}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.530414342880249, "idx": 1303}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5299627780914307, "idx": 1304}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.16687703132629395, "idx": 1305}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.13196539878845215, "idx": 1306}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6029822826385498, "idx": 1307}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"韩联社\", \"start\": 0, \"end\": 3, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 1.895988941192627, "idx": 1308}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.6024007797241211, "idx": 1309}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20248174667358398, "idx": 1310}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18666386604309082, "idx": 1311}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"翁振杰\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.517282724380493, "idx": 1312}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.20177817344665527, "idx": 1313}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"交通\", \"start\": 0, \"end\": 2, \"label\": \"ORG\", \"certainty\": \"high\"}] }", "latency": 1.828023910522461, "idx": 1314}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"斯科拉里\", \"start\": 22, \"end\": 26, \"label\": \"PERSON\", \"certainty\": \"high\"}] }", "latency": 2.552072763442993, "idx": 1315}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.18480801582336426, "idx": 1316}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5161676406860352, "idx": 1317}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"巴克莱\", \"start\": 10, \"end\": 13, \"label\": \"ORG\", \"certainty\": \"high\"}]}", "latency": 2.4499824047088623, "idx": 1318}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4779937267303467, "idx": 1319}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1859893798828125, "idx": 1320}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4934976100921631, "idx": 1321}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.4930706024169922, "idx": 1322}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"dani\", \"start\": 0, \"end\": 4, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.2567174434661865, "idx": 1323}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1467733383178711, "idx": 1324}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2061173915863037, "idx": 1325}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5503709316253662, "idx": 1326}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5508711338043213, "idx": 1327}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5504071712493896, "idx": 1328}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.209625244140625, "idx": 1329}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.15314245223999023, "idx": 1330}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"田村\", \"start\": 18, \"end\": 20, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.4946012496948242, "idx": 1331}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1492290496826172, "idx": 1332}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5607650279998779, "idx": 1333}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1628279685974121, "idx": 1334}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.5277864933013916, "idx": 1335}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2195882797241211, "idx": 1336}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2042863368988037, "idx": 1337}
+{"ok": true, "content": "{\"decisions\": [{\"id\": \"0\", \"keep\": true, \"label\": \"PERSON\", \"certainty\": \"high\"}], \"additions\": [{\"text\": \"李杰\", \"start\": 22, \"end\": 24, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 2.0111262798309326, "idx": 1338}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": [{\"text\": \"姜哲中\", \"start\": 0, \"end\": 3, \"label\": \"PERSON\", \"certainty\": \"high\"}]}", "latency": 1.3502466678619385, "idx": 1339}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.2027573585510254, "idx": 1340}
+{"ok": true, "content": "{\"decisions\": [], \"additions\": []}", "latency": 0.40586066246032715, "idx": 1341}
+{"ok": true, "content": "{\n\n\n}", "latency": 0.1490006446838379, "idx": 1342}

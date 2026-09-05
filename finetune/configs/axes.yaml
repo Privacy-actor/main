@@ -1,0 +1,121 @@
+# 多样性轴配置
+#
+# 场景取自三条来源，不是凭空列的：
+#   1. 队友前端 Workbench.tsx 的三条内置样例（演示时老师会点的就是这三个）
+#        中英混合访谈 / 客户服务记录 / 英文邮件
+#   2. 立项书的定位：「面向大模型分析的文本数据隐私擦除」
+#        → 目标输入是「人要粘贴给大模型分析、但含个人信息」的文本
+#   3. 前端支持导入 TXT / MD / CSV / JSON / DOCX / PDF
+#        → 目标是文档，不只是聊天串
+#
+# ┌────────────────────────────────────────────────────────┐
+# │ 你要做的（约 5 分钟）：扫一遍下面两个 domain 列表，        │
+# │ 删掉你觉得不对劲的。补充是可选的。                        │
+# │ 硬要求：各 ≥ 10 项；format ≥ 8；tone ≥ 4。               │
+# └────────────────────────────────────────────────────────┘
+
+domain_zh:
+  - 采访与访谈记录转写        # ← 对应演示样例「中英混合访谈」
+  - 客服工单与服务记录        # ← 对应演示样例「客户服务记录」
+  - 商务邮件往来
+  - 简历与求职材料
+  - 会议纪要
+  - 医疗就诊记录与病历摘要
+  - 合同与协议条款
+  - 调研问卷的开放题回答
+  - 学术研究的访谈资料
+  - 内部事故与异常报告
+  - 报销差旅单据说明
+  - 学生事务与教务往来
+
+domain_en:
+  # 用英语国家真实存在的形态，不要把中文场景直译
+  - interview transcript          # ← 对应演示样例
+  - customer support ticket       # ← 对应演示样例
+  - business email thread         # ← 对应演示样例
+  - resume / CV
+  - meeting minutes
+  - medical intake summary
+  - contract clause excerpt
+  - survey open-ended response
+  - incident report
+  - HR onboarding correspondence
+  - academic research field notes
+  - expense claim justification
+
+format:
+  - 访谈转写稿
+  - 工单系统条目
+  - 电子邮件正文
+  - 即时通讯记录
+  - 表单填写内容
+  - 会议纪要
+  - 正式报告段落
+  - 内部备忘录
+  - 论坛或社区发帖
+  - CSV 导出的一行记录        # 前端支持 CSV 导入，这种形态要覆盖
+
+tone:
+  - 正式书面
+  - 口语随意
+  - 急躁抱怨
+  - 简略电报体
+  - 冗长啰嗦
+
+tone_tier_exclude:
+  冗长啰嗦: [dense, short]      # 与短档自相矛盾
+  简略电报体: [long]            # 与长档自相矛盾
+
+# ---------------------------------------------------------------- 标签组合
+# 每批注入 4 个（规格「标签体系」）。组合要场景上说得通。
+# 注：三条演示样例每条都有 5 类，所以最后两组按演示形态放宽到 5。
+label_groups:
+  - [PERSON, PHONE, ADDRESS, ORG]
+  - [PERSON, PHONE, ID_CARD, ORG]
+  - [PERSON, EMAIL, ORG, LOCATION]
+  - [PERSON, PHONE, BANK_CARD, ORG]
+  - [PERSON, PASSPORT, LOCATION, ORG]
+  - [PERSON, EMAIL, PHONE, ADDRESS]
+  - [ORG, LOCATION, ADDRESS, PHONE]
+  - [PERSON, ORG, LOCATION, EMAIL]
+  - [PERSON, ORG, PHONE, EMAIL, ADDRESS]           # 演示形态专用，仅 tier=短密
+  - [PERSON, BANK_CARD, PASSPORT, ADDRESS, PHONE]  # 同上
+
+# 英文样本不使用 ID_CARD（规格「标签体系」）。
+# 生成英文时，含 ID_CARD 的组合自动替换为 PASSPORT。
+
+# ---------------------------------------------------------------- 校验位分布
+# 理由见规格「结构化 PII 生成」。
+checksum_validity:
+  valid_ratio: 0.85     # 校验位正确 → 规则层采纳 → 模型不该重复 add
+  invalid_ratio: 0.15   # 校验位故意错 → 规则层静默丢弃 → 模型必须 add
+  # 依据：队友演示样例里的 6222021001116247 就是 Luhn 不过的（余数 9），
+  # 规则层完全漏掉。真实文本里打错、编造、测试用的号码普遍存在。
+
+# ---------------------------------------------------------------- 陷阱
+traps:
+  店名中的姓氏不是 PERSON:
+    - 王记牛肉面
+    - 老李修车行
+    - 陈氏中医诊所
+  内部部门名非机构:
+    - 产品部
+    - 销售部
+    - 人事部
+    - 财务部
+    - 技术部
+  服务号非个人号码:
+    - "10086"
+    - "12345"
+    - "95588"
+  型号或订单号像身份证:
+    - "SN2019081512340078"
+    - "OD31010419980322145"
+  型号或订单号像护照号:
+    - "EA1234567"
+    - "GK987654"
+    - "SP2024001"
+  公众人物或历史人物:
+    - 鲁迅
+    - 爱因斯坦
+    - 苏轼

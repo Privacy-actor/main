@@ -12,3 +12,7 @@ frontend/dist/
 *.pyc
 *-runtime.*.log
 doc
+.venv/
+finetune/data/
+finetune/adapters/
+finetune/runs/
