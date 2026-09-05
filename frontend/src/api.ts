@@ -1,4 +1,4 @@
-import type { BatchJob, CustomRule, DetectResult, EntityType, FinalTextSaveResult, KnowledgeLookup, ProcessingConfig, Project, Span, Strategy } from './types'
+import type { BatchJob, CustomRule, DetectResult, EntityType, FinalTextSaveResult, HistoryTaskDetail, KnowledgeLookup, ProcessingConfig, Project, Span, Strategy } from './types'
 
 const API = import.meta.env.VITE_API_BASE || '/api/v1'
 
@@ -19,7 +19,7 @@ export const api = {
   knowledgeStatus: () => request<Record<string, unknown>>('/knowledge/status'),
   knowledgeLookup: (term: string, entityType: EntityType, allowRemote = true) => request<KnowledgeLookup>('/knowledge/lookup', json({ term, entity_type: entityType, allow_remote: allowRemote })),
   detect: (text: string, config: ProcessingConfig, projectId?: string | null) => request<DetectResult>('/detect', json({ text, ...config, project_id: projectId || null })),
-  redact: (text: string, spans: Span[], strategy: Strategy, privacyStrength = 2, riskLevel: 'standard' | 'strict' = 'strict') => request<{ redacted_text: string }>('/redact', json({ text, spans, strategy, privacy_strength: privacyStrength, risk_level: riskLevel })),
+  redact: (text: string, spans: Span[], strategy: Strategy | null, privacyStrength = 2, riskLevel: 'standard' | 'strict' = 'strict') => request<{ redacted_text: string }>('/redact', json({ text, spans, strategy, privacy_strength: privacyStrength, risk_level: riskLevel })),
   extract: (files: File[]) => { const body = new FormData(); files.forEach(file => body.append('files', file)); return request<{ text: string; records: { file: string; row: number; text: string }[]; files: number }>('/extract', { method: 'POST', body }) },
   parseInstruction: (instruction: string, useLlm = true) => request<Record<string, unknown>>('/instructions/parse', json({ instruction, use_llm: useLlm })),
   review: (payload: Record<string, unknown>) => request<{ snapshot: DetectResult }>('/reviews', json(payload)),
@@ -29,6 +29,7 @@ export const api = {
   purgeTasks: (days: number) => request<{ deleted: number }>(`/tasks?older_than_days=${days}`, { method: 'DELETE' }),
   reviewQueue: () => request<any>('/reviews'),
   history: () => request<{ items: Record<string, unknown>[]; audits: Record<string, unknown>[] }>('/history'),
+  historyDetail: (taskId: string) => request<HistoryTaskDetail>(`/history/${encodeURIComponent(taskId)}`),
   evaluations: () => request<any>('/evaluations'),
   policies: () => request<any>('/policies'),
   savePolicies: (policies: Record<string, Strategy>) => request<any>('/policies', json({ policies }, 'PUT')),
@@ -47,7 +48,7 @@ export const api = {
     if (projectId) body.append('project_id', projectId)
     return request<BatchJob>('/jobs', { method: 'POST', body })
   },
-  jobs: () => request<{ items: BatchJob[] }>('/jobs'),
+  jobs: (projectId?: string | null) => request<{ items: BatchJob[] }>(`/jobs${projectId ? `?project_id=${encodeURIComponent(projectId)}` : ''}`),
   job: (id: string) => request<BatchJob>(`/jobs/${id}`),
   downloadJob: async (id: string) => {
     const response = await fetch(`${API}/jobs/${id}/download`)

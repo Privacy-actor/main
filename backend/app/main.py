@@ -323,6 +323,14 @@ async def history():
     return {"items": items, "audits": audits}
 
 
+@app.get("/api/v1/history/{task_id}")
+async def history_detail(task_id: str):
+    detail = await asyncio.to_thread(storage.task_detail, task_id)
+    if detail is None:
+        raise HTTPException(404, "历史任务不存在")
+    return detail
+
+
 @app.get("/api/v1/evaluations")
 def evaluations():
     results_file = BASE_DIR / "reports" / "experiment_results" / "latest.json"
@@ -470,8 +478,8 @@ async def create_batch_job(
 
 
 @app.get("/api/v1/jobs")
-async def list_jobs():
-    jobs = await asyncio.to_thread(storage.list_jobs)
+async def list_jobs(project_id: str | None = None):
+    jobs = await asyncio.to_thread(storage.list_jobs, project_id=project_id)
     return {"items": await asyncio.gather(*(asyncio.to_thread(_public_job, job) for job in jobs))}
 
 
