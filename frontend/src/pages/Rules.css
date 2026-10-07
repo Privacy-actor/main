@@ -1,0 +1,42 @@
+/* 规则库 */
+
+.rules-filter { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; color: var(--ink-2); font-size: 13px; }
+.rules-filter .select { width: auto; min-width: 180px; }
+.rules-loading { display: grid; place-items: center; min-height: 140px; color: var(--ink-3); }
+
+.rules-table td { vertical-align: middle; }
+.rules-table tr.is-off td:not(:nth-child(5)) { color: var(--ink-3); }
+.rules-name { font-weight: 500; white-space: nowrap; }
+.rules-kind { display: inline-block; margin-right: 8px; padding: 0 6px; border-radius: 4px; background: var(--bg-deep); color: var(--ink-2); font-size: 11.5px; line-height: 20px; white-space: nowrap; }
+.rules-pattern { display: inline-block; max-width: 360px; overflow: hidden; vertical-align: bottom; font-size: 12.5px; text-overflow: ellipsis; white-space: nowrap; }
+.rules-case { margin-left: 8px; color: var(--ink-3); font-size: 12px; }
+.rules-scope { color: var(--ink-2); white-space: nowrap; }
+.rules-actions { width: 84px; text-align: right; white-space: nowrap; }
+.rules-actions .icon-btn { display: inline-grid; }
+.rules-none { padding: 28px !important; color: var(--ink-3); text-align: center; }
+.rules-table .toggle { justify-content: flex-start; }
+
+.templates { display: grid; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: var(--r-lg); background: var(--sheet); list-style: none; }
+.template { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 20px; }
+.template + .template { border-top: 1px solid var(--rule-2); }
+.template-main { display: grid; gap: 3px; min-width: 0; }
+.template-title { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.template-title h3 { font-size: 14.5px; font-weight: 600; }
+.template-main p { color: var(--ink-2); font-size: 13px; }
+.template-main .template-sample { color: var(--ink-3); font-size: 12.5px; }
+
+.policies { display: grid; gap: 16px; }
+.policies-switch { max-width: 760px; }
+.policies-type { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+.policies-hint { color: var(--ink-3); font-size: 13px; }
+
+@media (max-width: 760px) {
+  .rules-pattern { max-width: 160px; }
+  .rules-table td:nth-child(2) { white-space: nowrap; }
+  .template { flex-direction: column; align-items: flex-start; }
+  .policies-table th:nth-child(3), .policies-table td:nth-child(3) { display: none; }
+}
+
+.builtin { margin-top: 36px; }
+.builtin-desc { color: var(--ink-2); }
+.builtin-check { color: var(--ink-3); white-space: nowrap; }

@@ -1,0 +1,43 @@
+/* 识别轨迹：规则层 → NER 层 → 大模型核查 → 合并与脱敏 */
+
+.pipeline { margin-bottom: 14px; }
+.pipeline-row {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none;
+  border-radius: var(--r-md); background: var(--sheet); box-shadow: var(--shadow-sheet);
+}
+.pipeline-cell { position: relative; min-width: 0; }
+.pipeline-cell + .pipeline-cell { border-left: 1px solid var(--rule-2); }
+
+.station {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name time" "figure figure" "note note";
+  gap: 1px 8px; width: 100%; height: 100%; padding: 11px 18px 12px; border: 0; border-radius: 0; background: transparent; text-align: left;
+  transition: background-color .12s;
+}
+.pipeline-cell:first-child .station { border-radius: var(--r-md) 0 0 var(--r-md); }
+.pipeline-cell:last-child .station { border-radius: 0 var(--r-md) var(--r-md) 0; }
+.station:hover { background: var(--sheet-2); }
+.station-name { grid-area: name; color: var(--ink-2); font-size: 12.5px; font-weight: 600; }
+.station-time { grid-area: time; color: var(--ink-4); font-size: 12px; }
+.station-figure { grid-area: figure; display: flex; align-items: baseline; gap: 4px; }
+.station-figure b { font-size: 22px; font-weight: 600; line-height: 1.25; }
+.station-figure small { color: var(--ink-3); font-size: 12px; }
+.station-note { grid-area: note; overflow: hidden; color: var(--ink-3); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+
+.station.is-active { box-shadow: inset 0 -2px 0 var(--cobalt); }
+.station.is-active .station-name { color: var(--cobalt-strong); }
+.station.is-skipped .station-figure b { color: var(--ink-4); }
+.station.is-degraded .station-note { color: var(--warn); }
+
+.pipeline-arrow {
+  position: absolute; top: 50%; right: -9px; z-index: 1; width: 18px; height: 18px; margin-top: -9px; padding: 1px;
+  border-radius: 50%; background: var(--sheet); color: var(--ink-4); box-shadow: 0 0 0 1px var(--rule-2);
+}
+.pipeline-notes { margin-top: 8px; padding: 0 4px; color: var(--ink-3); font-size: 12.5px; }
+
+@media (max-width: 760px) {
+  .pipeline-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pipeline-cell:nth-child(3) { border-left: 0; }
+  .pipeline-cell:nth-child(n + 3) { border-top: 1px solid var(--rule-2); }
+  .pipeline-cell:nth-child(2) .pipeline-arrow { display: none; }
+  .station { border-radius: 0 !important; padding: 10px 14px; }
+}

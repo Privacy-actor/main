@@ -1,11 +1,76 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PrivShield</title><link rel="stylesheet" href="popup.css"></head><body>
-<header><div class="mark">P</div><div><strong>PrivShield</strong><span>本地隐私脱敏助手</span></div><button id="settings" title="设置">⚙</button></header>
-<main>
-  <div id="status" class="status">正在连接本地服务…</div>
-  <label><span>待处理文本</span><textarea id="source" placeholder="先在网页中选中文本，或点击“读取当前页”"></textarea></label>
-  <div class="row"><button id="selection" class="ghost">读取选中内容</button><button id="page" class="ghost">读取当前页</button></div>
-  <div class="config"><label><span>策略</span><select id="strategy"><option value="mask">一致性掩码</option><option value="pseudonymize">语义伪名</option><option value="generalize">层级泛化</option></select></label><label><span>强度</span><select id="strength"><option value="1">低</option><option value="2" selected>中</option><option value="3">高</option></select></label><label class="check"><input id="llm" type="checkbox"><span>14B 核验</span></label></div>
-  <button id="run" class="primary">识别并脱敏</button>
-  <section id="resultCard" hidden><div class="result-head"><strong>最终文本</strong><span id="summary"></span></div><textarea id="result"></textarea><div id="saveStatus" class="save-status">自动结果已保存，可继续人工修订</div><div class="row"><button id="saveFinal" class="ghost">保存修订</button><button id="copy" class="primary">复制结果</button><button id="download" class="ghost">导出 TXT</button><button id="full" class="ghost">完整复核</button></div></section>
-  <p id="error" class="error"></p>
-</main><script src="popup.js"></script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>墨隐</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="top">
+    <img src="icons/icon-32.png" width="28" height="28" alt="">
+    <div class="brand">
+      <strong>墨隐</strong>
+      <span id="status" class="status"><i class="dot"></i><span>正在连接服务…</span></span>
+    </div>
+    <button id="settings" class="icon" type="button" title="设置" aria-label="设置">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <section class="block">
+      <div class="row between">
+        <label for="source" class="label">待处理文本</label>
+        <div class="row gap-s">
+          <button id="readSelection" class="link" type="button">读取选中内容</button>
+          <button id="readPage" class="link" type="button">读取整页</button>
+        </div>
+      </div>
+      <textarea id="source" spellcheck="false" placeholder="在网页上选中文字后打开插件，或直接粘贴需要处理的内容"></textarea>
+      <p id="sourceMeta" class="meta"></p>
+    </section>
+
+    <section class="block plan">
+      <div class="seg" id="strategy" role="radiogroup" aria-label="脱敏方式">
+        <button type="button" role="radio" data-value="mask">掩码</button>
+        <button type="button" role="radio" data-value="pseudonymize">差分隐私</button>
+        <button type="button" role="radio" data-value="generalize">知识图谱</button>
+      </div>
+      <div class="strength" id="strengthBox">
+        <span class="label">力度</span>
+        <input id="strength" type="range" min="1" max="3" step="1" aria-label="脱敏力度">
+        <output id="strengthLabel">标准</output>
+      </div>
+      <div class="row between">
+        <label class="switch"><input id="llm" type="checkbox"><span class="track"><span class="thumb"></span></span><span>大模型核查</span></label>
+        <span id="project" class="meta"></span>
+      </div>
+    </section>
+
+    <button id="run" class="primary block-btn" type="button">识别并脱敏</button>
+    <p id="error" class="error" role="alert"></p>
+
+    <section id="result" class="result" hidden>
+      <div class="row between">
+        <strong class="label">脱敏结果</strong>
+        <span id="summary" class="meta"></span>
+      </div>
+      <div id="chips" class="chips"></div>
+      <div id="preview" class="preview"></div>
+      <textarea id="final" spellcheck="false" hidden aria-label="最终稿"></textarea>
+      <p id="saveState" class="meta"></p>
+      <div class="actions">
+        <button id="copy" class="primary" type="button">复制结果</button>
+        <button id="edit" class="ghost" type="button">修改</button>
+        <button id="download" class="ghost" type="button">导出 TXT</button>
+        <button id="open" class="ghost" type="button">去工作台复核</button>
+      </div>
+    </section>
+
+    <footer class="hint">在对话框里选中文字按 <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>M</kbd>，直接换成脱敏结果</footer>
+  </main>
+  <script src="shared.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

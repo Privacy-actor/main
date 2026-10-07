@@ -1,1 +1,77 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><title>PrivShield 设置</title><style>body{font-family:"Microsoft YaHei",sans-serif;max-width:680px;margin:40px auto;padding:0 20px;color:#142238}label{display:grid;gap:6px;margin:18px 0}input{padding:10px;border:1px solid #aab6c8;border-radius:8px}button{padding:10px 20px;border:0;border-radius:8px;background:#167f88;color:white}.ok{color:#16824b}</style></head><body><h1>PrivShield 浏览器助手设置</h1><p>默认连接本机后端和前端。部署到服务器时可改为受控内网地址。</p><label>API 地址<input id="api" value="http://127.0.0.1:8000/api/v1"></label><label>完整工作台地址<input id="app" value="http://127.0.0.1:5173"></label><button id="save">保存</button><span id="msg" class="ok"></span><script src="options.js"></script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>墨隐 插件设置</title>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body class="options">
+  <main class="sheet">
+    <header class="head">
+      <img src="icons/icon-48.png" width="40" height="40" alt="">
+      <div>
+        <h1>墨隐 插件设置</h1>
+        <p>插件把文字发到你部署的墨隐服务处理，不会发给第三方。</p>
+      </div>
+    </header>
+
+    <section class="group">
+      <h2>服务地址</h2>
+      <label class="field">
+        <span>处理服务（API）</span>
+        <input id="apiBase" type="url" placeholder="http://127.0.0.1:8000/api/v1">
+      </label>
+      <label class="field">
+        <span>工作台网页</span>
+        <input id="appBase" type="url" placeholder="http://127.0.0.1:5173">
+        <small>“在工作台复核”会打开这个地址。</small>
+      </label>
+      <div class="row gap-s">
+        <button id="test" class="ghost" type="button">测试连接</button>
+        <span id="testState" class="meta"></span>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>使用的方案</h2>
+      <label class="field">
+        <span>项目</span>
+        <select id="project"><option value="">临时方案（用下面的默认方式和力度）</option></select>
+        <small id="projectState" class="warn-text"></small>
+        <small>选择项目后，插件使用该项目的整套方案：脱敏方式、力度、识别范围、保留词和自定义规则。弹窗里临时改方式或力度只影响那一次。</small>
+      </label>
+      <div class="field">
+        <span>临时方案的脱敏方式</span>
+        <div class="seg" id="strategy" role="radiogroup" aria-label="默认脱敏方式">
+          <button type="button" role="radio" data-value="mask">掩码</button>
+          <button type="button" role="radio" data-value="pseudonymize">差分隐私</button>
+          <button type="button" role="radio" data-value="generalize">知识图谱</button>
+        </div>
+      </div>
+      <div class="field">
+        <span>临时方案的力度</span>
+        <div class="strength" id="strengthBox">
+          <span class="label">力度</span>
+          <input id="strength" type="range" min="1" max="3" step="1" aria-label="默认力度">
+          <output id="strengthLabel">标准</output>
+        </div>
+      </div>
+      <label class="switch"><input id="llm" type="checkbox"><span class="track"><span class="thumb"></span></span><span>使用大模型核查（服务端已连接大模型时生效）</span></label>
+    </section>
+
+    <section class="group">
+      <h2>快捷键</h2>
+      <p class="meta">在输入框或大模型对话框里选中文字，按 <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>M</kbd>，文字会被替换为脱敏结果；没有选中时处理整个输入框。可以在 <code>chrome://extensions/shortcuts</code> 修改快捷键。</p>
+    </section>
+
+    <footer class="foot">
+      <span id="saveState" class="meta" role="status"></span>
+      <button id="save" class="primary" type="button">保存设置</button>
+    </footer>
+  </main>
+  <script src="shared.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

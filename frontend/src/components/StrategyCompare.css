@@ -1,0 +1,18 @@
+/* 三种脱敏方式对照 */
+
+.compare-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; color: var(--ink-2); font-size: 13px; }
+.compare-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.compare-col { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--rule); border-radius: var(--r-lg); background: var(--sheet); }
+.compare-col.is-current { border-color: var(--cobalt); box-shadow: 0 0 0 1px var(--cobalt); }
+.compare-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding: 14px 16px 0; }
+.compare-head h3 { font-size: 15px; font-weight: 600; }
+.compare-head p { margin-top: 2px; color: var(--ink-3); font-size: 12.5px; }
+.compare-hint { padding: 6px 16px 12px; border-bottom: 1px solid var(--rule-2); color: var(--ink-2); font-size: 12.5px; }
+.compare-body { flex: 1; min-height: 200px; max-height: 52vh; padding: 14px 16px; overflow: auto; }
+.compare-loading { display: grid; place-items: center; min-height: 160px; color: var(--ink-3); }
+.compare-foot { display: flex; justify-content: flex-end; padding: 10px 16px; border-top: 1px solid var(--rule-2); }
+
+@media (max-width: 900px) {
+  .compare-grid { grid-template-columns: 1fr; }
+  .compare-body { max-height: none; }
+}

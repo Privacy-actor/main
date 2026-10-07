@@ -1,0 +1,51 @@
+/* 上手指南 */
+
+.guide .section-head .btn { flex: none; }
+
+.guide-checks { display: grid; margin: 0; padding: 0; list-style: none; }
+.guide-check { display: grid; grid-template-columns: 7px minmax(0, 1fr) auto; align-items: start; gap: 14px; padding: 16px 20px; }
+.guide-check + .guide-check { border-top: 1px solid var(--rule-2); }
+.guide-check .engine-dot { margin-top: 7px; }
+.guide-check-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.guide-check-head strong { font-size: 14px; font-weight: 600; }
+.guide-check-status { color: var(--ink-2); font-size: 13px; }
+.guide-check p { margin-top: 4px; color: var(--ink-3); font-size: 13px; }
+.guide-check code, .guide-faq code { padding: 1px 5px; border-radius: 4px; background: var(--bg-deep); font-size: 12.5px; }
+.guide-check-action { align-self: center; }
+
+/* 走一遍：真正的先后顺序，用宋体数字标出步骤 */
+.guide-steps { counter-reset: guide-step; display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.guide-steps li { counter-increment: guide-step; position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: start; gap: 16px; padding: 14px 0; }
+.guide-steps li::before { content: counter(guide-step); display: grid; place-items: center; width: 34px; height: 34px; border: 1.5px solid var(--ink); border-radius: 50%;
+  background: var(--sheet); color: var(--ink); font: 700 16px/1 var(--font-display); }
+.guide-steps li:not(:last-child)::after { content: ""; position: absolute; top: 52px; bottom: -14px; left: 17px; width: 1px; background: var(--rule); }
+.guide-steps li:not(:has(.btn)) { grid-template-columns: 44px minmax(0, 1fr); }
+.guide-step-copy h3 { margin-top: 6px; font-family: var(--font-display); font-size: 16px; font-weight: 700; }
+.guide-step-copy p { max-width: 68ch; margin-top: 4px; color: var(--ink-2); font-size: 13.5px; line-height: 1.8; }
+.guide-steps .btn { align-self: center; }
+
+.guide-table td { vertical-align: top; font-size: 13px; line-height: 1.7; }
+.guide-table td:first-child { white-space: nowrap; }
+.guide-table td:nth-child(2) { white-space: nowrap; }
+.guide-from { color: var(--ink); }
+.guide-arrow { margin: 0 6px; color: var(--ink-4); }
+.guide-mask { padding: 1px 6px; border-radius: 2px; background: var(--ink); color: #fff; font: 500 11.5px/1.7 var(--font-code); }
+.guide-swap { border-bottom: 1.5px solid var(--cobalt-line); color: var(--ink); }
+.guide-note { margin-top: 10px; color: var(--ink-3); font-size: 13px; }
+
+.guide-faq { display: grid; gap: 16px; margin: 0; }
+.guide-faq dt { font-size: 14px; font-weight: 600; }
+.guide-faq dd { max-width: 76ch; margin: 4px 0 0; color: var(--ink-2); font-size: 13.5px; line-height: 1.8; }
+
+@media (max-width: 720px) {
+  .guide-check { grid-template-columns: 7px minmax(0, 1fr); padding: 14px 16px; }
+  .guide-check-action { grid-column: 2; }
+  .guide-steps li, .guide-steps li:not(:has(.btn)) { grid-template-columns: 40px minmax(0, 1fr); }
+  .guide-steps .btn { grid-column: 2; justify-self: start; }
+  .guide-table thead { display: none; }
+  .guide-table tr { display: grid; gap: 6px; padding: 14px 16px; border-bottom: 1px solid var(--rule-2); }
+  .guide-table tr:last-child { border-bottom: 0; }
+  .guide-table td { padding: 0; border: 0; white-space: normal !important; }
+  .guide-table td:not(:first-child)::before { content: attr(data-label); display: block; color: var(--ink-3); font-size: 12px; }
+  .guide-table tbody tr:hover td { background: none; }
+}

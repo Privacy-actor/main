@@ -1,31 +1,29 @@
 {
   "manifest_version": 3,
-  "name": "PrivShield 隐私脱敏助手",
-  "version": "0.2.0",
-  "description": "把网页选中文本发送到本机 PrivShield 服务，完成隐私识别、人工修订与安全复制。",
-  "permissions": [
-    "activeTab",
-    "scripting",
-    "storage",
-    "contextMenus",
-    "clipboardWrite"
-  ],
-  "host_permissions": [
-    "http://127.0.0.1:8000/*",
-    "http://localhost:8000/*",
-    "http://127.0.0.1:8080/*",
-    "http://localhost:8080/*"
-  ],
-  "background": {
-    "service_worker": "service-worker.js"
+  "name": "墨隐 文本隐私脱敏",
+  "short_name": "墨隐",
+  "version": "1.1.0",
+  "description": "在网页和大模型对话框里一键脱敏：选中文字，隐去姓名、电话、证件号等隐私信息后再发送。处理在你部署的墨隐服务中完成。",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
   },
+  "permissions": ["activeTab", "scripting", "storage", "contextMenus", "clipboardWrite"],
+  "host_permissions": ["http://127.0.0.1/*", "http://localhost/*"],
+  "optional_host_permissions": ["http://*/*", "https://*/*"],
+  "background": { "service_worker": "service-worker.js" },
   "action": {
-    "default_title": "PrivShield",
-    "default_popup": "popup.html"
+    "default_title": "墨隐",
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/icon-16.png", "32": "icons/icon-32.png" }
   },
-  "options_page": "options.html",
-  "optional_host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ]
+  "options_ui": { "page": "options.html", "open_in_tab": true },
+  "commands": {
+    "redact-selection": {
+      "suggested_key": { "default": "Alt+Shift+M", "mac": "Alt+Shift+M" },
+      "description": "脱敏选中的文字，在输入框里直接替换"
+    }
+  }
 }

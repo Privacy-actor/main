@@ -8,4 +8,4 @@ if [[ ! -f .env ]]; then
 fi
 docker compose --profile gpu up -d --build
 docker compose ps
-echo "PrivShield: http://服务器IP:${WEB_PORT:-8080}"
+echo "墨隐：http://服务器IP:${WEB_PORT:-8080}"

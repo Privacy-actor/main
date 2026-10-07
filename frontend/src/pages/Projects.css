@@ -1,0 +1,71 @@
+/* 项目 */
+
+.projects-loading { display: grid; place-items: center; min-height: 140px; color: var(--ink-3); }
+
+.project-list { display: grid; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: var(--r-lg); background: var(--sheet); list-style: none; }
+.project-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 22px; }
+.project-row + .project-row { border-top: 1px solid var(--rule-2); }
+.project-row.is-current { box-shadow: inset 3px 0 0 var(--cobalt); }
+.project-main { display: grid; gap: 4px; min-width: 0; }
+.project-title { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.project-title a { color: var(--ink); font-size: 15.5px; font-weight: 600; }
+.project-title a:hover { color: var(--cobalt); }
+.project-desc { color: var(--ink-2); font-size: 13.5px; }
+.project-plan { color: var(--ink-3); font-size: 12.5px; }
+.project-side { display: grid; flex: none; justify-items: end; gap: 8px; font-size: 12.5px; }
+.project-actions { display: flex; align-items: center; gap: 6px; }
+
+.project-form { display: grid; gap: 16px; }
+
+.back-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; color: var(--ink-2); font-size: 13px; font-weight: 500; }
+.back-link:hover { color: var(--ink); }
+
+.project-grid { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 32px; align-items: start; padding-bottom: 80px; }
+.project-section + .project-section { margin-top: 28px; }
+.project-section > .section-title { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--ink); }
+.project-fields { display: grid; gap: 14px; }
+
+.project-rules { position: sticky; top: 24px; }
+.project-rules .panel-head { align-items: flex-start; }
+.project-rules-note { margin-top: 3px; color: var(--ink-3); font-size: 12.5px; }
+.project-rules-empty { padding: 22px 18px; color: var(--ink-3); font-size: 13px; }
+.project-rule-list { margin: 0; padding: 4px 0; list-style: none; }
+.project-rule-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 6px; padding: 10px 12px 10px 18px; }
+.project-rule-list li + li { border-top: 1px solid var(--rule-2); }
+.project-rule-list li.is-off .project-rule-main { opacity: .55; }
+.project-rule-main { display: grid; gap: 3px; min-width: 0; }
+.project-rule-main strong { font-size: 13.5px; font-weight: 600; }
+.project-rule-main > span { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.project-rule-main code { overflow: hidden; color: var(--ink-2); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+
+.project-tasks { border-top: 1px solid var(--rule); }
+.project-tasks .panel-head { border-bottom: 1px solid var(--rule-2); }
+.project-task-list { margin: 0; padding: 4px 0; list-style: none; }
+.project-task-list li { display: grid; gap: 2px; padding: 10px 18px; }
+.project-task-list li + li { border-top: 1px solid var(--rule-2); }
+.project-task-list a { overflow: hidden; color: var(--ink); font-size: 13.5px; text-overflow: ellipsis; white-space: nowrap; }
+.project-task-list a:hover { color: var(--cobalt); }
+.project-task-list .muted { font-size: 12px; }
+.project-tasks-more { display: block; padding: 10px 18px 14px; font-size: 13px; }
+
+.save-bar {
+  position: fixed; bottom: 20px; left: 50%; z-index: 45; display: flex; align-items: center; gap: 10px;
+  padding: 8px 8px 8px 18px; border-radius: var(--r-lg); background: var(--ink); color: #fff; box-shadow: var(--shadow-pop);
+  transform: translateX(calc(-50% + 118px)); animation: rise .18s ease-out;
+}
+.save-bar > span { margin-right: 8px; font-size: 13.5px; }
+.save-bar .btn-quiet { color: rgba(255, 255, 255, .8); }
+.save-bar .btn-quiet:hover:not(:disabled) { background: rgba(255, 255, 255, .1); color: #fff; }
+
+@media (max-width: 1180px) {
+  .project-grid { grid-template-columns: minmax(0, 1fr); }
+  .project-rules { position: static; }
+  .save-bar { transform: translateX(calc(-50% + 36px)); }
+}
+
+@media (max-width: 760px) {
+  .project-row { flex-direction: column; align-items: stretch; }
+  .project-side { justify-items: start; }
+  .save-bar { right: 12px; left: 12px; transform: none; justify-content: flex-end; }
+  .save-bar > span { margin-right: auto; }
+}

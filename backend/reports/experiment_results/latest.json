@@ -1,0 +1,120 @@
+{
+  "is_demo": false,
+  "run_id": "privshield-third-layer-20260905T063756Z",
+  "dataset": "test.jsonl",
+  "created_at": "2026-09-05T06:37:56Z",
+  "notice": "离线实验记录：test.jsonl；评测口径为 surface-label micro。使用已缓存模型输出，未重新调用模型。",
+  "systems": [
+    {
+      "name": "B0 · 仅规则 + Lite NER",
+      "precision": 0.6379310344827587,
+      "recall": 0.4609747160131916,
+      "f1": 0.5352052754733035,
+      "records": 800
+    },
+    {
+      "name": "B1 · 级联 + 未微调 14B",
+      "precision": 0.6105787658106554,
+      "recall": 0.5869565217391305,
+      "f1": 0.5985346609055043,
+      "records": 796,
+      "latency": 4645.66
+    },
+    {
+      "name": "B2 · 级联 + 微调 adapter",
+      "precision": 0.8845462713387242,
+      "recall": 0.7254974207811349,
+      "f1": 0.7971659919028341,
+      "records": 796,
+      "latency": 4330.02
+    }
+  ],
+  "categories": [
+    {
+      "name": "PERSON",
+      "recall": 0.7141568981064021,
+      "gold": 1109
+    },
+    {
+      "name": "ORG",
+      "recall": 0.6478048780487805,
+      "gold": 1025
+    },
+    {
+      "name": "LOCATION",
+      "recall": 0.5172413793103449,
+      "gold": 58
+    },
+    {
+      "name": "ADDRESS",
+      "recall": 0.7950819672131147,
+      "gold": 122
+    },
+    {
+      "name": "PHONE",
+      "recall": 1.0,
+      "gold": 152
+    },
+    {
+      "name": "EMAIL",
+      "recall": 1.0,
+      "gold": 112
+    },
+    {
+      "name": "ID_CARD",
+      "recall": 0.6470588235294118,
+      "gold": 17
+    },
+    {
+      "name": "BANK_CARD",
+      "recall": 0.8333333333333334,
+      "gold": 48
+    },
+    {
+      "name": "PASSPORT",
+      "recall": 1.0,
+      "gold": 71
+    }
+  ],
+  "metadata": {
+    "source": "finetune/scripts/eval_privshield.py",
+    "verified": false,
+    "evaluation_scope": "offline-cache-replay",
+    "metric": "surface-label micro",
+    "gold_path": "C:\\Users\\13234\\Desktop\\新建文件夹\\大创\\privacy-redactor\\finetune\\data\\final\\test.jsonl",
+    "gold_count": 800,
+    "system_records": {
+      "B0": 800,
+      "B1": 796,
+      "B2": 796
+    },
+    "window_visibility": 0.7332372025955299,
+    "cached_only": true,
+    "category_system": "B2",
+    "latency_scope": "model-request",
+    "warnings": [
+      "这是离线表面串集合评测，不等于真实 API 的 exact-span 检测或字符边界评测。",
+      "模型请求延迟不等于含识别、复核、存储的完整系统延迟。",
+      "B0 与 B1/B2 的评测样本数量不同，暂不据此报告 B2−B0 的公平增益。",
+      "旧缓存未记录完整请求指纹；本次校验的是缓存 ID、来源映射与当前文件指纹。"
+    ],
+    "provenance": {
+      "gold": {
+        "file": "test.jsonl",
+        "sha256": "469340fcf60407859fa0950fd7ea52baa0d3b4000c69983c6057e4845afbdc11"
+      },
+      "sft": {
+        "file": "test.jsonl",
+        "sha256": "58d5cbe90ba7b5173699b4130549ebfbd5c40a76ac5ecffa0ec90b093ae16e1e"
+      },
+      "B1": {
+        "file": "preds_B1.jsonl",
+        "sha256": "5f9811563a91181478c5147514ec8d712fb0a9540fc5a438eb2072f07bf0cf28"
+      },
+      "B2": {
+        "file": "preds_B2.jsonl",
+        "sha256": "f8cd74bd1fd72227dc83fcd7a12e9f1ca6aa5905740993746c57a81ab98ed01f"
+      }
+    }
+  }
+}

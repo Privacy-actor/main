@@ -1,49 +1,208 @@
-import { useEffect, useMemo, useState } from 'react'
-import { AlertTriangle, Check, ChevronLeft, ChevronRight, Inbox, Keyboard, Search } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Check, ChevronLeft, ChevronRight, ExternalLink, RefreshCw, Undo2 } from 'lucide-react'
 import { api } from '../api'
-import ReviewDecision from '../components/ReviewDecision'
+import { EmptyState, Kbd, Spinner } from '../components/ui'
+import { useApp } from '../hooks/AppContext'
+import { useToast } from '../hooks/Toast'
+import { ENTITY_LABEL, entityStyle, sourceLabel } from '../lib/entities'
+import { formatTime, shortId } from '../lib/format'
+import { allEntityTypes, type EntityType, type ReviewQueueItem } from '../types'
+import './Review.css'
 
-type ReviewItem={id:string;task:string;text:string;entity:string;type:string;score:number;reason:string;source:string[];status:'pending'|'accepted'|'rejected'}
-const demo: ReviewItem[] = [
-  {id:'rv-01',task:'task_demo_01',text:'采访对象表示，王洋目前在明理书院参与研究。',entity:'王洋',type:'PERSON',score:.71,reason:'NER 与 LLM 置信度分歧',source:['NER','LLM'],status:'pending'},
-  {id:'rv-02',task:'task_demo_02',text:'材料请寄往海淀区中关村大街59号科研楼。',entity:'海淀区中关村大街59号',type:'ADDRESS',score:.77,reason:'地址边界需要人工确认',source:['NER-LITE'],status:'pending'},
-  {id:'rv-03',task:'task_demo_03',text:'Please contact Dr. Alice Morgan after the meeting.',entity:'Alice Morgan',type:'PERSON',score:.79,reason:'英文姓名低置信度候选',source:['NER'],status:'pending'},
-]
-export default function Review(){
-  const [items,setItems]=useState<ReviewItem[]>([])
-  const [index,setIndex]=useState(0)
-  const [query,setQuery]=useState('')
-  const [filter,setFilter]=useState('全部待复核')
-  const [loading,setLoading]=useState(true)
-  const [actionBusy,setActionBusy]=useState(false)
-  const [error,setError]=useState('')
-  const [actionError,setActionError]=useState('')
-  const [isDemo,setIsDemo]=useState(false)
-  const pending=useMemo(()=>items.filter(x=>x.status==='pending'&&(!query||x.entity.includes(query)||x.text.includes(query)||x.task.includes(query))&&(filter==='全部待复核'||(filter==='模型冲突'&&(x.reason.includes('冲突')||x.reason.includes('分歧')))||(filter==='低置信度'&&(x.reason.includes('低置信度')||x.score<=.78))||(filter==='边界异常'&&x.reason.includes('边界')))),[items,query,filter])
-  const current=pending[Math.min(index,Math.max(0,pending.length-1))]
-  async function act(status:'accepted'|'rejected'){
-    if(!current||isDemo||actionBusy)return
-    setActionBusy(true);setActionError('')
-    try{
-      await api.review({task_id:current.task,span_id:current.id,operation:status==='accepted'?'accept':'reject',before:'pending',after:status})
-      setItems(value=>value.map(item=>item.id===current.id?{...item,status}:item));setIndex(0)
-    }catch(caught){setActionError(caught instanceof Error?caught.message:'复核提交失败，列表未发生变更。')}
-    finally{setActionBusy(false)}
+const keyOf = (item: ReviewQueueItem) => `${item.task_id}:${item.span.id}`
+
+function isTyping(target: EventTarget | null) {
+  const element = target as HTMLElement | null
+  return Boolean(element?.closest('input, textarea, select, [contenteditable="true"]'))
+}
+
+/** 复核队列中的一段上下文，按码点切分并高亮目标实体。 */
+function Context({ item }: { item: ReviewQueueItem }) {
+  const characters = Array.from(item.context)
+  const start = Math.max(0, item.span.start - item.context_offset)
+  const end = Math.min(characters.length, item.span.end - item.context_offset)
+  const leading = item.context_offset > 0
+  const trailing = item.text_length !== undefined ? item.context_offset + characters.length < item.text_length : false
+  return <p className="review-context doc-text">
+    {leading && <span className="muted">…</span>}{characters.slice(0, start).join('')}
+    <mark style={entityStyle(item.span.entity_type)}>{characters.slice(start, end).join('')}</mark>
+    {characters.slice(end).join('')}{trailing && <span className="muted">…</span>}
+  </p>
+}
+
+export default function Review() {
+  const toast = useToast()
+  const { refreshStats } = useApp()
+  const [items, setItems] = useState<ReviewQueueItem[] | null>(null)
+  const [total, setTotal] = useState(0)
+  const [error, setError] = useState('')
+  const [loadFailed, setLoadFailed] = useState(false)
+  const [selected, setSelected] = useState<string | null>(null)
+  const [typeFilter, setTypeFilter] = useState<EntityType | 'all'>('all')
+  const [busy, setBusy] = useState(false)
+  const [done, setDone] = useState(0)
+
+  const load = useCallback(async () => {
+    setError('')
+    try {
+      const { items: queue, total: count } = await api.reviewQueue()
+      setItems(queue)
+      setTotal(count ?? queue.length)
+      setLoadFailed(false)
+      setSelected(current => current && queue.some(item => keyOf(item) === current) ? current : queue[0] ? keyOf(queue[0]) : null)
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : '复核队列加载失败')
+      setLoadFailed(true)
+      setItems(current => current || [])
+    }
+  }, [])
+
+  useEffect(() => { void load() }, [load])
+
+  const visible = useMemo(() => (items || []).filter(item => typeFilter === 'all' || item.span.entity_type === typeFilter), [items, typeFilter])
+  const groups = useMemo(() => {
+    const map = new Map<string, ReviewQueueItem[]>()
+    for (const item of visible) map.set(item.task_id, [...(map.get(item.task_id) || []), item])
+    return [...map.entries()]
+  }, [visible])
+  const typeCounts = useMemo(() => {
+    const counts = new Map<EntityType, number>()
+    for (const item of items || []) counts.set(item.span.entity_type, (counts.get(item.span.entity_type) || 0) + 1)
+    return allEntityTypes.filter(type => counts.has(type)).map(type => [type, counts.get(type) || 0] as const)
+  }, [items])
+  const current = visible.find(item => keyOf(item) === selected) || visible[0] || null
+  const index = current ? visible.indexOf(current) : -1
+  const sameTask = current ? visible.filter(item => item.task_id === current.task_id) : []
+
+  function move(step: number) {
+    if (!visible.length) return
+    const next = visible[(Math.max(0, index) + step + visible.length) % visible.length]
+    setSelected(keyOf(next))
   }
-  useEffect(()=>{api.reviewQueue().then(data=>{setItems((data.items||[]).map((x:any)=>({id:x.span.id,task:x.task_id,text:x.context,entity:x.span.text,type:x.span.entity_type,score:x.span.score||0,reason:x.reason,source:x.span.sources,status:'pending'})));setIsDemo(false)}).catch(caught=>{setError(caught instanceof Error?caught.message:'复核队列加载失败');setItems(demo);setIsDemo(true)}).finally(()=>setLoading(false))},[])
-  useEffect(()=>{setIndex(0)},[query,filter])
-  useEffect(()=>{const fn=(event:KeyboardEvent)=>{const target=event.target as HTMLElement;if(target.matches('input, textarea, select')||target.isContentEditable||isDemo||actionBusy)return;if(event.key.toLowerCase()==='a')void act('accepted');if(event.key.toLowerCase()==='r')void act('rejected')};window.addEventListener('keydown',fn);return()=>window.removeEventListener('keydown',fn)},[current,isDemo,actionBusy])
-  return <div className="page"><div className="review-counter"><strong>{pending.length}</strong><span>项等待处理</span></div>
-    {error&&<div className="notice demo-notice"><AlertTriangle/><span><strong>只读演示数据 · 操作已禁用</strong> 后端队列暂不可用：{error}</span></div>}
-    {actionError&&<div className="error-banner"><AlertTriangle size={17}/>{actionError}</div>}
-    <div className="review-toolbar"><label className="search-box"><Search size={16}/><span className="sr-only">搜索复核任务</span><input value={query} onChange={event=>setQuery(event.target.value)} placeholder="搜索任务、实体或文本"/></label><div className="queue-tabs" role="group" aria-label="复核原因筛选">{['全部待复核','模型冲突','低置信度','边界异常'].map(value=><button className={filter===value?'active':''} aria-pressed={filter===value} onClick={()=>setFilter(value)} key={value}>{value}</button>)}</div></div>
-    <div className="review-layout"><section className="panel queue-list"><div className="queue-head"><span>待复核项</span><small>按风险优先级排序</small></div>{pending.length ? pending.map((item,itemIndex)=><button key={item.id} className={`queue-item ${current?.id===item.id?'active':''}`} onClick={()=>setIndex(itemIndex)}><div className="queue-item-top"><span className="queue-type">{item.type}</span><b>{Math.round(item.score*100)}%</b></div><strong>{item.entity}</strong><p>{item.text}</p><small><AlertTriangle size={12}/>{item.reason}</small></button>) : <div className="queue-empty"><Inbox size={32}/><strong>队列已清空</strong><p>所有疑难候选均已复核。</p></div>}</section>
-      <section className="panel review-focus" aria-busy={loading||actionBusy}>{current ? <><div className="focus-head"><div><span>复核任务 · {current.task}</span><h2>判断该实体是否应当脱敏</h2></div><div className="pager"><button aria-label="上一个复核项" disabled={index===0||actionBusy} onClick={()=>setIndex(Math.max(0,index-1))}><ChevronLeft/></button><span>{index+1} / {pending.length}</span><button aria-label="下一个复核项" disabled={index===pending.length-1||actionBusy} onClick={()=>setIndex(Math.min(pending.length-1,index+1))}><ChevronRight/></button></div></div>
-        <div className="context-card"><small>原始语境</small><p>{current.text.split(current.entity)[0]}<mark>{current.entity}<span>{current.type}</span></mark>{current.text.split(current.entity).slice(1).join(current.entity)}</p></div>
-        <div className="review-evidence"><div><span>候选类型</span><strong>{current.type}</strong></div><div><span>置信度</span><strong>{Math.round(current.score*100)}%</strong></div><div><span>识别来源</span><strong>{current.source.join(' + ')}</strong></div><div><span>进入队列原因</span><strong>{current.reason}</strong></div></div>
-        <div className="decision-note"><AlertTriangle size={17}/><div><strong>{isDemo?'只读预览':'系统建议：人工确认'}</strong><p>{isDemo?'当前为演示条目，恢复后端连接后才能提交。':'接受后将按当前策略脱敏，拒绝后保留原文；失败时不会提前改变队列。'}</p></div></div>
-        <ReviewDecision busy={isDemo||actionBusy} showShortcuts onReject={()=>act('rejected')} onAccept={()=>act('accepted')}/>
-        <div className="shortcut-hint"><Keyboard size={14}/>支持键盘快捷复核；仅在后端写入审计日志成功后更新界面。</div>
-      </> : <div className="queue-empty large"><Check size={42}/><strong>{loading?'正在读取队列':query||filter!=='全部待复核'?'没有匹配项':'复核完成'}</strong><p>{loading?'正在同步后端复核任务…':query||filter!=='全部待复核'?'请尝试调整搜索词或筛选条件。':'当前没有等待处理的候选实体。'}</p></div>}</section></div>
+
+  async function decide(operation: 'accept' | 'reject' | 'change_type', type?: EntityType) {
+    if (!current || busy) return
+    setBusy(true)
+    const target = current
+    const following = visible[index + 1] || visible[index - 1] || null
+    try {
+      await api.review({
+        task_id: target.task_id, span_id: target.span.id, operation,
+        before: operation === 'change_type' ? target.span.entity_type : target.span.status,
+        after: operation === 'change_type' ? type : operation === 'accept' ? 'accepted' : 'rejected',
+      })
+      setItems(list => (list || []).filter(item => keyOf(item) !== keyOf(target)))
+      setTotal(count => Math.max(0, count - 1))
+      setSelected(following ? keyOf(following) : null)
+      setDone(count => count + 1)
+      void refreshStats()
+      toast(operation === 'accept' ? `已确认脱敏「${target.span.text}」` : operation === 'reject' ? `已恢复原文「${target.span.text}」` : `已改为${ENTITY_LABEL[type as EntityType]}并确认`, 'success')
+    } catch (caught) {
+      toast(caught instanceof Error ? caught.message : '操作没有保存', 'error')
+      void load()
+    } finally { setBusy(false) }
+  }
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (document.body.classList.contains('has-dialog') || isTyping(event.target) || event.ctrlKey || event.metaKey || event.altKey) return
+      const key = event.key.toLowerCase()
+      if (key === 'j') { event.preventDefault(); move(1) }
+      else if (key === 'k') { event.preventDefault(); move(-1) }
+      else if (key === 'a') { event.preventDefault(); void decide('accept') }
+      else if (key === 'r') { event.preventDefault(); void decide('reject') }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
+  return <div className="page review">
+    <header className="page-head">
+      <div>
+        <h1 className="page-title">人工复核</h1>
+        <p className="page-desc">置信度不足或几个识别层判断不一致的实体集中在这里。每次确认都会同步到对应任务，并留下操作记录。</p>
+      </div>
+      <div className="page-actions">
+        <button type="button" className="btn" onClick={() => void load()}><RefreshCw size={15}/>刷新</button>
+      </div>
+    </header>
+
+    {error && !(loadFailed && !items?.length) && <div className="notice notice-bad review-error">{error}</div>}
+
+    {!items ? <div className="review-loading"><Spinner size={20}/></div>
+      : loadFailed && !items.length ? <div className="panel"><EmptyState title="暂时读不到复核队列" illustration="queue"
+          action={<button type="button" className="btn btn-primary" onClick={() => void load()}><RefreshCw size={15}/>重试</button>}>
+          {error || '处理服务没有响应'}。确认后端窗口仍在运行后重试。
+        </EmptyState></div>
+      : !items.length ? <div className="panel"><EmptyState title={done ? `这一轮复核完成，共处理 ${done} 处` : '没有待确认的实体'} illustration="queue"
+          action={<Link className="btn btn-primary" to="/workbench">去工作台处理文本</Link>}>
+          工作台和批量处理中置信度不足的实体会自动出现在这里。
+        </EmptyState></div>
+      : <>
+        <div className="review-bar">
+          <p className="num"><strong>{total}</strong> 处待确认，来自 {new Set(items.map(item => item.task_id)).size} 个任务{total > items.length ? `（先列出最近的 ${items.length} 处，处理完后刷新可看到更多）` : ''}{done ? `，本次已处理 ${done} 处` : ''}</p>
+          <div className="review-types" role="group" aria-label="按类型筛选">
+            <button type="button" className={`type-chip ${typeFilter === 'all' ? 'is-on' : ''}`} style={{ ['--c' as string]: 'var(--ink)' }} aria-pressed={typeFilter === 'all'} onClick={() => setTypeFilter('all')}>全部</button>
+            {typeCounts.map(([type, count]) => <button type="button" key={type} className={`type-chip ${typeFilter === type ? 'is-on' : ''}`} style={entityStyle(type)} aria-pressed={typeFilter === type} onClick={() => setTypeFilter(type)}>
+              <span className="dot"/>{ENTITY_LABEL[type]}<span className="num">{count}</span>
+            </button>)}
+          </div>
+        </div>
+
+        <div className="review-grid">
+          <nav className="review-queue panel" aria-label="待确认的实体">
+            {groups.map(([taskId, list]) => <section key={taskId} className="queue-group">
+              <header className="queue-group-head">
+                <span className="num">任务 {shortId(taskId)}</span>
+                <span className="muted">{list[0].created_at ? formatTime(list[0].created_at) : ''}</span>
+              </header>
+              <ul>
+                {list.map(item => <li key={keyOf(item)}>
+                  <button type="button" className={`queue-item${current && keyOf(current) === keyOf(item) ? ' is-selected' : ''}`} style={entityStyle(item.span.entity_type)} onClick={() => setSelected(keyOf(item))}>
+                    <span className="dot"/>
+                    <span className="queue-item-text">{item.span.text}</span>
+                    <span className="queue-item-type">{ENTITY_LABEL[item.span.entity_type]}</span>
+                  </button>
+                </li>)}
+              </ul>
+            </section>)}
+            {!visible.length && <p className="queue-empty">这个类型没有待确认的实体</p>}
+          </nav>
+
+          {current ? <article className="review-focus sheet" style={entityStyle(current.span.entity_type)} aria-live="polite">
+            <header className="focus-head">
+              <div className="focus-nav">
+                <button type="button" className="icon-btn" aria-label="上一处" onClick={() => move(-1)} disabled={visible.length < 2}><ChevronLeft size={18}/></button>
+                <span className="num">{index + 1} / {visible.length}</span>
+                <button type="button" className="icon-btn" aria-label="下一处" onClick={() => move(1)} disabled={visible.length < 2}><ChevronRight size={18}/></button>
+              </div>
+              <Link className="btn btn-sm btn-quiet" to={`/workbench?task=${encodeURIComponent(current.task_id)}&span=${encodeURIComponent(current.span.id)}`}><ExternalLink size={14}/>在工作台打开</Link>
+            </header>
+
+            <div className="focus-body">
+              <p className="focus-reason">{current.reason === '识别器冲突' ? '几个识别层对这里的判断不一致' : `置信度 ${Math.round((current.span.score ?? 0) * 100)}%，低于自动采纳的阈值`}</p>
+              <Context item={current}/>
+              <dl className="focus-facts">
+                <div><dt>实体</dt><dd className="focus-entity">{current.span.text}</dd></div>
+                <div><dt>类型</dt><dd>
+                  <select className="select input-sm focus-type" value={current.span.entity_type} disabled={busy} aria-label="实体类型"
+                    onChange={event => void decide('change_type', event.target.value as EntityType)}>
+                    {allEntityTypes.map(type => <option key={type} value={type}>{ENTITY_LABEL[type]}{type === current.span.entity_type ? '' : '（改为此类并确认）'}</option>)}
+                  </select>
+                </dd></div>
+                <div><dt>来源</dt><dd className="focus-sources">{current.span.sources.map(source => <span key={source} className={`source-badge${source === 'LLM' ? ' is-llm' : ''}`}>{sourceLabel(source)}</span>)}</dd></div>
+                {sameTask.length > 1 && <div><dt>同一任务</dt><dd>还有 {sameTask.length - 1} 处待确认</dd></div>}
+              </dl>
+            </div>
+
+            <footer className="focus-actions">
+              <button type="button" className="btn btn-lg" disabled={busy} onClick={() => void decide('reject')}><Undo2 size={16}/>不是敏感信息，恢复原文<Kbd>R</Kbd></button>
+              <button type="button" className="btn btn-ink btn-lg" disabled={busy} onClick={() => void decide('accept')}>{busy ? <Spinner size={16}/> : <Check size={16}/>}确认脱敏<Kbd>A</Kbd></button>
+            </footer>
+            <p className="focus-keys"><Kbd>J</Kbd><Kbd>K</Kbd>上一处、下一处</p>
+          </article> : <div className="review-focus sheet"><EmptyState title="选择一处实体" illustration="queue">从左侧列表中选择。</EmptyState></div>}
+        </div>
+      </>}
   </div>
 }

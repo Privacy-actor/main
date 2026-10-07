@@ -3,6 +3,7 @@ import json
 import uuid
 import zipfile
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app, storage
@@ -26,11 +27,13 @@ def test_detect_api_full_flow():
     assert result["has_manual_edits"] is False
 
 
-def test_health_and_evaluation_api():
+def test_health_and_evaluation_api(monkeypatch, tmp_path):
+    monkeypatch.setattr("app.main.EVALUATION_RESULTS", tmp_path / "missing.json")
     assert client.get("/api/v1/health").status_code == 200
     response = client.get("/api/v1/evaluations")
     assert response.status_code == 200
     assert len(response.json()["systems"]) >= 4
+    assert response.json()["is_demo"] is True
 
 
 def test_review_rejects_unknown_task():
@@ -85,7 +88,8 @@ def test_entity_policies_can_drive_pipeline_redaction():
     assert "某联系电话" in response.json()["redacted_text"]
 
 
-def test_evaluation_response_is_explicitly_marked_demo():
+def test_evaluation_response_is_explicitly_marked_demo(monkeypatch, tmp_path):
+    monkeypatch.setattr("app.main.EVALUATION_RESULTS", tmp_path / "missing.json")
     result = client.get("/api/v1/evaluations").json()
     assert result["is_demo"] is True
     assert result["metadata"]["verified"] is False
@@ -223,7 +227,8 @@ def test_batch_exports_current_manual_final_text_without_duplicating_source_text
     assert response.status_code == 200
     job = client.get(f"/api/v1/jobs/{response.json()['id']}").json()
     assert job["status"] in {"completed", "completed_with_errors"}
-    assert len(job["payload"]["results"]) == 2
+    # 文本文件整份为一段，同一实体全文件编号一致
+    assert len(job["payload"]["results"]) == 1
     assert all("text" not in row for row in job["payload"]["results"])
 
     first = job["payload"]["results"][0]
@@ -430,6 +435,30 @@ def test_history_detail_returns_full_task_snapshot():
     assert detail["text"] == "电话13800138000"
     assert detail["spans"]
     assert detail["trace"]
+    assert detail["final_text"] == detected["redacted_text"]
+    assert detail["final_revision"] == 0
+
+
+@pytest.mark.parametrize("final_text", ["仅保留人工复核后的公开内容", ""])
+def test_history_uses_saved_final_text_including_empty_revision(final_text):
+    detected = client.post(
+        "/api/v1/detect", json={"text": "联系a@example.com", "use_llm": False}
+    ).json()
+    task_id = detected["task_id"]
+    saved = client.put(f"/api/v1/tasks/{task_id}/final-text", json={
+        "text": final_text, "automatic_text": detected["redacted_text"], "expected_revision": 0,
+    })
+    assert saved.status_code == 200
+    detail = client.get(f"/api/v1/history/{task_id}").json()
+    assert detail["final_text"] == final_text
+    assert detail["redacted_text"] == detected["redacted_text"]
+    assert detail["final_revision"] == 1
+    assert detail["preview"] == final_text[:80]
+    items = client.get("/api/v1/history").json()["items"]
+    item = next(item for item in items if item["id"] == task_id)
+    assert item["preview"] == final_text[:80]
+    assert "payload" not in item
+    assert "text" not in item
 
 
 def test_redact_null_strategy_uses_each_span_strategy():

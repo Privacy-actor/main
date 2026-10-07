@@ -1,0 +1,18 @@
+/* 导出前隐私复检 */
+
+.recheck-loading { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 120px; color: var(--ink-3); }
+.recheck-pass { display: flex; align-items: center; gap: 14px; padding: 18px; border-radius: var(--r-md); background: var(--ok-wash); color: var(--ok); }
+.recheck-pass strong { display: block; color: var(--ink); font-size: 15px; }
+.recheck-pass p { margin-top: 2px; color: var(--ink-2); font-size: 13px; }
+.recheck { display: grid; gap: 12px; }
+.recheck-summary { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: var(--r-md); background: var(--bad-wash); color: var(--bad); font-weight: 500; }
+.recheck-summary.is-soft { background: var(--warn-wash); color: var(--warn); }
+.recheck-list { display: grid; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: var(--r-md); list-style: none; }
+.recheck-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 10px 12px; }
+.recheck-item + .recheck-item { border-top: 1px solid var(--rule-2); }
+.recheck-sev { padding: 0 7px; border-radius: 4px; font-size: 12px; font-weight: 500; line-height: 20px; white-space: nowrap; }
+.recheck-item.is-high .recheck-sev { background: var(--bad-wash); color: var(--bad); }
+.recheck-item.is-medium .recheck-sev { background: var(--warn-wash); color: var(--warn); }
+.recheck-main { display: grid; gap: 2px; min-width: 0; }
+.recheck-text { justify-self: start; font-weight: 600; overflow-wrap: anywhere; box-shadow: inset 0 -2px 0 var(--c); }
+.recheck-main small { color: var(--ink-3); font-size: 12px; }

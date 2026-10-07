@@ -1,50 +1,161 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
-import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
-import { Activity, Beaker, Clock3, Files, FolderCog, ScanSearch, ShieldCheck } from 'lucide-react'
-import { api } from './api'
-const Workbench=lazy(()=>import('./pages/Workbench'))
-const Projects=lazy(()=>import('./pages/Projects'))
-const Review=lazy(()=>import('./pages/Review'))
-const Batch=lazy(()=>import('./pages/Batch'))
-const Evaluation=lazy(()=>import('./pages/Evaluation'))
-const History=lazy(()=>import('./pages/History'))
-const HistoryDetail=lazy(()=>import('./pages/HistoryDetail'))
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { createBrowserRouter, Link, NavLink, Navigate, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { BookOpen, Braces, Check, ChevronsUpDown, FolderKanban, History, Layers, ListChecks, Plus, ScanText, Server } from 'lucide-react'
+import { AppProvider, describeEngines, useApp } from './hooks/AppContext'
+import { ToastProvider } from './hooks/Toast'
+import { LogoMark } from './components/Logo'
+import InkBackdrop from './components/InkBackdrop'
+import { BRAND } from './brand'
+import { Spinner } from './components/ui'
+import './design-system.css'
+import './styles.css'
 
-const nav = [
-  { to: '/workbench', icon: ScanSearch, label: '隐私工作台' },
-  { to: '/projects', icon: FolderCog, label: '项目与规则' },
-  { to: '/review', icon: ShieldCheck, label: '人工复核' },
-  { to: '/batch', icon: Files, label: '批量处理' },
-  { to: '/evaluation', icon: Beaker, label: '评估实验室' },
-  { to: '/history', icon: Clock3, label: '历史与策略' },
+const Workbench = lazy(() => import('./pages/Workbench'))
+const Batch = lazy(() => import('./pages/Batch'))
+const Review = lazy(() => import('./pages/Review'))
+const Projects = lazy(() => import('./pages/Projects'))
+const Rules = lazy(() => import('./pages/Rules'))
+const History_ = lazy(() => import('./pages/History'))
+const System = lazy(() => import('./pages/System'))
+const Guide = lazy(() => import('./pages/Guide'))
+
+const navigation = [
+  [
+    { to: '/workbench', icon: ScanText, label: '工作台' },
+    { to: '/batch', icon: Layers, label: '批量处理' },
+    { to: '/review', icon: ListChecks, label: '人工复核', badge: 'pending' as const },
+  ],
+  [
+    { to: '/projects', icon: FolderKanban, label: '项目' },
+    { to: '/rules', icon: Braces, label: '规则库' },
+  ],
+  [
+    { to: '/history', icon: History, label: '任务记录' },
+    { to: '/system', icon: Server, label: '部署与插件' },
+  ],
+  [
+    { to: '/guide', icon: BookOpen, label: '上手指南' },
+  ],
 ]
 
-export default function App() {
-  const [online, setOnline] = useState<boolean | null>(null)
-  const [modelName,setModelName]=useState('读取模型配置中')
-  useEffect(() => {
-    api.health().then(v => setOnline(v.status === 'ok')).catch(() => setOnline(false))
-    api.models().then(v=>{const active=typeof v.active==='string'?v.active:'';setModelName(v.enabled ? (active.split('/').pop()||'已启用模型') : '14B 模型未启用')}).catch(()=>setModelName('模型配置不可用'))
-  }, [])
-  return <div className="app-shell">
-    <a className="skip-link" href="#main-content">跳转到主要内容</a>
-    <aside className="sidebar">
-      <div className="brand"><div className="brand-mark"><ShieldCheck size={22}/></div><div><strong>PrivShield</strong><span>隐私盾 · 中英文本智能脱敏</span></div></div>
+const GUIDE_SEEN_KEY = 'privshield.guideSeen'
 
-      <nav aria-label="主导航">{nav.map(item => <NavLink key={item.to} to={item.to} className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}><item.icon size={18}/><span>{item.label}</span></NavLink>)}</nav>
-      <div className="sidebar-bottom">
-        <div className="model-card"><div className="model-head"><span className={`status-dot ${online ? 'online' : online === false ? 'offline' : ''}`}/><span>{online ? '系统在线' : online === false ? '连接失败' : '连接中'}</span></div><strong title={modelName}>{modelName}</strong></div>
-        <div className="version"><Activity size={13}/> v0.2.0 · 审计已启用</div>
+/** 第一次打开时先进上手指南，之后直接进工作台。 */
+function Home() {
+  let seen = true
+  try { seen = Boolean(localStorage.getItem(GUIDE_SEEN_KEY)) } catch { /* 读不了本地存储时直接进工作台 */ }
+  return <Navigate to={seen ? '/workbench' : '/guide'} replace/>
+}
+
+function ProjectSwitcher() {
+  const { projects, currentProject, currentProjectId, projectsError, selectProject } = useApp()
+  const [open, setOpen] = useState(false)
+  // 记着的项目还没读到（服务没连上或正在读取）时不显示“临时方案”，免得以为项目丢了
+  const label = currentProject?.name || (currentProjectId ? (projectsError ? '暂时读不到项目' : '读取中…') : '临时方案')
+  const root = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (!open) return
+    const onDown = (event: MouseEvent) => { if (!root.current?.contains(event.target as Node)) setOpen(false) }
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(false) }
+    window.addEventListener('mousedown', onDown)
+    window.addEventListener('keydown', onKey)
+    return () => { window.removeEventListener('mousedown', onDown); window.removeEventListener('keydown', onKey) }
+  }, [open])
+  return <div className="project-switch" ref={root}>
+    <button type="button" className="project-switch-btn" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(value => !value)}>
+      <span className="project-switch-copy"><small>当前项目</small><strong>{label}</strong></span>
+      <ChevronsUpDown size={15}/>
+    </button>
+    {open && <div className="project-switch-pop" role="listbox" aria-label="切换项目">
+      <button type="button" role="option" aria-selected={!currentProject} onClick={() => { selectProject('', { applyConfig: false }); setOpen(false) }}>
+        <span><strong>临时方案</strong><small>不保存到任何项目</small></span>{!currentProject && <Check size={15}/>}
+      </button>
+      {projects.map(project => <button type="button" role="option" aria-selected={currentProject?.id === project.id} key={project.id} onClick={() => { selectProject(project.id); setOpen(false) }}>
+        <span><strong>{project.name}</strong><small>{project.description || '未填写说明'}</small></span>{currentProject?.id === project.id && <Check size={15}/>}
+      </button>)}
+      <div className="project-switch-foot">
+        <button type="button" onClick={() => { setOpen(false); navigate('/projects?new=1') }}><Plus size={14}/>新建项目</button>
+        <button type="button" onClick={() => { setOpen(false); navigate('/projects') }}>管理项目</button>
       </div>
+    </div>}
+  </div>
+}
+
+function EngineStatus() {
+  const { engine } = useApp()
+  const engines = describeEngines(engine.models)
+  const offline = engine.state === 'offline'
+  const rows = [
+    { name: '规则层', value: engines.rules, state: offline ? 'off' : 'on' },
+    { name: 'NER 层', value: engines.ner, state: offline ? 'off' : engines.nerModel ? 'on' : engines.nerState === 'failed' ? 'warn' : engines.nerState === 'loading' ? 'idle' : 'lite' },
+    { name: '大模型核查', value: engines.llm, state: offline ? 'off' : engines.llmReady ? 'on' : 'idle' },
+  ]
+  return <Link to="/system" className="engine-status" title="查看部署与引擎状态">
+    {offline ? <div className="engine-offline">处理服务未连接</div> : rows.map(row => <div className="engine-row" key={row.name}>
+      <i className={`engine-dot is-${row.state}`} aria-hidden="true"/>
+      <span className="engine-name">{row.name}</span>
+      <span className="engine-value">{engine.state === 'checking' ? '检测中' : row.value}</span>
+    </div>)}
+  </Link>
+}
+
+function Shell() {
+  const { stats } = useApp()
+  const location = useLocation()
+  useEffect(() => { document.getElementById('main')?.focus({ preventScroll: true }) }, [location.pathname])
+  return <div className="shell">
+    <a className="skip-link" href="#main">跳到主要内容</a>
+    <aside className="sidebar">
+      <Link to="/workbench" className="brand" aria-label={`${BRAND.name} 工作台`}>
+        <LogoMark/>
+        <span className="brand-copy"><strong>{BRAND.name}</strong><small>{BRAND.tagline}</small></span>
+      </Link>
+      <ProjectSwitcher/>
+      <nav className="nav" aria-label="主导航">
+        {navigation.map((group, index) => <div className="nav-group" key={index}>
+          {group.map(item => <NavLink key={item.to} to={item.to} className={({ isActive }) => `nav-item${isActive ? ' is-active' : ''}`}>
+            <item.icon size={18} strokeWidth={1.7} aria-hidden="true"/>
+            <span className="nav-label">{item.label}</span>
+            {item.badge === 'pending' && stats && stats.pending > 0 && <span className="nav-badge" aria-label={`${stats.pending} 项待复核`}>{stats.pending > 99 ? '99+' : stats.pending}</span>}
+          </NavLink>)}
+        </div>)}
+      </nav>
+      <EngineStatus/>
     </aside>
-    <main className="main-content" id="main-content">
-      <Suspense fallback={<div className="page loading-page" aria-live="polite">正在加载页面…</div>}>
-      <Routes>
-        <Route path="/workbench" element={<Workbench/>}/><Route path="/projects" element={<Projects/>}/><Route path="/review" element={<Review/>}/>
-        <Route path="/batch" element={<Batch/>}/><Route path="/evaluation" element={<Evaluation/>}/>
-        <Route path="/history" element={<History/>}/><Route path="/history/:taskId" element={<HistoryDetail/>}/><Route path="*" element={<Navigate to="/workbench" replace/>}/>
-      </Routes>
+    <InkBackdrop/>
+    <main className="main" id="main" tabIndex={-1}>
+      <Suspense fallback={<div className="page-loading"><Spinner size={20}/></div>}>
+        <Outlet/>
       </Suspense>
     </main>
   </div>
 }
+
+function LegacyTaskRedirect() {
+  const { taskId = '' } = useParams()
+  return <Navigate to={`/workbench?task=${encodeURIComponent(taskId)}`} replace/>
+}
+
+function Root() {
+  return <ToastProvider><AppProvider><Shell/></AppProvider></ToastProvider>
+}
+
+/** 数据路由：页面有未保存的修改时可以用 useBlocker 拦下离开（项目编辑、工作台最终稿）。 */
+export const router = createBrowserRouter([{
+  element: <Root/>,
+  children: [
+    { path: '/', element: <Home/> },
+    { path: '/guide', element: <Guide/> },
+    { path: '/workbench', element: <Workbench/> },
+    { path: '/batch', element: <Batch/> },
+    { path: '/review', element: <Review/> },
+    { path: '/projects', element: <Projects/> },
+    { path: '/projects/:projectId', element: <Projects/> },
+    { path: '/rules', element: <Rules/> },
+    { path: '/history', element: <History_/> },
+    { path: '/history/:taskId', element: <LegacyTaskRedirect/> },
+    { path: '/system', element: <System/> },
+    { path: '*', element: <Navigate to="/workbench" replace/> },
+  ],
+}])

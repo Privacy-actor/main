@@ -1,0 +1,19 @@
+.rule-editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.rule-form { display: grid; align-content: start; gap: 16px; }
+.input.is-code { font-family: var(--font-code); font-size: 13px; }
+.rule-types { display: flex; flex-wrap: wrap; gap: 6px; }
+.rule-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.rule-scope { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 13px; }
+.rule-scope .select { width: auto; min-width: 140px; }
+.rule-test { display: grid; align-content: start; gap: 8px; padding: 14px 16px; border-radius: var(--r-md); background: var(--sheet-2); }
+.rule-test-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.rule-test-state { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); font-size: 12.5px; }
+.rule-test .textarea { background: var(--sheet); font-size: 13.5px; }
+.rule-preview { padding: 10px 2px 0; font-size: 14px; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
+.rule-preview mark { padding: 1px 0; border-radius: 2px; background: var(--ink); color: #fff; }
+.rule-test-empty { color: var(--ink-3); font-size: 12.5px; }
+.rule-error { margin-right: auto; color: var(--bad); font-size: 12.5px; }
+
+@media (max-width: 760px) {
+  .rule-editor { grid-template-columns: minmax(0, 1fr); }
+}

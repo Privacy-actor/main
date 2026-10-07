@@ -1,0 +1,94 @@
+/* 批量处理 */
+
+.batch-step { margin-bottom: 36px; }
+.step-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.step-no {
+  display: grid; flex: none; place-items: center; width: 24px; height: 24px; margin-top: 1px;
+  border-radius: 50%; background: var(--ink); color: #fff; font-size: 12.5px; font-weight: 600;
+}
+.step-head h2 { font-size: 16px; font-weight: 600; line-height: 1.6; }
+.step-head p { color: var(--ink-3); font-size: 13px; }
+
+/* 选择文件 */
+.dropzone {
+  display: grid; justify-items: center; gap: 12px; padding: 34px 20px;
+  border: 1.5px dashed var(--ink-4); border-radius: var(--r-lg); background: var(--sheet);
+  transition: border-color .12s, background-color .12s;
+}
+.dropzone.has-files { padding: 18px 20px; grid-template-columns: 1fr auto; justify-items: start; align-items: center; }
+.dropzone.is-dragging { border-color: var(--cobalt); background: var(--cobalt-wash); }
+.dropzone-copy { color: var(--ink-2); font-size: 14px; }
+.dropzone-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.batch-files { margin-top: 12px; }
+.batch-files tfoot td { padding: 10px 14px; border-top: 1px solid var(--rule); background: var(--sheet-2); color: var(--ink-2); font-size: 13px; }
+.batch-file-name { max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.batch-file-state { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-3); font-size: 13px; }
+.batch-file-remove { width: 44px; text-align: right; }
+.batch-limit { color: var(--bad); font-weight: 500; }
+
+/* 方案与试跑 */
+.batch-plan { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 24px; align-items: start; }
+.batch-config { padding-top: 2px; }
+.batch-samples { min-height: 320px; }
+.batch-samples-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px 12px 20px; border-bottom: 1px solid var(--rule-2); }
+.batch-samples-head h3 { font-size: 14px; font-weight: 600; }
+.batch-samples-head p { color: var(--ink-3); font-size: 12.5px; }
+.batch-samples-actions { display: flex; gap: 6px; }
+.sample-list { margin: 0; padding: 0; list-style: none; }
+.sample { display: grid; gap: 8px; padding: 16px 20px 18px; }
+.sample + .sample { border-top: 1px solid var(--rule-2); }
+.sample-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; color: var(--ink-3); font-size: 12.5px; }
+.sample-source { max-width: 280px; overflow: hidden; color: var(--ink-2); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.sample-counts { margin-left: auto; }
+
+/* 处理与导出 */
+.batch-run { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 18px 20px; }
+.batch-run-copy { color: var(--ink-2); font-size: 14px; }
+.batch-run-copy strong { margin: 0 3px; color: var(--ink); font-weight: 600; }
+
+.job { margin-top: 14px; }
+.job-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px 0; }
+.job-head h3 { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+.job-head p { color: var(--ink-3); font-size: 12.5px; }
+.job-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.job-progress { display: grid; gap: 6px; padding: 14px 20px 18px; }
+.job-progress p { color: var(--ink-3); font-size: 12.5px; }
+.job-status { display: inline-flex; align-items: center; gap: 6px; color: var(--cobalt-strong); font-size: 13px; font-weight: 500; }
+
+.job-overview { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 28px; padding: 18px 20px 20px; border-top: 1px solid var(--rule-2); }
+.job-figures { display: grid; gap: 14px; margin: 0; }
+.job-figures div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--rule-2); }
+.job-figures dt { color: var(--ink-3); font-size: 13px; }
+.job-figures dd { margin: 0; font-size: 22px; font-weight: 600; }
+
+.type-bars { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.type-bars li { display: grid; grid-template-columns: 72px minmax(0, 1fr) 44px; align-items: center; gap: 12px; font-size: 13px; }
+.type-bars-label { color: var(--ink-2); }
+.type-bars-track { height: 10px; overflow: hidden; border-radius: 2px; background: var(--sheet-2); }
+.type-bars-track i { display: block; height: 100%; border-radius: 2px; background: var(--c); }
+.type-bars-value { color: var(--ink-2); text-align: right; }
+
+.job-table { border-top: 1px solid var(--rule-2); overflow-x: auto; }
+.job-table .table th { background: var(--sheet-2); }
+.job-preview { max-width: 420px; overflow: hidden; color: var(--ink-2); text-overflow: ellipsis; white-space: nowrap; }
+.job-more { border-radius: 0; border-top: 1px solid var(--rule-2); height: 40px; }
+.job-failures { padding: 14px 20px 18px; border-top: 1px solid var(--rule-2); }
+.job-failures h4 { margin-bottom: 8px; color: var(--bad); font-size: 13.5px; font-weight: 600; }
+.job-failures ul { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 13px; }
+.job-failures li { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+
+.batch-loading { display: grid; place-items: center; min-height: 120px; color: var(--ink-3); }
+.batch-row-actions { width: 110px; text-align: right; white-space: nowrap; }
+.table tr.is-current td { background: color-mix(in srgb, var(--cobalt) 4%, var(--sheet)); }
+
+@media (max-width: 1180px) {
+  .batch-plan { grid-template-columns: minmax(0, 1fr); }
+  .job-overview { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 760px) {
+  .dropzone.has-files { grid-template-columns: 1fr; }
+  .batch-file-name { max-width: 180px; }
+  .batch-run .btn-lg { width: 100%; }
+  .job-preview { max-width: 200px; }
+}

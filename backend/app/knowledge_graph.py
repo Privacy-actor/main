@@ -8,35 +8,9 @@ from typing import Any
 import httpx
 
 from .config import settings
+from .knowledge_base import EXACT_HIERARCHY, GENERIC_LEVELS, GENERIC_LEVELS_EN, knowledge_entry_count, local_levels  # noqa: F401
 from .schemas import EntityType, Span, TraceStep
 
-
-GENERIC_LEVELS: dict[EntityType, tuple[str, str, str]] = {
-    EntityType.PERSON: ("某位受访者", "某人", "自然人"),
-    EntityType.ORG: ("某同类机构", "某机构", "组织实体"),
-    EntityType.LOCATION: ("某同级地区", "某地区", "地理区域"),
-    EntityType.ADDRESS: ("某市某区", "某地详细地址", "地理位置"),
-    EntityType.PHONE: ("尾号已隐藏的电话", "某联系电话", "联系方式"),
-    EntityType.EMAIL: ("某域名邮箱", "某邮箱", "电子联系方式"),
-    EntityType.ID_CARD: ("某证件号码", "某身份证件", "身份标识"),
-    EntityType.BANK_CARD: ("某支付卡号", "某银行卡号", "金融账户标识"),
-    EntityType.PASSPORT: ("某护照号码", "某护照", "旅行证件"),
-    EntityType.CUSTOM: ("某自定义敏感项", "敏感内容", "受保护信息"),
-}
-
-EXACT_HIERARCHY: dict[str, tuple[str, str, str]] = {
-    "中国人民大学": ("北京高校", "高等院校", "教育机构"),
-    "北京大学": ("北京高校", "高等院校", "教育机构"),
-    "清华大学": ("北京高校", "高等院校", "教育机构"),
-    "复旦大学": ("上海高校", "高等院校", "教育机构"),
-    "上海交通大学": ("上海高校", "高等院校", "教育机构"),
-    "北京市": ("华北直辖市", "中国城市", "地理区域"),
-    "上海市": ("华东直辖市", "中国城市", "地理区域"),
-    "广州市": ("华南省会城市", "中国城市", "地理区域"),
-    "深圳市": ("华南副省级城市", "中国城市", "地理区域"),
-    "海淀区": ("北京城区", "城市辖区", "地理区域"),
-    "浦东新区": ("上海城区", "城市辖区", "地理区域"),
-}
 
 REMOTE_ENTITY_TYPES = {EntityType.PERSON, EntityType.ORG, EntityType.LOCATION, EntityType.ADDRESS}
 
@@ -56,32 +30,9 @@ class KnowledgeResult:
         return asdict(self)
 
 
-def infer_local_levels(term: str, entity_type: EntityType) -> tuple[tuple[str, str, str], str, str]:
-    cleaned = term.strip()
-    exact = EXACT_HIERARCHY.get(cleaned)
-    if exact:
-        return exact, "local_exact", "命中内置实体层级"
-
-    lowered = cleaned.casefold()
-    if entity_type == EntityType.ORG:
-        if any(word in cleaned for word in ("大学", "学院")) or any(word in lowered for word in ("university", "college")):
-            return ("某同地区高校", "高等院校", "教育机构"), "local_inferred", "依据高校名称特征推断"
-        if "医院" in cleaned or "hospital" in lowered:
-            return ("某同地区医院", "医疗机构", "公共服务机构"), "local_inferred", "依据医疗机构名称特征推断"
-        if any(word in cleaned for word in ("公司", "集团", "企业")) or any(word in lowered for word in ("company", "corp", "ltd", "group")):
-            return ("某同业企业", "企业机构", "组织实体"), "local_inferred", "依据企业名称特征推断"
-        if any(word in cleaned for word in ("研究院", "研究所", "实验室")) or any(word in lowered for word in ("institute", "laboratory", "lab")):
-            return ("某同领域科研机构", "科研机构", "组织实体"), "local_inferred", "依据科研机构名称特征推断"
-    if entity_type in {EntityType.LOCATION, EntityType.ADDRESS}:
-        if cleaned.endswith(("区", "县")):
-            return ("某同市辖区", "城市辖区", "地理区域"), "local_inferred", "依据区县后缀推断"
-        if cleaned.endswith(("市", "州", "盟")):
-            return ("某同区域城市", "城市", "地理区域"), "local_inferred", "依据城市后缀推断"
-        if cleaned.endswith(("省", "自治区")):
-            return ("某同区域省份", "省级行政区", "地理区域"), "local_inferred", "依据省级行政区后缀推断"
-        if any(word in cleaned for word in ("路", "街", "巷", "号", "小区", "大厦")):
-            return ("某同区域地址", "详细地址", "地理位置"), "local_inferred", "依据地址结构特征推断"
-    return GENERIC_LEVELS.get(entity_type, GENERIC_LEVELS[EntityType.CUSTOM]), "type_fallback", "使用实体类型通用层级"
+def infer_local_levels(term: str, entity_type: EntityType, lang: str = "zh") -> tuple[tuple[str, str, str], str, str]:
+    """本地层级：内置知识库命中或按名称特征推断，英文语境给出英文上位概念。"""
+    return local_levels(term, entity_type, lang)
 
 
 def _collect_strings(value: Any) -> list[str]:
@@ -131,16 +82,17 @@ class KnowledgeGraphService:
             "enabled": settings.knowledge_graph_remote_enabled,
             "state": "configured" if settings.knowledge_graph_remote_enabled else "local-fallback",
             "provider": "CN-Probase / CN-DBpedia",
-            "local_entries": len(EXACT_HIERARCHY),
+            "local_entries": knowledge_entry_count(),
             "cache_entries": len(self._cache),
             "timeout_seconds": settings.knowledge_graph_timeout_seconds,
             "detail": "远程查询已启用，失败时自动回退本地层级" if settings.knowledge_graph_remote_enabled else "远程查询未启用，当前使用内置层级与规则推断",
         }
 
-    async def lookup(self, term: str, entity_type: EntityType, allow_remote: bool = True) -> KnowledgeResult:
+    async def lookup(self, term: str, entity_type: EntityType, allow_remote: bool = True, lang: str = "zh") -> KnowledgeResult:
         cleaned = term.strip()
-        levels, local_source, local_detail = infer_local_levels(cleaned, entity_type)
-        remote_allowed = allow_remote and settings.knowledge_graph_remote_enabled and entity_type in REMOTE_ENTITY_TYPES
+        levels, local_source, local_detail = infer_local_levels(cleaned, entity_type, lang)
+        # 远程知识图谱（CN-Probase / CN-DBpedia）只提供中文概念，英文语境使用本地英文层级
+        remote_allowed = lang != "en" and allow_remote and settings.knowledge_graph_remote_enabled and entity_type in REMOTE_ENTITY_TYPES
         if not remote_allowed:
             return KnowledgeResult(cleaned, entity_type.value, list(levels), local_source, "fallback", "local", local_detail, False)
 
@@ -200,8 +152,10 @@ class KnowledgeGraphService:
         remote_hits = 0
         for span in candidates:
             result = results[(span.text, span.entity_type)]
+            english, _, _ = infer_local_levels(span.text, span.entity_type, "en")
             span.metadata.update(
                 knowledge_levels=result.levels,
+                knowledge_levels_en=list(english),
                 knowledge_source=result.source,
                 knowledge_status=result.status,
                 knowledge_provider=result.provider,

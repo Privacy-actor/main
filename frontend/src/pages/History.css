@@ -1,0 +1,28 @@
+/* 任务记录 */
+
+.history-stats { margin: 0 0 28px; }
+.history-loading { display: grid; place-items: center; min-height: 140px; color: var(--ink-3); }
+
+.history-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-bottom: 12px; }
+.history-search { display: flex; flex: 1 1 280px; align-items: center; gap: 8px; max-width: 420px; height: 34px; padding: 0 12px; border: 1px solid var(--rule); border-radius: var(--r-sm); background: var(--sheet); color: var(--ink-4); cursor: text; }
+.history-search:focus-within { border-color: var(--cobalt); box-shadow: var(--focus); }
+.history-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 13.5px; }
+.history-search input::placeholder { color: var(--ink-4); }
+
+.history-time { color: var(--ink-2); white-space: nowrap; }
+.history-preview { max-width: 520px; }
+.history-preview a { display: block; overflow: hidden; color: var(--ink); text-overflow: ellipsis; white-space: nowrap; }
+.history-preview a:hover { color: var(--cobalt); }
+.history-preview .muted { display: block; margin-top: 2px; font-size: 12px; }
+.history-strategy { white-space: nowrap; }
+.history-actions { width: 96px; text-align: right; white-space: nowrap; }
+.history-none { padding: 28px !important; color: var(--ink-3); text-align: center; }
+.history-note { padding: 10px 14px; border-top: 1px solid var(--rule-2); background: var(--sheet-2); color: var(--ink-3); font-size: 12.5px; }
+.history-purge { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
+.history-purge .select { width: auto; }
+
+@media (max-width: 760px) {
+  .history-preview { max-width: 200px; }
+  .history-table th:nth-child(4), .history-table td:nth-child(4) { display: none; }
+}
+.history-more { border-top: 1px solid var(--rule-2); border-radius: 0; }

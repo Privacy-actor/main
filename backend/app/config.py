@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
-    app_name: str = "PrivShield API"
+    app_name: str = "墨隐 Moyin API"
     app_env: str = "development"
     database_path: Path = BASE_DIR / "data" / "privshield.db"
     database_timeout_seconds: float = 10.0
@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     ner_model: str = "Davlan/xlm-roberta-base-ner-hrl"
     ner_device: int = -1
     ner_threshold: float = 0.70
+    # 立项书 2.1：置信度达到 90% 及以上视为可信，直接进入脱敏层；低于 90% 转入大模型核查层，
+    # 大模型不可用时交给人工确认。
+    confidence_threshold: float = 0.90
     semantic_model_enabled: bool = False
     semantic_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     semantic_model_device: int = -1
@@ -30,11 +33,21 @@ class Settings(BaseSettings):
     llm_max_retries: int = 1
     llm_max_routed_sentences: int = 8
     llm_max_concurrency: int = 2
+    # 云端模型（可选）。项目部署模式选“云端”且此处已配置时，核查层改走云端接口；否则仍用本地模型。
+    llm_cloud_base_url: str = ""
+    llm_cloud_api_key: str = ""
+    llm_cloud_model: str = ""
+    # 是否允许在网页里修改大模型设置（服务地址、模型、密钥）。部署到多人使用的服务器时可设为 false，只用 .env 配置
+    model_settings_editable: bool = True
     max_upload_bytes: int = 20_000_000
-    max_batch_records: int = 500
+    max_batch_records: int = 2000
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
-    model_config = SettingsConfigDict(env_file=".env", env_prefix="PRIVSHIELD_", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", env_prefix="PRIVSHIELD_", extra="ignore")
+
+    @property
+    def llm_cloud_configured(self) -> bool:
+        return bool(self.llm_cloud_base_url.strip() and self.llm_cloud_model.strip())
 
     @property
     def origins(self) -> list[str]:
