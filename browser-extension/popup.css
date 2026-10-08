@@ -15,6 +15,8 @@ button, input, textarea, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 button:disabled { cursor: not-allowed; opacity: .5; }
 :focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+/* 带 display 的区块（.result 等）也要能用 hidden 藏起来 */
+[hidden] { display: none !important; }
 
 .top { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--rule); background: var(--sheet); }
 .top img { border-radius: 5px; }
@@ -88,3 +90,9 @@ input[type="range"]:disabled { cursor: not-allowed; }
 kbd { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 4px; border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px; background: var(--sheet); color: var(--ink-3); font: 500 11px/1 var(--font); }
 
 .meta.is-stale { color: #9a6410; }
+
+/* 还原大模型回答 */
+.run-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.run-row .ghost { width: auto; padding: 0 16px; }
+.notes { margin: 0; padding: 8px 10px 8px 26px; border-radius: 8px; background: #fbf1dd; color: var(--warn); font-size: 12px; line-height: 1.6; }
+mark.tok-swap { color: inherit; }

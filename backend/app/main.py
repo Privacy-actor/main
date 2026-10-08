@@ -32,11 +32,12 @@ from .model_settings import model_settings
 from .ner_adapter import ner_adapter
 from .pipeline import run_pipeline
 from .recheck import recheck_text
+from .restore import restore_text
 from .recognizers import PATTERNS, compile_user_pattern, detect_implicit_spans, detect_lite_ner_spans, find_user_matches, user_regex
 from .semantic_adapter import semantic_encoder
 from .schemas import (
     DetectRequest, DetectResponse, EntityType, FinalTextUpdate, InstructionRequest, KnowledgeLookupRequest, ModelProbeRequest, ModelSettingsUpdate,
-    PolicyUpdate, ProcessingConfig, ProjectCreate, ProjectUpdate, RecheckRequest, RedactRequest,
+    PolicyUpdate, ProcessingConfig, ProjectCreate, ProjectUpdate, RecheckRequest, RedactRequest, RestoreRequest,
     ReviewRequest, RuleCreate, RuleTestRequest, RuleUpdate, Span, Strategy,
 )
 from .storage import RevisionConflictError, Storage
@@ -602,6 +603,25 @@ async def recheck_task(task_id: str, request: RecheckRequest | None = None):
     rules = await asyncio.to_thread(storage.list_rules, task.get("project_id"))
     result = await asyncio.to_thread(recheck_text, text, task, rules)
     return {**result, "task_id": task_id, "checked_at": datetime.now(timezone.utc).isoformat()}
+
+
+@app.post("/api/v1/restore")
+async def restore_answer(request: RestoreRequest):
+    """把大模型的回答换回原文：按给出的任务（排在前面的优先）保存的替换映射还原。回答内容不保存，审计里只记换回的处数。"""
+    tasks = []
+    for task_id in dict.fromkeys(request.task_ids):
+        task = await asyncio.to_thread(storage.get_task, task_id)
+        if task is not None:
+            tasks.append(task)
+    if not tasks:
+        raise HTTPException(404, "找不到对应的任务，可能已经被删除")
+    result = await asyncio.to_thread(restore_text, request.text, tasks)
+    counts: dict[str, int] = {}
+    for item in result["items"]:
+        counts[item["task_id"]] = counts.get(item["task_id"], 0) + 1
+    if counts:
+        await asyncio.to_thread(storage.record_restore, counts, request.text)
+    return {**result, "tasks": [str(task.get("task_id")) for task in tasks]}
 
 
 def _docx_bytes(text: str) -> bytes:

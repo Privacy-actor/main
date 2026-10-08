@@ -23,7 +23,7 @@ npm install
 npm run dev              # http://127.0.0.1:5173，/api 代理到 8000
 
 # 测试
-cd backend && python -m pytest -q        # 162 项（未装 Transformers 时跳过 1 项）；tests/conftest.py 用临时数据库并关闭所有模型，不读 .env 里的真实配置
+cd backend && python -m pytest -q        # 172 项（未装 Transformers 时跳过 1 项）；tests/conftest.py 用临时数据库并关闭所有模型，不读 .env 里的真实配置
 cd frontend && npm test                  # 15 项（node --test + Vite ssrLoadModule）
 cd frontend && npm run build             # tsc -b && vite build
 
@@ -38,7 +38,7 @@ python finetune/scripts/primitives.py
 
 | 模块 | 职责 |
 |---|---|
-| `main.py` | 路由、CORS（含 chrome-extension 来源）、参数校验错误统一为中文 422（不回显输入）、批处理后台任务（可取消，同一文件共用替换记忆）、`DEFAULT_POLICIES`、大模型设置接口 `/llm/settings`、`/llm/models`、`/llm/test` |
+| `main.py` | 路由、CORS（含 chrome-extension 来源）、参数校验错误统一为中文 422（不回显输入）、批处理后台任务（可取消，同一文件共用替换记忆）、`DEFAULT_POLICIES`、大模型设置接口 `/llm/settings`、`/llm/models`、`/llm/test`；还原大模型回答 `/restore` |
 | `config.py` | `pydantic-settings`，前缀 `PRIVSHIELD_`；`confidence_threshold=0.90`（立项书口径）；`model_settings_editable` 控制能否在网页里改模型 |
 | `model_settings.py` | 本地、云端大模型的运行时设置（服务地址、模型、密钥），存在 settings 表的 `llm_endpoints`，没设置过的一侧沿用 `.env`；密钥只回显尾号，换主机不带旧密钥 |
 | `documents.py` | 上传文件解析：文档整份为一段（超长按段切开），CSV/JSON 每行一段并按“列名：值”排列，列名作识别提示；编码自动识别；导出时还原 CSV/JSON |
@@ -51,6 +51,7 @@ python finetune/scripts/primitives.py
 | `knowledge_graph.py` | 本地层级 + 可选远程 CN-Probase / CN-DBpedia，失败回退 |
 | `instruction_parser.py` | 自然语言要求解析（保留词、额外隐去词、范围、方式、力度），可选 LLM 解析。“只保留后四位”这类部分隐去的要求放进 `ignored_clauses`、不改设置；“只……”缩小范围必须对应明确的类型或词；LLM 的结果只能补充，缩小范围只认本地解析 |
 | `recheck.py` | 导出前隐私复检 |
+| `restore.py` | 还原大模型回答：按任务的替换映射（`replacements`）把回答里的掩码编号（容忍 `PERSON_001`、`[PERSON-001]`、`Person 1` 等改写）、替换词、泛化词换回原文；一个词对应多个原词时不换并列出，泛化词换回时标 `check` 提醒核对，任务里没有的编号保持原样；多个任务按传入顺序优先，冲突注明。回答不保存，审计只记处数和哈希 |
 | `storage.py` | SQLite（WAL）：任务（`pending`、`project_id` 单独成列，分页查找）、审计（HMAC 哈希）、设置、项目、规则、批处理、复核队列；乐观锁版本 |
 
 实体类型 11 类：PERSON、ORG、LOCATION、ADDRESS、PHONE、EMAIL、ID_CARD、BANK_CARD、PASSPORT、ROLE、CUSTOM。偏移一律按 Unicode 码点计算，前端用 `Array.from` 对齐。
@@ -71,7 +72,7 @@ React 19 + React Router 7 + Vite 8 + TypeScript 7，lucide-react 图标，fontso
 
 | 路由 | 页面 |
 |---|---|
-| `/workbench` | 工作台：输入与处理方案 → 识别轨迹、原文/结果对照、逐条复核（原文里拖选文字可直接补充为实体）、最终稿、复检与导出 |
+| `/workbench` | 工作台：输入与处理方案 → 识别轨迹、原文/结果对照、逐条复核（原文里拖选文字可直接补充为实体）、最终稿、复检与导出；“还原回答”页签（`components/RestorePanel.tsx`）把大模型的回答换回原文 |
 | `/batch` | 批量处理：文件/文件夹、样本试跑、后台任务、分布、ZIP/CSV/JSON |
 | `/review` | 人工复核队列 |
 | `/projects`、`/projects/:id` | 项目方案与项目规则 |
@@ -90,7 +91,7 @@ React 19 + React Router 7 + Vite 8 + TypeScript 7，lucide-react 图标，fontso
 
 ### 浏览器插件 (`browser-extension/`)
 
-Manifest V3。`shared.js`（设置、带超时的接口调用、项目方案：选了项目时用项目的整套方案）、`service-worker.js`（右键菜单、`Alt+Shift+M`、找到获得焦点的框架、同一标签页一次只处理一段）、`page-tools.js`（注入页面的工具：读取选区并记下位置，写回前核对内容，提示条）、`popup.*`、`options.*`。默认连接 `http://127.0.0.1:8000/api/v1`，工作台地址 `http://127.0.0.1:5173`。
+Manifest V3。`shared.js`（设置、带超时的接口调用、项目方案：选了项目时用项目的整套方案；每次脱敏后在 `chrome.storage.local.recentTasks` 记下任务编号，最多 20 个，`moyinRestore` 用它们还原回答）、`service-worker.js`（右键菜单含“用墨隐还原选中文字”、`Alt+Shift+M`、找到获得焦点的框架、同一标签页一次只处理一段）、`page-tools.js`（注入页面的工具：读取选区并记下位置，写回前核对内容，提示条）、`popup.*`、`options.*`。默认连接 `http://127.0.0.1:8000/api/v1`，工作台地址 `http://127.0.0.1:5173`。
 
 ### 部署
 

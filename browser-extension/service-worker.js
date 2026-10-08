@@ -2,6 +2,7 @@ importScripts('shared.js')
 
 const MENU_REPLACE = 'moyin-redact-replace'
 const MENU_SELECTION = 'moyin-redact-selection'
+const MENU_RESTORE = 'moyin-restore-selection'
 // 每个标签页同一时间只处理一段，连按快捷键不会重复插入
 const busyTabs = new Set()
 
@@ -9,6 +10,7 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({ id: MENU_REPLACE, title: '用墨隐脱敏并替换', contexts: ['editable'] })
     chrome.contextMenus.create({ id: MENU_SELECTION, title: '用墨隐脱敏选中文本', contexts: ['selection'] })
+    chrome.contextMenus.create({ id: MENU_RESTORE, title: '用墨隐还原选中文字', contexts: ['selection'] })
   })
 })
 
@@ -16,6 +18,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (!tab?.id) return
   if (info.menuItemId === MENU_REPLACE) void redactInPage(tab.id, info.frameId ?? 0)
   else if (info.menuItemId === MENU_SELECTION && info.selectionText) void openPopupWith(info.selectionText)
+  else if (info.menuItemId === MENU_RESTORE && info.selectionText) void openPopupWith(info.selectionText, 'restore')
 })
 
 chrome.commands.onCommand.addListener(async (command, tab) => {
@@ -24,9 +27,9 @@ chrome.commands.onCommand.addListener(async (command, tab) => {
   if (target?.id) void redactInPage(target.id)
 })
 
-/** 选中的是网页上的普通文字：交给弹窗处理。暂存在会话存储里，浏览器关闭即清除。 */
-async function openPopupWith(text) {
-  await chrome.storage.session.set({ pendingSelection: text })
+/** 选中的是网页上的普通文字：交给弹窗处理（mode 为 restore 时还原大模型回答）。暂存在会话存储里，浏览器关闭即清除。 */
+async function openPopupWith(text, mode = 'redact') {
+  await chrome.storage.session.set({ pendingSelection: text, pendingMode: mode })
   try { await chrome.action.openPopup() } catch { await chrome.action.setBadgeText({ text: '1' }) }
 }
 

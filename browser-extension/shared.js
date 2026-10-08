@@ -89,6 +89,39 @@ async function moyinDetect(text, overrides = {}) {
   }
   delete body.persist
   const task = await moyinFetch('/detect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }, 120000)
+  await moyinRememberTask(task.task_id)
   if (missing) task.moyinNotice = `插件设置里选的项目${settings.projectName ? `「${settings.projectName}」` : ''}已被删除，这次按临时方案处理`
   return task
+}
+
+const MOYIN_RECENT_LIMIT = 20
+
+/** 记下最近几次脱敏的任务（只存任务编号，不存文字），还原大模型回答时用它们的替换映射。 */
+async function moyinRememberTask(taskId) {
+  if (!taskId) return
+  const { recentTasks = [] } = await chrome.storage.local.get('recentTasks')
+  const next = [{ id: taskId, at: Date.now() }, ...recentTasks.filter(item => item && item.id !== taskId)].slice(0, MOYIN_RECENT_LIMIT)
+  await chrome.storage.local.set({ recentTasks: next })
+}
+
+/**
+ * 把大模型的回答换回原文：按最近几次脱敏的替换映射还原，最近一次优先。
+ * 返回 { text, items, restored, unresolved, tasks }；items 的 start/end 指还原后文字里的位置（按 Unicode 码点）。
+ */
+async function moyinRestore(text) {
+  if (Array.from(text).length > 100000) throw new Error('文字超过 10 万字，请分段还原')
+  const { recentTasks = [] } = await chrome.storage.local.get('recentTasks')
+  const ids = recentTasks.map(item => item && item.id).filter(Boolean)
+  if (!ids.length) throw new Error('还没有用插件脱敏过，找不到可以对照的记录。可以在工作台打开对应任务，用“还原回答”页签')
+  let result
+  try {
+    result = await moyinFetch('/restore', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, task_ids: ids }) }, 30000)
+  } catch (error) {
+    // 记下的任务都已在网页里删除：清掉，下次直接提示
+    if (/找不到对应的任务/.test(error.message || '')) await chrome.storage.local.set({ recentTasks: [] })
+    throw error
+  }
+  const kept = new Set(result.tasks || ids)
+  await chrome.storage.local.set({ recentTasks: recentTasks.filter(item => item && kept.has(item.id)) })
+  return result
 }

@@ -1,6 +1,6 @@
 import type {
   AuditEntry, BatchJob, CustomRule, DetectResult, EntityType, FinalTextSaveResult, Health, HistoryItem, InstructionPlan,
-  KnowledgeLookup, ModelEndpointUpdate, ModelSettingsView, ModelsInfo, ProcessingConfig, Project, RecheckResult, Replacement, ReviewQueueItem, Span, Stats, Strategy,
+  KnowledgeLookup, ModelEndpointUpdate, ModelSettingsView, ModelsInfo, ProcessingConfig, Project, RecheckResult, Replacement, RestoreResult, ReviewQueueItem, Span, Stats, Strategy,
 } from './types'
 
 const API = import.meta.env.VITE_API_BASE || '/api/v1'
@@ -85,6 +85,8 @@ export const api = {
   getTask: (taskId: string) => request<DetectResult>(`/tasks/${encodeURIComponent(taskId)}`),
   taskAudits: (taskId: string) => request<{ items: AuditEntry[] }>(`/tasks/${encodeURIComponent(taskId)}/audits`),
   recheck: (taskId: string, text?: string) => request<RecheckResult>(`/tasks/${encodeURIComponent(taskId)}/recheck`, json(text === undefined ? {} : { text })),
+  /** 把大模型的回答换回原文；taskIds 按优先顺序排列。 */
+  restore: (text: string, taskIds: string[]) => request<RestoreResult>('/restore', json({ text, task_ids: taskIds })),
   exportTask: (taskId: string, format: 'txt' | 'docx' | 'json' | 'md') => download(`/tasks/${encodeURIComponent(taskId)}/export?format=${format}`),
   deleteTask: (taskId: string) => request<{ ok: boolean }>(`/tasks/${encodeURIComponent(taskId)}`, { method: 'DELETE' }),
   purgeTasks: (days: number) => request<{ deleted: number }>(`/tasks?older_than_days=${days}`, { method: 'DELETE' }),

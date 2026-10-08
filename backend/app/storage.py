@@ -466,6 +466,17 @@ class Storage:
         detail["preview"] = _task_preview(payload, detail["preview"])
         return {**public_payload(payload), **detail}
 
+    def record_restore(self, counts: dict[str, int], text: str) -> None:
+        """还原大模型回答：每个用到的任务记一条，只记换回的处数和回答的哈希，不保存回答内容。"""
+        saved_at = _now()
+        payload = {"text_length": len(text), "text_hash": self.text_hash(text)}
+        with self.connect() as db:
+            for task_id, restored in counts.items():
+                db.execute(
+                    "INSERT INTO audits(task_id,created_at,operation,payload) VALUES (?,?,?,?)",
+                    (task_id, saved_at, "restore", json.dumps({**payload, "restored": restored}, ensure_ascii=False)),
+                )
+
     def audits(self, limit=50):
         with self.connect() as db:
             rows = db.execute("SELECT * FROM audits ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()

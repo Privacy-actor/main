@@ -23,6 +23,7 @@ function auditSummary(item: AuditEntry) {
   if (item.operation === 'add_many') return `${(payload.spans as unknown[] | undefined)?.length || 0} 处`
   if (item.operation === 'accept_many' || item.operation === 'reject_many') return `${(payload.span_ids as unknown[] | undefined)?.length || 0} 处`
   if (item.operation === 'adjust_boundary') return `范围 ${payload.before} 改为 ${payload.after}`
+  if (item.operation === 'restore') return `换回 ${payload.restored ?? 0} 处`
   return ''
 }
 

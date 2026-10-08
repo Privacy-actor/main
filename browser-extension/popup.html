@@ -48,7 +48,10 @@
       </div>
     </section>
 
-    <button id="run" class="primary block-btn" type="button">识别并脱敏</button>
+    <div class="run-row">
+      <button id="run" class="primary block-btn" type="button">识别并脱敏</button>
+      <button id="restore" class="ghost block-btn" type="button" title="把大模型回答里的编号和替换词换回原文">还原回答</button>
+    </div>
     <p id="error" class="error" role="alert"></p>
 
     <section id="result" class="result" hidden>
@@ -68,7 +71,19 @@
       </div>
     </section>
 
-    <footer class="hint">在对话框里选中文字按 <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>M</kbd>，直接换成脱敏结果</footer>
+    <section id="restored" class="result" hidden>
+      <div class="row between">
+        <strong class="label">还原结果</strong>
+        <span id="restoredSummary" class="meta"></span>
+      </div>
+      <ul id="restoredNotes" class="notes" hidden></ul>
+      <div id="restoredPreview" class="preview"></div>
+      <div class="actions">
+        <button id="copyRestored" class="primary" type="button">复制还原结果</button>
+      </div>
+    </section>
+
+    <footer class="hint">在对话框里选中文字按 <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>M</kbd>，直接换成脱敏结果；<br>选中大模型的回答右键“用墨隐还原选中文字”，换回原文</footer>
   </main>
   <script src="shared.js"></script>
   <script src="popup.js"></script>

@@ -9,6 +9,7 @@ const OPERATION_LABEL: Record<string, string> = {
   accept: '确认脱敏', reject: '恢复原文', change_type: '修改类型', add: '补充遗漏', add_many: '补充遗漏（多处）',
   adjust_boundary: '调整范围', set_strategy: '切换脱敏方式', set_span_strategy: '单个实体换方式', set_strength: '调整力度',
   set_replacement: '自定义替换词', accept_many: '批量确认', reject_many: '批量恢复', edit_text: '编辑最终稿',
+  restore: '还原大模型回答',
 }
 
 export function operationLabel(operation: string) {

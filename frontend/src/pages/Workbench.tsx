@@ -11,6 +11,7 @@ import FinalTextEditor, { type SaveState } from '../components/FinalTextEditor'
 import PipelineTrace from '../components/PipelineTrace'
 import RecheckDialog from '../components/RecheckDialog'
 import RedactedText from '../components/RedactedText'
+import RestorePanel from '../components/RestorePanel'
 import StrategyCompare from '../components/StrategyCompare'
 import { Dialog, EmptyState, Kbd, MenuButton, RedactionSkeleton, Segmented, Spinner } from '../components/ui'
 import { useApp } from '../hooks/AppContext'
@@ -80,7 +81,7 @@ export default function Workbench() {
   const [query, setQuery] = useState('')
   const [showTags, setShowTags] = useState(false)
   const [revealing, setRevealing] = useState(false)
-  const [tab, setTab] = useState<'result' | 'final'>('result')
+  const [tab, setTab] = useState<'result' | 'final' | 'restore'>('result')
 
   const [finalText, setFinalText] = useState('')
   const [savedFinal, setSavedFinal] = useState('')
@@ -594,6 +595,8 @@ export default function Workbench() {
               <button type="button" role="tab" aria-selected={tab === 'final'} className={tab === 'final' ? 'is-active' : ''} onClick={() => setTab('final')}>
                 最终稿<span className="num">v{revision}</span>{dirty && <i className="tab-dirty" aria-label="有未保存修改"/>}
               </button>
+              <button type="button" role="tab" aria-selected={tab === 'restore'} className={tab === 'restore' ? 'is-active' : ''} onClick={() => setTab('restore')}
+                title="把大模型的回答换回原文">还原回答</button>
             </div>
             {busy && <Spinner size={14}/>}
           </header>
@@ -607,12 +610,13 @@ export default function Workbench() {
             </span>
             {byPolicies && <span className="doc-toolbar-note">按实体类型分别设置</span>}
           </div>}
-          {tab === 'result' ? <div className="doc-body">
+          {tab === 'result' && <div className="doc-body">
             {result.has_manual_edits && <p className="doc-notice">最终稿已人工修改（v{revision}），这里显示的是自动结果。</p>}
             <RedactedText text={automatic} replacements={result.replacements} spansById={spansById} selectedId={selectedId} linkedId={hoverId}
               revealing={revealing} onSelect={id => setSelectedId(id)} onHover={setHoverId}/>
             {!result.replacements?.length && !spans.some(span => span.status !== 'rejected') && <p className="muted doc-empty">没有需要替换的内容。可以在右侧补充遗漏。</p>}
-          </div> : <div className="doc-body doc-body-editor">
+          </div>}
+          {tab === 'final' && <div className="doc-body doc-body-editor">
             {autoChanged && finalText !== automatic && <div className="notice notice-info doc-auto-notice">
               <span>自动结果已随复核更新，最终稿保留了你的人工修改。</span>
               <button type="button" className="btn btn-sm notice-action" onClick={() => { setFinalText(automatic); setAutoChanged(false) }}>换成新的自动结果</button>
@@ -621,6 +625,7 @@ export default function Workbench() {
               saving={saving} saveState={saveState} highlight={highlight}
               onChange={value => { setFinalText(value); if (saveState.kind !== 'idle') setSaveState({ kind: 'idle', message: '' }) }} onSave={note => { void saveFinal(note) }}/>
           </div>}
+          <RestorePanel key={result.task_id} taskId={result.task_id} hidden={tab !== 'restore'}/>
         </section>
 
         <aside className="inspector" aria-label="实体检查">
@@ -664,5 +669,6 @@ function describeAudit(item: AuditEntry) {
   if (item.operation === 'add_many') return `${(payload.spans as unknown[] | undefined)?.length || 0} 处`
   if (item.operation === 'accept_many' || item.operation === 'reject_many') return `${(payload.span_ids as unknown[] | undefined)?.length || 0} 处`
   if (item.operation === 'adjust_boundary') return `范围 ${payload.before} 改为 ${payload.after}`
+  if (item.operation === 'restore') return `换回 ${payload.restored ?? 0} 处`
   return ''
 }

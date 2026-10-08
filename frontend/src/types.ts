@@ -156,6 +156,12 @@ export interface FinalTextSaveResult {
 export interface RecheckFinding { start: number; end: number; text: string; entity_type: EntityType; severity: 'high' | 'medium'; reason: string }
 export interface RecheckResult { passed: boolean; high: number; medium: number; findings: RecheckFinding[]; checked_characters: number; checked_at: string }
 
+/** 还原大模型回答：start/end 指还原后文字里的位置（按 Unicode 码点）。check 为 true 的是按泛化词换回的，需要核对。 */
+export interface RestoreItem { start: number; end: number; original: string; replaced: string; entity_type: EntityType; strategy: string; task_id: string; check: boolean }
+/** ambiguous：一个词对应多个原词，没有换回；conflict：多个任务里含义不同，按排在前面的任务换回；unknown：编号在任务里不存在。 */
+export interface RestoreNote { text: string; reason: 'ambiguous' | 'conflict' | 'unknown'; count: number; candidates?: string[]; chosen?: string; entity_type?: EntityType }
+export interface RestoreResult { text: string; items: RestoreItem[]; restored: number; unresolved: RestoreNote[]; tasks: string[] }
+
 export interface AuditEntry { id: number; task_id: string; created_at: string; operation: string; payload: Record<string, unknown> }
 
 export interface BatchRecord {

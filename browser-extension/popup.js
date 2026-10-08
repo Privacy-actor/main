@@ -9,6 +9,7 @@ const state = {
   project: null,     // 设置里选的项目：方式和力度默认取项目的，这里临时改动只影响这一次
   touched: {},       // 这次在弹窗里改过的项（strategy、strength、useLlm）
   resultPlan: '',    // 当前结果用的方案，方案改动后提示重新识别
+  restored: null,    // 最近一次还原的结果
 }
 
 /* ---------- 方案：方式、力度、大模型 ---------- */
@@ -161,6 +162,7 @@ function showTask(task) {
   $('summary').textContent = total ? `${total} 处实体${pending ? `，${pending} 处建议复核` : ''}` : '没有发现隐私信息'
   $('saveState').textContent = ''
   if (task.moyinNotice) { showError(task.moyinNotice); state.project = null; $('project').textContent = '临时方案' }
+  $('restored').hidden = true
   $('result').hidden = false
   $('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 }
@@ -180,6 +182,76 @@ $('run').addEventListener('click', async () => {
   } finally {
     $('run').disabled = false
   }
+})
+
+/* ---------- 还原大模型回答 ---------- */
+
+function restoreNote(note) {
+  const options = (note.candidates || []).join('、')
+  if (note.reason === 'ambiguous') return `“${note.text}”对应 ${(note.candidates || []).length} 个原词（${options}），没有换回，请自己判断`
+  if (note.reason === 'conflict') return `${note.text} 在几次脱敏里指的不是同一个，按最近一次换成了“${note.chosen}”`
+  return `${note.text} 在最近的脱敏记录里没有对应，保持原样`
+}
+
+function renderRestored(result) {
+  const preview = $('restoredPreview')
+  preview.replaceChildren()
+  const characters = Array.from(result.text)
+  let cursor = 0
+  for (const item of [...result.items].sort((a, b) => a.start - b.start)) {
+    if (item.start < cursor) continue
+    if (item.start > cursor) preview.append(characters.slice(cursor, item.start).join(''))
+    const mark = document.createElement('mark')
+    mark.className = `tok-swap${item.check ? ' pending' : ''}`
+    mark.style.setProperty('--c', MOYIN_COLORS[item.entity_type] || MOYIN_COLORS.CUSTOM)
+    mark.textContent = characters.slice(item.start, item.end).join('')
+    mark.title = `${MOYIN_LABELS[item.entity_type] || '实体'}：原为 ${item.replaced}${item.check ? '（按泛化词换回，请核对）' : ''}`
+    preview.append(mark)
+    cursor = item.end
+  }
+  if (cursor < characters.length) preview.append(characters.slice(cursor).join(''))
+}
+
+async function runRestore() {
+  const text = $('source').value
+  if (!text.trim()) { showError('请先粘贴或读取大模型的回答'); return }
+  showError('')
+  $('restore').disabled = true
+  $('restore').textContent = '正在还原…'
+  try {
+    const result = await moyinRestore(text)
+    state.restored = result
+    renderRestored(result)
+    const checks = result.items.filter(item => item.check).length
+    $('restoredSummary').textContent = result.restored ? `换回 ${result.restored} 处${checks ? `，${checks} 处按泛化词换回，请核对` : ''}` : '没有找到可以换回的编号或替换词'
+    $('restoredNotes').replaceChildren(...result.unresolved.map(note => {
+      const item = document.createElement('li')
+      item.textContent = restoreNote(note)
+      return item
+    }))
+    $('restoredNotes').hidden = !result.unresolved.length
+    $('result').hidden = true
+    $('restored').hidden = false
+    $('restored').scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  } catch (error) {
+    showError(error.message || '还原失败')
+  } finally {
+    $('restore').disabled = false
+    $('restore').textContent = '还原回答'
+  }
+}
+
+$('restore').addEventListener('click', () => void runRestore())
+
+$('copyRestored').addEventListener('click', async () => {
+  if (!state.restored) return
+  try {
+    await navigator.clipboard.writeText(state.restored.text)
+    $('copyRestored').textContent = '已复制'
+  } catch {
+    $('copyRestored').textContent = '复制失败，请手动选择'
+  }
+  window.setTimeout(() => { $('copyRestored').textContent = '复制还原结果' }, 1400)
 })
 
 /* ---------- 修改与保存最终稿 ---------- */
@@ -298,12 +370,15 @@ async function init() {
   setStrategy(settings.strategy)
   setStrength(Number(settings.strength) || 2)
   $('llm').checked = Boolean(settings.useLlm)
-  const session = await chrome.storage.session.get('pendingSelection').catch(() => ({}))
+  const session = await chrome.storage.session.get(['pendingSelection', 'pendingMode']).catch(() => ({}))
   const legacy = await chrome.storage.local.get('pendingSelection')
-  const text = session.pendingSelection || legacy.pendingSelection || await activeText('selection')
+  const restoring = session.pendingMode === 'restore'
+  // 右键菜单给的选中文字会把换行压成空格；还原时先从页面上读一次选区，保留回答的分段
+  const text = (restoring && await activeText('selection')) || session.pendingSelection || legacy.pendingSelection || await activeText('selection')
   if (text) { $('source').value = text; updateSourceMeta() }
-  await chrome.storage.session.remove('pendingSelection').catch(() => {})
+  await chrome.storage.session.remove(['pendingSelection', 'pendingMode']).catch(() => {})
   await chrome.storage.local.remove('pendingSelection')
+  if (restoring && text) void runRestore()
   await chrome.action.setBadgeText({ text: '' })
   void checkHealth()
   await loadProjectPlan(settings)

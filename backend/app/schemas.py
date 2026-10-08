@@ -1,6 +1,6 @@
 import re
 from enum import StrEnum
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -203,6 +203,12 @@ class ReviewRequest(BaseModel):
     # add_many：一次补充同一文本的多处出现；accept_many / reject_many：批量确认或恢复。
     spans: list[Span] | None = Field(default=None, max_length=500)
     span_ids: list[str] | None = Field(default=None, max_length=2_000)
+
+
+class RestoreRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=100_000)
+    # 按优先顺序排列：工作台传当前任务；插件传最近几次脱敏的任务，最近的在前
+    task_ids: list[Annotated[str, Field(min_length=1, max_length=128)]] = Field(min_length=1, max_length=20)
 
 
 class RecheckRequest(BaseModel):

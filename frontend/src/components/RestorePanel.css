@@ -1,0 +1,30 @@
+/* 还原大模型回答 */
+
+.restore { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+.restore[hidden] { display: none; }
+.restore-area {
+  flex: 1; width: 100%; min-height: 240px; padding: 18px 24px 28px; border: 0; outline: none; resize: none;
+  background: var(--sheet); color: var(--ink); font-size: 15px; line-height: 1.9;
+}
+.restore-area::placeholder { color: var(--ink-4); }
+.restore-area:focus { box-shadow: inset 0 0 0 2px var(--cobalt-wash); }
+.restore-summary { padding: 10px 24px; border-bottom: 1px solid var(--rule-2); background: var(--sheet-2); color: var(--ink-2); font-size: 13px; line-height: 1.65; }
+.restore-summary p { margin: 0; }
+.restore-summary strong { color: var(--ink); font-weight: 600; }
+.restore-summary ul { margin: 6px 0 0; padding-left: 18px; color: var(--ink-3); }
+.restore-summary li + li { margin-top: 2px; }
+.restore-body { flex: 1; min-height: 0; padding: 18px 24px 28px; overflow: auto; }
+.restore-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 8px 12px; border-top: 1px solid var(--rule-2); background: var(--sheet-2); }
+.restore-hint { flex: 1 1 200px; color: var(--ink-3); font-size: 12.5px; }
+.restore-foot .btn-primary { margin-left: auto; }
+.restore-ent { cursor: text; }
+/* 按泛化词换回的地方用虚线，提醒核对 */
+.restore-ent.is-check {
+  box-shadow: none; background-image: linear-gradient(to right, var(--c) 55%, transparent 55%);
+  background-size: 7px 2px; background-repeat: repeat-x; background-position: 0 100%;
+}
+
+@media (max-width: 760px) {
+  .restore-area, .restore-body { padding: 16px 18px 24px; }
+  .restore-summary { padding: 10px 18px; }
+}
