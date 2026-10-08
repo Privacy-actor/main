@@ -121,10 +121,25 @@ def download_model(source: str) -> None:
     raise SystemExit("模型下载失败。可以稍后重试，或手动下载 config.json、分词器文件和权重文件放到 " + str(TARGET))
 
 
+def read_sentencepiece_in_python() -> None:
+    """sentencepiece 在 Windows 上按系统代码页打开模型文件，路径里有中文（如“新建文件夹”）时找不到文件，
+    Transformers 随后会报 “Converting from SentencePiece and Tiktoken failed”。改由 Python 读出文件内容再交给它。"""
+    try:
+        import sentencepiece
+    except ImportError:  # 还没安装时，check_model 会补装后重试
+        return
+
+    def load_from_file(self, filename):
+        return self.LoadFromSerializedProto(Path(filename).read_bytes())
+
+    sentencepiece.SentencePieceProcessor.LoadFromFile = load_from_file
+
+
 def run_check() -> int:
     """在子进程中运行：加载模型、补出快速分词器文件，再用后端的 NER 适配器识别示例。"""
     from transformers import AutoTokenizer
 
+    read_sentencepiece_in_python()
     try:
         tokenizer = AutoTokenizer.from_pretrained(str(TARGET), use_fast=True)
     except Exception as exc:
