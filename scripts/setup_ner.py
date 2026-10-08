@@ -11,6 +11,8 @@
   3. 用后端的识别代码试运行一段中英混合文本；
   4. 在 backend/.env 中开启 NER，其他配置原样保留。
 完成后重启后端即可生效。
+
+启动墨隐.cmd 每次启动时以 --offer 调用本脚本：还没装好时询问一次是否安装，装不装、装没装好都不影响墨隐启动。
 """
 from __future__ import annotations
 
@@ -27,6 +29,8 @@ MODEL_ID = "Davlan/xlm-roberta-base-ner-hrl"
 MODEL_SETTING = "models/xlm-roberta-base-ner-hrl"  # 写进 .env 的相对路径，后端按 backend 目录解析
 TARGET = BACKEND / MODEL_SETTING
 ENV_FILE = BACKEND / ".env"
+# 启动时选了“暂不安装”后写下的记号，以后启动不再询问（backend/models 不提交）
+DECLINED = BACKEND / "models" / ".ner-declined"
 PIP_MIRROR = "https://pypi.tuna.tsinghua.edu.cn/simple"
 HF_MIRROR = "https://hf-mirror.com"
 # 只下载 PyTorch 需要的文件；仓库里的 TensorFlow、Flax、ONNX 权重不下载
@@ -178,6 +182,7 @@ def _run_check_process() -> subprocess.CompletedProcess:
 
 def check_model() -> int:
     step("3/4 试运行")
+    print("加载模型并识别一段示例文本，第一次可能要一两分钟，这期间窗口没有输出 ……", flush=True)
     result = _run_check_process()
     if result.returncode == 3:
         # 没有 tokenizer.json 时需要 sentencepiece 和 protobuf 转换一次分词器
@@ -218,10 +223,64 @@ def write_env(device: int) -> None:
     print(f"已更新 {ENV_FILE}：" + "，".join(f"{key}={value}" for key, value in values.items()))
 
 
+def install(args: argparse.Namespace) -> None:
+    if not args.skip_install:
+        install_packages()
+    download_model(args.source)
+    device = check_model()
+    write_env(device)
+
+
+def ner_ready() -> bool:
+    """模型文件、tokenizer.json 和 backend/.env 里的开关都在，说明已经装好；不导入 torch，启动时一眨眼就能判断。"""
+    if not (weights_present() and (TARGET / "tokenizer.json").exists() and ENV_FILE.exists()):
+        return False
+    text = ENV_FILE.read_bytes().decode("utf-8", errors="replace")
+    return any(line.replace(" ", "").lower() == "privshield_ner_enabled=true" for line in text.splitlines())
+
+
+def offer(args: argparse.Namespace) -> None:
+    """启动墨隐.cmd 调用：还没装好时问一次；选跳过、安装失败或中途取消，墨隐都照常启动。"""
+    if ner_ready():
+        print("NER 模型已安装。")
+        return
+    if DECLINED.exists():
+        print("没有安装 NER 模型，姓名、机构、地点由内置轻量识别器处理。需要时双击 scripts\\安装NER模型.cmd 安装。")
+        return
+    print("要安装多语种 NER 模型吗？装上后，前后没有“联系人：”这类提示词的姓名、机构、地点也能识别出来。")
+    print("需要下载约 1.3 GB（PyTorch 和模型），第一次视网速大约 10 到 20 分钟。装好或选择跳过后，以后启动不再询问。")
+    try:
+        answer = input("直接按回车开始安装，输入 N 再按回车跳过：").strip().lower()
+    except EOFError:  # 没有可以输入的窗口时这次先跳过，下次启动再问
+        print("\n这次先跳过。")
+        return
+    if answer in {"n", "no", "否", "不"}:
+        DECLINED.parent.mkdir(parents=True, exist_ok=True)
+        DECLINED.write_text("启动时选择了暂不安装 NER 模型。删除本文件后重新启动会再次询问，也可以直接双击 scripts\\安装NER模型.cmd 安装。\n", encoding="utf-8")
+        print("已跳过，以后启动不再询问。需要时双击 scripts\\安装NER模型.cmd 安装。")
+        return
+    fallback = "墨隐照常启动，姓名、机构、地点先由内置轻量识别器处理；下次启动会再询问，也可以双击 scripts\\安装NER模型.cmd 重试。"
+    try:
+        install(args)
+    except SystemExit as exc:
+        if isinstance(exc.code, str):
+            print(exc.code)
+        print("\nNER 模型这次没有装好。" + fallback)
+        return
+    except KeyboardInterrupt:
+        print("\n已取消安装。" + fallback)
+        return
+    except Exception as exc:  # 网络、磁盘等意外问题都不能挡住墨隐启动
+        print(f"\n安装出错：{type(exc).__name__}: {str(exc)[:200]}\nNER 模型这次没有装好。" + fallback)
+        return
+    print("\nNER 模型已装好，接下来启动墨隐。")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="为墨隐安装多语种 NER 模型")
     parser.add_argument("--source", choices=["auto", "modelscope", "hf-mirror", "hf"], default="auto", help="模型下载来源，默认依次尝试魔搭社区、Hugging Face 镜像和官网")
     parser.add_argument("--skip-install", action="store_true", help="跳过依赖安装")
+    parser.add_argument("--offer", action="store_true", help="启动墨隐.cmd 使用：还没安装时询问一次，装不装都不影响启动")
     parser.add_argument("--check", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.check:
@@ -229,13 +288,12 @@ def main() -> None:
 
     if not (BACKEND / "app" / "main.py").exists():
         raise SystemExit("请在墨隐项目里运行本脚本（找不到 backend/app/main.py）。")
+    if args.offer:
+        offer(args)
+        return
     if sys.prefix == sys.base_prefix:
         print("提示：当前不是虚拟环境里的 Python，依赖会装进系统 Python。建议改用 backend/.venv 里的 Python 运行。")
-    if not args.skip_install:
-        install_packages()
-    download_model(args.source)
-    device = check_model()
-    write_env(device)
+    install(args)
     print("\n完成。重启后端（关掉后端窗口，重新运行“启动墨隐.cmd”）后，部署与插件页的 NER 层会显示模型名。")
 
 

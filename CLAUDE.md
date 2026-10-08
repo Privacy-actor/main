@@ -94,7 +94,7 @@ Manifest V3。`shared.js`（设置、带超时的接口调用、项目方案：�
 
 ### 部署
 
-`docker-compose.yml`：`backend`（FastAPI，8000 内部）、`frontend`（Nginx，`${WEB_PORT:-8080}:80`）、`vllm`（gpu profile，8001）。本地轻量方案用 Ollama（`http://127.0.0.1:11434/v1`），在部署页选择即可。NER 模型用 `scripts/setup_ner.py` 下载到 `backend/models/`（已加入 .gitignore）。
+`docker-compose.yml`：`backend`（FastAPI，8000 内部）、`frontend`（Nginx，`${WEB_PORT:-8080}:80`）、`vllm`（gpu profile，8001）。本地轻量方案用 Ollama（`http://127.0.0.1:11434/v1`），在部署页选择即可。NER 模型用 `scripts/setup_ner.py` 下载到 `backend/models/`（已加入 .gitignore）；`启动墨隐.cmd` 每次启动以 `--offer` 调用它，还没装好时询问一次，选跳过会写下 `backend/models/.ner-declined`，装不装都照常启动。启动脚本会检查 Python ≥ 3.11（后端用到 `enum.StrEnum`、`asyncio.TaskGroup`）。
 
 ## 关键边界
 

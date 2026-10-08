@@ -21,7 +21,7 @@ npm install
 npm run dev
 ```
 
-打开 <http://127.0.0.1:5173>，第一次打开会先进入“上手指南”。更省事的做法是双击项目根目录的 `启动墨隐.cmd`：它会检查 Node.js 版本、在需要时安装前后端依赖，然后各开一个窗口运行后端和前端，并打开浏览器；关掉这两个窗口即停止。接口文档在 <http://127.0.0.1:8000/api/docs>。
+打开 <http://127.0.0.1:5173>，第一次打开会先进入“上手指南”。更省事的做法是双击项目根目录的 `启动墨隐.cmd`：它会检查 Node.js 和 Python 版本、在需要时安装前后端依赖，第一次启动时询问是否安装 NER 模型（见“接入 NER 模型”），然后各开一个窗口运行后端和前端，并打开浏览器；关掉这两个窗口即停止。接口文档在 <http://127.0.0.1:8000/api/docs>。
 
 ## 界面与功能
 
@@ -102,7 +102,7 @@ GPU 服务器：`cp .env.example .env` 后 `docker compose --profile gpu up -d -
 
 NER 层默认使用内置的轻量识别器。安装多语种模型 Davlan/xlm-roberta-base-ner-hrl（约 1.1 GB，CPU 即可运行）后，姓名、机构、地点由模型和轻量识别器共同识别：
 
-- Windows：先运行过一次 `启动墨隐.cmd`，再双击 `scripts\安装NER模型.cmd`；
+- Windows：第一次运行 `启动墨隐.cmd` 时会询问是否安装，直接按回车即开始；当时跳过的，之后双击 `scripts\安装NER模型.cmd` 安装；
 - macOS / Linux：在项目根目录运行 `backend/.venv/bin/python scripts/setup_ner.py`。
 
 脚本会安装 PyTorch 和 Transformers，从魔搭社区下载模型（失败时改用 Hugging Face 镜像和官网），试运行一次，再在 `backend/.env` 中开启 NER（其他配置原样保留）。完成后重启后端，“部署与插件”页的 NER 层会显示模型名。模型加载失败时识别照常进行，页面上会显示原因。

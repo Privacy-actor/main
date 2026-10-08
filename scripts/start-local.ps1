@@ -5,10 +5,17 @@ $Root = Split-Path -Parent $PSScriptRoot
 $Python = Join-Path $Root 'backend\.venv\Scripts\python.exe'
 if (-not (Test-Path $Python)) { $Python = 'python' }
 
+# 后端用到 Python 3.11 才有的功能（如 enum.StrEnum、asyncio.TaskGroup）
+& $Python -c "import sys; sys.exit(sys.version_info < (3, 11))"
+if ($LASTEXITCODE -ne 0) {
+  Write-Host '墨隐需要 Python 3.11 或更高版本：请从 https://www.python.org 安装最新的 Python 3，删除 backend\.venv 后重新运行。' -ForegroundColor Red
+  exit 1
+}
+
 # 后端依赖有缺失时补装；都已安装时不联网，约一秒
 & $Python -m pip install -q --disable-pip-version-check -r (Join-Path $Root 'backend\requirements.txt')
 if ($LASTEXITCODE -ne 0) {
-  Write-Host '后端依赖安装失败：请确认已安装 Python 3.10 以上版本并且网络可用，然后重新运行。' -ForegroundColor Red
+  Write-Host '后端依赖安装失败：请确认网络可用，然后重新运行。' -ForegroundColor Red
   exit 1
 }
 
